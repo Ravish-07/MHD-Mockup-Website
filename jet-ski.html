@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COAST Insurance — Jet Ski Quote</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/jet-ski.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="logo-block">
+      <img src="assets/logo/coast-logo.png" alt="Coast Insurance logo" class="logo-img">
+    </div>
+  </header>
+
+  <div class="progress-bar" id="progressBar" style="display:none;">
+    <div class="progress-track">
+      <div class="progress-step" data-step="1">
+        <div class="progress-circle">1</div>
+        <span class="progress-label">Target Market<br>Determination</span>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step" data-step="2">
+        <div class="progress-circle">2</div>
+        <span class="progress-label">Vessel Details</span>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step" data-step="3">
+        <div class="progress-circle">3</div>
+        <span class="progress-label">Experience and<br>History</span>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step" data-step="4">
+        <div class="progress-circle">4</div>
+        <span class="progress-label">Additional Jet Ski</span>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step" data-step="5">
+        <div class="progress-circle">5</div>
+        <span class="progress-label">Your Quote</span>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step" data-step="6">
+        <div class="progress-circle">6</div>
+        <span class="progress-label">Your Details</span>
+      </div>
+      <div class="progress-line"></div>
+      <div class="progress-step" data-step="7">
+        <div class="progress-circle">7</div>
+        <span class="progress-label">Payment</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="quote-flow">
+
+    <!-- INTRO (not counted in progress bar) -->
+    <section class="quote-step intro-step" id="step-1">
+
+      <div class="intro-card">
+
+        <div class="intro-header">
+          <div class="intro-info-icon">
+            <span>ⓘ</span>
+          </div>
+
+          <h1>Get Your Quote</h1>
+        </div>
+
+        <div class="intro-divider"></div>
+
+        <div class="intro-duty-box">
+
+          <p class="intro-duty-title">
+            Duty to take reasonable care not to make a misrepresentation
+          </p>
+
+          <p>
+            When applying for this Policy, You must take reasonable care not to make a misrepresentation to Us.
+            <br>
+            This responsibility applies until We issue You with a Policy for the first time or agree to renew,
+            extend, vary/change, or reinstate Your Policy.
+          </p>
+
+          <p>
+            You must answer Our questions honestly, accurately and to the best of Your knowledge.
+            <br>
+            A misrepresentation includes a statement that is false, partially false, or which does not fairly reflect the truth.
+            <br>
+            It is not a misrepresentation if You do not answer a question or if Your answer is obviously incomplete
+            or irrelevant to the question asked.
+          </p>
+
+          <p>
+            The responsibility to take reasonable care not to make a misrepresentation applies to everyone
+            who will be insured under the policy.
+            <br>
+            If You are answering questions on behalf of anyone, We will treat Your answers or representations as theirs.
+          </p>
+
+          <p>
+            Whether or not You have taken reasonable care not to make a misrepresentation is to be determined
+            having regard to all relevant circumstances, including the type of insurance, who it is intended to
+            be sold to, whether You are represented by a broker, Your particular characteristics and circumstances
+            We are aware of.
+          </p>
+
+          <p>
+            If You do not meet the above Duty, We may reject or not fully pay Your claim and/or cancel Your Policy.
+            <br>
+            If the misrepresentation was deliberate or reckless, this is an act of fraud, and We may treat Your
+            Policy as if it never existed.
+          </p>
+
+        </div>
+
+        <label class="intro-agreement-box">
+          <input type="checkbox" id="dutyAgreement">
+
+          <span>
+            By continuing, you acknowledge that you have read and understood this Duty,
+            the #Product Disclosure Statement (PDS)</a> and
+            #Financial Services Guide (FSG)</a>.
+          </span>
+        </label>
+
+        <div class="intro-actions">
+          <a href="products.html" class="intro-back-btn">← Back</a>
+
+          <button class="continue-btn" id="getStartedBtn" disabled>
+            Continue →
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- STEP 1 (progress): TARGET MARKET DETERMINATION -->
+    <section class="quote-step form-step" id="step-2" style="display:none;">
+      <div class="form-card">
+
+        <div class="form-card-header">
+          <div class="tmd-icon">
+            <span>✓</span>
+          </div>
+
+          <div>
+            <h3 class="tmd-title">Target Market Determination</h3>
+            <p class="form-card-sub">
+              Please answer the following to determine whether this application is within our Target Market.
+            </p>
+          </div>
+        </div>
+
+        <div class="question-list" id="questionList"></div>
+
+        <div class="form-actions tmd-actions">
+          <button class="back-btn" id="backBtn2">← Back</button>
+          <button class="continue-btn" id="continueStep2Btn">Continue →</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STEP 2 (progress): VESSEL DETAILS -->
+    <section class="quote-step form-step" id="step-3" style="display:none;">
+      <div class="form-card vessel-card">
+
+        <div class="form-card-header">
+          <div class="vessel-icon">
+            <span>🚤</span>
+          </div>
+
+          <div>
+            <h3 class="vessel-title">Vessel Details</h3>
+            <p class="form-card-sub">
+              Please provide the details of the vessel you would like to insure.
+            </p>
+          </div>
+        </div>
+
+        <div class="field-list" id="vesselFieldList"></div>
+
+        <div class="form-actions vessel-actions">
+          <button class="back-btn" id="backBtn3">← Back</button>
+          <button class="continue-btn" id="continueStep3Btn">Continue →</button>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- STEP 3 (progress): EXPERIENCE AND HISTORY -->
+    <section class="quote-step form-step" id="step-4" style="display:none;">
+      <div class="form-card">
+
+        <div class="form-card-header">
+          <div class="tmd-icon">
+            <span>👥</span>
+          </div>
+          <div>
+            <h3 class="tmd-title">Experience &amp; History</h3>
+            <p class="form-card-sub">Please provide information about your experience and history.</p>
+          </div>
+        </div>
+
+        <div class="field-list" id="experienceFieldList"></div>
+
+        <p class="subsection-label">Skipper Details</p>
+
+        <div class="skipper-table">
+          <div class="skipper-header-row">
+            <span>Skipper name</span>
+            <span>Date of birth</span>
+            <span>Date boat / PWC licence obtained</span>
+            <span>Number of years owning a boat / PWC</span>
+            <span></span>
+          </div>
+          <div class="skipper-rows" id="skipperRows"></div>
+          <button type="button" class="add-row-btn" id="addSkipperBtn">+</button>
+        </div>
+
+        <div class="section-divider">
+          <span class="section-divider-icon">🛈</span>
+          <span>Have you, the proposed insured, or any named skipper(s) in the past 5 years:</span>
+        </div>
+        <div class="question-list" id="past5YearsList"></div>
+
+        <div id="claimsWrap" class="claims-wrap" style="display:none;">
+          <p class="subsection-label">Claim Details</p>
+          <div class="claims-table">
+            <div class="claims-header-row">
+              <span>Date Of Loss *</span>
+              <span>Description Of Loss *</span>
+              <span>Settlement Amount *</span>
+              <span></span>
+            </div>
+            <div class="claims-rows" id="claimsRows"></div>
+            <button type="button" class="add-row-btn" id="addClaimBtn">+</button>
+          </div>
+        </div>
+
+        <div class="section-divider">
+          <span class="section-divider-icon">🛈</span>
+          <span>Have you, the proposed insured, or any named skipper(s) ever:</span>
+        </div>
+        <div class="question-list" id="everList"></div>
+
+        <div class="form-actions vessel-actions">
+          <button class="back-btn" id="backBtn4">← Back</button>
+          <button class="continue-btn" id="continueBtn4">Continue →</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STEP 4 (progress): ADDITIONAL JET SKI -->
+    <section class="quote-step form-step" id="step-5" style="display:none;">
+      <div class="form-card">
+
+        <div class="form-card-header">
+          <div class="vessel-icon">
+            <span>➕</span>
+          </div>
+          <div>
+            <h3 class="vessel-title">Additional Jet Ski</h3>
+            <p class="form-card-sub">Do you have another jet ski you'd like to insure on this policy?</p>
+          </div>
+        </div>
+
+        <div class="section-divider">
+          <span class="section-divider-icon">🛈</span>
+          <span>Do you have an additional jet ski to insure?</span>
+          <div class="question-toggle" id="hasAdditionalToggle">
+            <button type="button" class="toggle-btn" data-value="yes">Yes</button>
+            <button type="button" class="toggle-btn" data-value="no">No</button>
+          </div>
+        </div>
+
+        <div id="additionalJetSkisList"></div>
+
+        <button type="button" class="add-row-btn add-unit-btn" id="addJetSkiBtn" style="display:none;">+</button>
+
+        <div class="form-actions vessel-actions">
+          <button class="back-btn" id="backBtn5">← Back</button>
+          <button class="continue-btn" id="continueBtn5">Continue →</button>
+        </div>
+
+      </div>
+    </section>
+
+     <!-- STEP 5 (progress): YOUR QUOTE -->
+    <section class="quote-step form-step" id="step-6" style="display:none;">
+      <div class="form-card quote-summary-card">
+
+        <!-- HEADER -->
+        <div class="form-card-header">
+          <div class="vessel-icon">
+            <span>📄</span>
+          </div>
+          <div>
+            <h3 class="vessel-title">Your Quote</h3>
+          </div>
+        </div>
+
+        <!-- ANNUAL PREMIUM -->
+
+        <div class="quote-number-display">
+          <strong>Quote Number:</strong>
+          <span>Q-PWC-260922-001</span>
+        </div>
+
+        <div class="premium-panel">
+
+          <div class="premium-main">
+            <span class="premium-label">ANNUAL PREMIUM</span>
+            <strong class="premium-amount">$2,148.89</strong>
+            <span class="premium-note">Total premium payable</span>
+          </div>
+
+          <div class="premium-breakdown">
+
+            <div class="premium-breakdown-title">
+              Insurance Premium Breakdown
+            </div>
+
+            <div class="premium-line">
+              <span>Total Base Premium</span>
+              <strong>$1,746.36</strong>
+            </div>
+
+            <div class="premium-line">
+              <span>GST</span>
+              <strong>$174.64</strong>
+            </div>
+
+            <div class="premium-line">
+              <span>Stamp Duty</span>
+              <strong>$172.89</strong>
+            </div>
+
+            <div class="premium-line">
+              <span>Administration Fee</span>
+              <strong>$50.00</strong>
+            </div>
+
+            <div class="premium-line">
+              <span>Fee GST</span>
+              <strong>$5.00</strong>
+            </div>
+
+            <div class="premium-line premium-total">
+              <span>Total Premium Payable</span>
+              <strong>$2,148.89</strong>
+            </div>
+
+            <div class="premium-line">
+              <span>Pay in 10 Instalments</span>
+              <strong>$232.12</strong>
+            </div>
+
+            <div class="premium-line">
+              <span>Broker Commission 20%</span>
+              <strong>$349.27</strong>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- EXCESSES -->
+        <div class="excess-panel">
+
+          <div class="excess-heading">
+            Excesses
+          </div>
+
+          <div class="excess-body">
+
+            <div class="excess-row">
+              <span>All Other Claims</span>
+              <strong>$500.00</strong>
+            </div>
+
+            <div class="excess-row">
+              <span>Theft</span>
+              <strong>$2,000.00</strong>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- COVER DETAILS -->
+        <div class="cover-summary-panel">
+
+          <div class="cover-summary-heading">
+            Your Cover
+          </div>
+
+          <div class="quote-cover-list">
+
+          <div class="quote-cover-row">
+            <span class="cover-tick">✓</span>
+            <strong>Policy Type</strong>
+            <span class="cover-value">Comprehensive PWC/ Jet Ski</span>
+          </div>
+
+          <div class="quote-cover-row">
+            <span class="cover-tick">✓</span>
+            <strong>Total Sum Insured</strong>
+            <span class="cover-value">$10,000</span>
+          </div>
+
+          <div class="quote-cover-row">
+            <span class="cover-tick">✓</span>
+            <strong>Basis of Settlement</strong>
+            <span class="cover-value">Market Value</span>
+          </div>
+
+          <div class="quote-cover-row">
+            <span class="cover-tick">✓</span>
+            <strong>Third Party Legal Liability</strong>
+            <span class="cover-value">
+              $10,000,000
+              <small>Any one claim or all claims arising from one accident</small>
+            </span>
+          </div>
+
+          <div class="quote-cover-row">
+            <span class="cover-tick">✓</span>
+            <strong>Personal Accident Cover</strong>
+            <span class="cover-value">
+              $50,000 plus Funeral Expenses of $7,500 in the event of Your Death
+              <small>
+                $300 per week, up to a maximum of 100 weeks in the event of
+                Your Temporary Total Disablement
+              </small>
+            </span>
+          </div>
+
+          <div class="quote-cover-row">
+            <span class="cover-tick">✓</span>
+            <strong>Recovery or Removal of Wreck</strong>
+            <span class="cover-value">$1,000,000</span>
+          </div>
+
+          <div class="quote-cover-row">
+            <span class="cover-tick">✓</span>
+            <strong>Pollution</strong>
+            <span class="cover-value">
+              $1,000,000 for any one Accident or series of Accidents caused by the one event
+            </span>
+          </div>
+
+          <div class="quote-cover-row">
+            <span class="cover-tick">✓</span>
+            <strong>Search Costs</strong>
+            <span class="cover-value">$10,000</span>
+          </div>
+
+          <div class="quote-cover-row">
+            <span class="cover-tick">✓</span>
+            <strong>Sporting Equipment</strong>
+            <span class="cover-value">
+              $2,000 on any one item with a limit of $20,000 in total
+            </span>
+          </div>
+
+          <div class="quote-cover-row">
+            <span class="cover-tick">✓</span>
+            <strong>Geographical Limits</strong>
+            <span class="cover-value">
+              50 Nautical Miles off the Australian Mainland including Tasmania.
+              <small>
+                Subject to the vessel being south of 23.5° South between
+                1 December - 1 April.
+              </small>
+            </span>
+          </div>
+
+          <div class="quote-cover-row">
+            <span class="cover-tick">✓</span>
+            <strong>Water Skiing / Aquaplaning Liability</strong>
+            <span class="cover-value">Insured</span>
+          </div>
+
+          </div>
+
+          </div>
+
+
+        <!-- PERIOD OF INSURANCE -->
+        <div class="quote-info-panel">
+
+          <div class="quote-info-heading">
+            Period of Insurance
+          </div>
+
+          <div class="policy-period-row">
+            <span>From</span>
+            <input type="date" id="policyStartDate">
+
+            <span>To</span>
+            <input type="date" id="policyEndDate">
+
+            <span>At 4pm Local Time</span>
+          </div>
+
+        </div>
+
+        <!-- VESSEL DETAILS -->
+        <div class="quote-info-panel">
+
+          <div class="quote-info-heading">
+            Vessel Details
+          </div>
+
+          <div class="summary-list" id="vesselSummaryList">
+            <div class="summary-row">
+              <span class="summary-label">Vessel 1</span>
+              <span class="summary-value">
+                Vessel details will appear here.
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- SKIPPER DETAILS -->
+        <div class="quote-info-panel">
+
+          <div class="quote-info-heading">
+            Skipper Details
+          </div>
+
+          <div class="summary-list" id="skipperSummaryList">
+            <div class="summary-row">
+              <span class="summary-label">Skipper 1</span>
+              <span class="summary-value">
+                Skipper details will appear here.
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- PDS -->
+        <div class="pds-note">
+          <span class="section-divider-icon">🛈</span>
+          <span>
+            It is important that you read and understand the product features and
+            details outlined in the
+            #Product Disclosure Statement (PDS)</a>.
+          </span>
+        </div>
+
+        <div class="pds-note">
+          <span class="section-divider-icon">🛈</span>
+
+          <span>
+            <strong>General Advice Warning</strong><br><br>
+
+            This advice has been prepared and provided without taking into account your personal objectives,
+            financial situation or needs.
+
+            Because of this, before acting on the advice, you should consider its appropriateness
+            (having regard to your objectives, needs and financial situation).
+
+            To decide if this insurance product is right for you, please carefully read the relevant
+            Product Disclosure Statement (PDS) and Target Market Determination (TMD) relating to the policy.
+            <br><br>
+
+            Click here to view our latest
+            <a
+              href="https://secure.ermonline.com.au/financialservices/gateway/intranet_gateway.cfm?eu=TU-5538AF79-C52E-67BF-1B0CF805C7125FDC-5538AF7A-E34D-4904-A87170AFF3B77ADC"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Financial Services Guide (FSG)
+            </a>.
+          </span>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="quote-actions">
+
+          <div class="quote-actions-left">
+            <button class="back-btn" id="backBtn6">← Back</button>
+            <button class="addjetski-btn" id="addJetSkiFromQuoteBtn">
+              + Add Jet Ski
+            </button>
+          </div>
+
+          <div class="quote-actions-right">
+            <button class="email-btn" id="emailQuoteBtn">
+              Email Quote
+            </button>
+
+            <button class="buy-btn" id="continueBtn6">
+              Buy Online
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+
+
+
+    <!-- EMAIL QUOTE MODAL -->
+    <div class="quote-modal-overlay" id="emailQuoteModal" aria-hidden="true">
+
+      <div class="quote-review-modal">
+
+        <button
+          type="button"
+          class="quote-modal-close"
+          id="closeEmailQuoteModal"
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+        <!-- INTRO -->
+        <div class="review-modal-intro">
+
+          <div class="review-document-icon">
+            <span>✉</span>
+          </div>
+
+          <h2>Your quote is ready!</h2>
+
+          <div class="review-title-accent"></div>
+
+          <p>
+            A copy of your quote can be sent directly to your email address
+            for easy reference.
+          </p>
+
+          <p>
+            Simply confirm your details below and we'll send a copy of your
+            quote immediately.
+          </p>
+
+          <p>
+            You can review the quote at your convenience and return at any
+            time to continue with your insurance purchase.
+          </p>
+
+          <p>
+            Thank you for considering Coast for your insurance needs.
+            We look forward to assisting you.
+          </p>
+
+        </div>
+
+        <!-- CONTACT DETAILS -->
+        <div class="review-details-card">
+
+          <div class="review-section-heading">
+
+            <div class="review-person-icon">
+              <span>♙</span>
+            </div>
+
+            <h3>Contact Details</h3>
+
+          </div>
+
+          <!-- NAME -->
+          <div class="review-field review-field-full">
+
+            <label for="reviewInsuredName">
+              Full Name <span>*</span>
+            </label>
+
+            <div class="review-input-wrap">
+
+              <span class="review-input-icon">♙</span>
+
+              <input
+                type="text"
+                id="reviewInsuredName"
+                placeholder="Enter full name"
+              >
+
+            </div>
+
+          </div>
+
+          <div class="review-field-grid">
+
+            <!-- EMAIL -->
+            <div class="review-field">
+
+              <label for="reviewEmail">
+                Email Address <span>*</span>
+              </label>
+
+              <div class="review-input-wrap">
+
+                <span class="review-input-icon">✉</span>
+
+                <input
+                  type="email"
+                  id="reviewEmail"
+                  placeholder="Enter email address"
+                >
+
+              </div>
+
+            </div>
+
+            <!-- PHONE -->
+            <div class="review-field">
+
+              <label for="reviewPhone">
+                Phone Number <span>*</span>
+              </label>
+
+              <div class="review-input-wrap">
+
+                <span class="review-input-icon">☎</span>
+
+                <input
+                  type="tel"
+                  id="reviewPhone"
+                  placeholder="Enter phone number"
+                >
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+        <!-- ASSISTANCE -->
+        <div class="review-assistance-card">
+
+          <div class="review-assistance-copy">
+
+            <div class="review-assistance-icon">
+              i
+            </div>
+
+            <div>
+
+              <strong>Need assistance?</strong>
+
+              <p>
+                If you have any questions,<br>
+                please contact our team.
+              </p>
+
+            </div>
+
+          </div>
+
+          <div class="review-contact-details">
+
+            <p>
+              <span>✉</span>
+              <strong>E:</strong>
+              info@coastins.com.au
+            </p>
+
+            <p>
+              <span>☎</span>
+              <strong>P:</strong>
+              08 6374 7000
+            </p>
+
+          </div>
+
+        </div>
+
+        <!-- SUBMIT -->
+        <button
+          type="button"
+          class="review-submit-btn"
+          id="submitQuoteReviewBtn"
+        >
+          Email My Quote
+          <span>→</span>
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- REFERRAL REVIEW MODAL -->
+    <div class="quote-modal-overlay" id="referralQuoteModal" aria-hidden="true">
+
+      <div class="quote-review-modal">
+
+        <button
+          type="button"
+          class="quote-modal-close"
+          id="closeReferralQuoteModal"
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+        <!-- INTRO -->
+        <div class="review-modal-intro">
+
+          <div class="review-document-icon">
+            <span>📄</span>
+          </div>
+
+          <h2>You're almost there!</h2>
+
+          <div class="review-title-accent"></div>
+
+          <p>
+            Your enquiry requires a quick review by our team before we can proceed.
+            Simply complete the information below and submit your enquiry for assessment.
+          </p>
+
+          <p>
+            We'll email you shortly with a link to your quote.
+            Most reviews are completed within two business days.
+            If we need a little longer, we'll keep you updated along the way.
+          </p>
+
+          <p>
+            Thank you for considering Coast for your insurance needs.
+            We look forward to assisting you.
+          </p>
+
+          <p class="review-business-days">
+            Business days are Monday to Friday, excluding Australian and
+            Western Australian public holidays.
+          </p>
+
+        </div>
+
+        <!-- YOUR DETAILS -->
+        <div class="review-details-card">
+
+          <div class="review-section-heading">
+
+            <div class="review-person-icon">
+              <span>♙</span>
+            </div>
+
+            <h3>Your Details</h3>
+
+          </div>
+
+          <div class="review-field review-field-full">
+
+            <label for="referralInsuredName">
+              Insured Name <span>*</span>
+            </label>
+
+            <div class="review-input-wrap">
+
+              <span class="review-input-icon">♙</span>
+
+              <input
+                type="text"
+                id="referralInsuredName"
+                placeholder="Enter full name"
+              >
+
+            </div>
+
+          </div>
+
+          <div class="review-field-grid">
+
+            <div class="review-field">
+
+              <label for="referralEmail">
+                Email Address <span>*</span>
+              </label>
+
+              <div class="review-input-wrap">
+
+                <span class="review-input-icon">✉</span>
+
+                <input
+                  type="email"
+                  id="referralEmail"
+                  placeholder="Enter email address"
+                >
+
+              </div>
+
+            </div>
+
+            <div class="review-field">
+
+              <label for="referralPhone">
+                Phone Number <span>*</span>
+              </label>
+
+              <div class="review-input-wrap">
+
+                <span class="review-input-icon">☎</span>
+
+                <input
+                  type="tel"
+                  id="referralPhone"
+                  placeholder="Enter phone number"
+                >
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ASSISTANCE -->
+        <div class="review-assistance-card">
+
+          <div class="review-assistance-copy">
+
+            <div class="review-assistance-icon">
+              i
+            </div>
+
+            <div>
+              <strong>Need assistance?</strong>
+
+              <p>
+                If you have any questions,<br>
+                please contact our team.
+              </p>
+            </div>
+
+          </div>
+
+          <div class="review-contact-details">
+
+            <p>
+              <span>✉</span>
+              <strong>E:</strong>
+              info@coastins.com.au
+            </p>
+
+            <p>
+              <span>☎</span>
+              <strong>P:</strong>
+              08 6374 7000
+            </p>
+
+          </div>
+
+        </div>
+
+        <!-- SUBMIT -->
+        <button
+          type="button"
+          class="review-submit-btn"
+          id="submitReferralReviewBtn"
+        >
+          Submit for Review
+          <span>→</span>
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- DECLINE MODAL -->
+    <div class="decline-modal-overlay" id="declineModal" aria-hidden="true">
+
+      <div class="decline-modal">
+
+        <button
+          type="button"
+          class="decline-modal-x"
+          id="declineModalX"
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+        <div class="decline-warning-icon">
+          <span>!</span>
+        </div>
+
+        <h2>
+          You Are Outside the Target Market<br>
+          for This Product
+        </h2>
+
+        <div class="decline-divider"></div>
+
+        <div class="decline-copy">
+
+          <p>
+            Based on one or more of your responses, the vessel does
+            not meet the eligibility requirements set out in the Target
+            Market Determination (TMD) for this insurance policy.
+            As a result, we are unable to offer a quotation or provide
+            cover under this product.
+          </p>
+
+        </div>
+
+        <div class="decline-guidance">
+
+          <div class="decline-guidance-row">
+
+            <div class="decline-guidance-icon">
+              ↻
+            </div>
+
+            <p>
+              If you believe your responses were entered
+              incorrectly, please submit a new application.
+            </p>
+
+          </div>
+
+          <div class="decline-guidance-row">
+
+            <div class="decline-guidance-icon">
+              ☎
+            </div>
+
+            <p>
+              If you require further assistance or wish to
+              discuss further, please contact our team.
+            </p>
+
+          </div>
+
+        </div>
+
+        <div class="decline-contact-box">
+
+          <div class="decline-contact-row">
+            <span class="decline-contact-icon">✉</span>
+            <strong>E:</strong>
+            <span>info@coastins.com.au</span>
+          </div>
+
+          <div class="decline-contact-row">
+            <span class="decline-contact-icon">☎</span>
+            <strong>P:</strong>
+            <span>08 6374 7000</span>
+          </div>
+
+        </div>
+
+        <button
+          type="button"
+          class="decline-close-btn"
+          id="declineCloseBtn"
+        >
+          Close
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- STEP 6 (progress): ADDITIONAL INFORMATION -->
+    <section class="quote-step form-step" id="step-7" style="display:none;">
+      <div class="form-card additional-info-card">
+
+        <!-- HEADER -->
+        <div class="form-card-header">
+          <div class="tmd-icon">
+            <span>👤</span>
+          </div>
+
+          <div>
+            <h3 class="tmd-title">Your Details</h3>
+            <p class="form-card-sub">
+              Please provide your contact details and any additional information required for your policy.
+            </p>
+          </div>
+        </div>
+
+
+        <!-- CUSTOMER DETAILS -->
+        <div class="additional-info-grid">
+
+          <div class="additional-field">
+            <label for="additionalFirstName">
+              First Name <span class="required">*</span>
+            </label>
+            <input type="text" id="additionalFirstName">
+          </div>
+
+          <div class="additional-field">
+            <label for="additionalLastName">
+              Last Name <span class="required">*</span>
+            </label>
+            <input type="text" id="additionalLastName">
+          </div>
+
+          <div class="additional-field additional-field-full">
+            <label for="additionalInsuredName">
+              Insured Name
+            </label>
+            <input type="text" id="additionalInsuredName">
+          </div>
+
+          <div class="additional-field">
+            <label for="additionalEmail">
+              Email <span class="required">*</span>
+            </label>
+            <input
+              type="email"
+              id="additionalEmail"
+              placeholder="name@example.com"
+            >
+          </div>
+
+          <div class="additional-field">
+            <label for="additionalPhone">
+              Phone Number <span class="required">*</span>
+            </label>
+            <input
+              type="tel"
+              id="additionalPhone"
+              inputmode="numeric"
+              placeholder="Enter phone number"
+            >
+          </div>
+
+          <div class="additional-field additional-field-full">
+            <label for="additionalResidentialAddress">
+              Residential Address <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="additionalResidentialAddress"
+              placeholder="Start typing address..."
+            >
+          </div>
+
+          <div class="additional-field additional-field-full">
+            <label for="additionalPostalAddress">
+              Postal Address <span class="optional-label">(if different to above)</span>
+            </label>
+            <input
+              type="text"
+              id="additionalPostalAddress"
+              placeholder="Same as residential address"
+            >
+          </div>
+
+          <div class="additional-field additional-field-full">
+            <label for="additionalInterestedParty">
+              Interested Party
+            </label>
+            <input
+              type="text"
+              id="additionalInterestedParty"
+              placeholder="Optional"
+            >
+          </div>
+
+        </div>
+
+
+        <!-- VESSEL IDENTIFICATION -->
+        <p class="subsection-label">Vessel Identification</p>
+
+        <div
+          class="additional-vessel-details"
+          id="additionalVesselDetails"
+        >
+          <!-- Jet Ski identification rows injected by JS -->
+        </div>
+
+
+        <!-- TRAILER -->
+        <div class="additional-section">
+
+          <div class="additional-trailer-question">
+
+            <span>
+              Do you have trailer(s) to insure with the vessel(s)?
+              <span class="required">*</span>
+            </span>
+
+            <select id="additionalHasTrailer">
+              <option value="" disabled selected>Select</option>
+              <option value="No">No</option>
+              <option value="Yes">Yes</option>
+            </select>
+
+          </div>
+
+          <div
+            class="additional-trailer-details"
+            id="additionalTrailerDetails"
+            style="display:none;"
+          >
+
+            <div class="additional-field">
+              <label for="additionalTrailerMakeModel">
+                Trailer Make &amp; Model
+              </label>
+              <input
+                type="text"
+                id="additionalTrailerMakeModel"
+              >
+            </div>
+
+            <div class="additional-field">
+              <label for="additionalTrailerYear">
+                Trailer Year Built
+              </label>
+              <input
+                type="number"
+                id="additionalTrailerYear"
+                min="1900"
+                max="9999"
+                placeholder="YYYY"
+              >
+            </div>
+
+            <div class="additional-field">
+              <label for="additionalTrailerRegistration">
+                Trailer Registration Number
+              </label>
+              <input
+                type="text"
+                id="additionalTrailerRegistration"
+              >
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ATTACHMENTS -->
+        <div class="additional-attachments">
+
+          <div>
+            <strong>Attachments</strong>
+            <p>
+              Recent photographs of vessel(s), out of water survey or other supporting documents.
+            </p>
+          </div>
+
+          <input
+            type="file"
+            id="additionalAttachments"
+            multiple
+          >
+
+        </div>
+
+
+        <!-- INFORMATION NOTE -->
+        <div class="additional-info-note">
+          <span>ⓘ</span>
+          <p>
+            Your information is securely stored and will only be used for policy,
+            administrative and communication purposes.
+          </p>
+        </div>
+
+
+        <!-- ACTIONS -->
+        <div class="form-actions vessel-actions">
+
+          <button
+            class="back-btn"
+            id="backBtn7"
+          >
+            ← Back
+          </button>
+
+          <button
+            class="continue-btn"
+            id="continueBtn7"
+          >
+            Continue →
+          </button>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STEP 7 (progress): PAYMENT -->
+    <section class="quote-step form-step" id="step-8" style="display:none;">
+      <div class="form-card payment-card">
+
+        <!-- HEADER -->
+        <div class="form-card-header">
+          <div class="vessel-icon">
+            <span>💳</span>
+          </div>
+
+          <div>
+            <h3 class="vessel-title">Complete Your Payment</h3>
+            <p class="form-card-sub">
+              Please select how you would like to pay for your policy.
+            </p>
+          </div>
+        </div>
+
+
+        <!-- PREMIUM SUMMARY -->
+        <div class="premium-panel payment-premium-panel">
+
+          <div class="premium-main">
+            <span class="premium-label">ANNUAL PREMIUM</span>
+            <strong class="premium-amount">$2,148.89</strong>
+            <span class="premium-note">Total premium payable</span>
+          </div>
+
+          <div class="premium-breakdown">
+
+            <div class="premium-breakdown-title">
+              Insurance Premium Breakdown
+            </div>
+
+            <div class="premium-line">
+              <span>Total Base Premium</span>
+              <strong>$1,746.36</strong>
+            </div>
+
+            <div class="premium-line">
+              <span>GST</span>
+              <strong>$174.64</strong>
+            </div>
+
+            <div class="premium-line">
+              <span>Stamp Duty</span>
+              <strong>$172.89</strong>
+            </div>
+
+            <div class="premium-line">
+              <span>Administration Fee</span>
+              <strong>$50.00</strong>
+            </div>
+
+            <div class="premium-line">
+              <span>Fee GST</span>
+              <strong>$5.00</strong>
+            </div>
+
+            <div class="premium-line premium-total">
+              <span>Total Premium Payable</span>
+              <strong>$2,148.89</strong>
+            </div>
+
+            <div class="premium-line">
+              <span>Pay in 10 Instalments</span>
+              <strong>$232.12</strong>
+            </div>
+
+          </div>
+        </div>
+
+
+        <!-- PAYMENT METHOD SELECTION -->
+        <div id="paymentMethodSelection">
+
+          <p class="subsection-label">How Would You Like to Pay?</p>
+
+          <div class="payment-method-grid">
+
+            <button
+              type="button"
+              class="payment-method-option"
+              data-payment-method="card"
+            >
+              <span class="payment-method-icon">💳</span>
+
+              <span class="payment-method-copy">
+                <strong>Credit / Debit Card</strong>
+                <small>Pay securely using your card</small>
+              </span>
+            </button>
+
+
+            <button
+              type="button"
+              class="payment-method-option"
+              data-payment-method="stripe"
+            >
+              <span class="payment-method-icon">S</span>
+
+              <span class="payment-method-copy">
+                <strong>Stripe</strong>
+                <small>Pay securely through Stripe</small>
+              </span>
+            </button>
+
+
+            <button
+              type="button"
+              class="payment-method-option"
+              data-payment-method="afterpay"
+            >
+              <span class="payment-method-icon">4</span>
+
+              <span class="payment-method-copy">
+                <strong>Afterpay</strong>
+                <small>Pay in 4 instalments</small>
+              </span>
+            </button>
+
+          </div>
+
+
+          <div class="payment-selection-actions">
+
+            <button
+              type="button"
+              class="back-btn"
+              id="backBtn8"
+            >
+              ← Back
+            </button>
+
+            <button
+              type="button"
+              class="continue-btn"
+              id="continueToPaymentBtn"
+              disabled
+            >
+              Continue to Payment →
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- PAYMENT ENTRY -->
+        <div
+          id="paymentEntrySection"
+          class="payment-entry-section"
+          style="display:none;"
+        >
+
+          <p class="subsection-label">Payment Details</p>
+
+
+          <div class="payment-entry-grid">
+
+            <!-- CARD TYPE -->
+            <div class="additional-field">
+
+              <label for="paymentCardType">
+                Card Type <span class="required">*</span>
+              </label>
+
+              <select id="paymentCardType">
+
+                <option value="" disabled selected>Select</option>
+
+                <option value="visa-debit">
+                  Visa Debit
+                </option>
+
+                <option value="visa-credit">
+                  Visa Credit
+                </option>
+
+                <option value="mastercard-debit">
+                  MasterCard Debit
+                </option>
+
+                <option value="mastercard-credit">
+                  MasterCard Credit
+                </option>
+
+                <option value="mastercard-international">
+                  MasterCard International
+                </option>
+
+                <option value="amex">
+                  American Express
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <!-- CARDHOLDER NAME -->
+            <div class="additional-field">
+
+              <label for="paymentCardholderName">
+                Cardholder Name <span class="required">*</span>
+              </label>
+
+              <input
+                type="text"
+                id="paymentCardholderName"
+                placeholder="Name on card"
+              >
+
+            </div>
+
+
+            <!-- CARD NUMBER -->
+            <div class="additional-field additional-field-full">
+
+              <label for="paymentCardNumber">
+                Card Number <span class="required">*</span>
+              </label>
+
+              <input
+                type="text"
+                id="paymentCardNumber"
+                inputmode="numeric"
+                autocomplete="cc-number"
+                placeholder="0000 0000 0000 0000"
+              >
+
+            </div>
+
+
+            <!-- EXPIRY MONTH -->
+            <div class="additional-field">
+
+              <label for="paymentExpiryMonth">
+                Expiry Month <span class="required">*</span>
+              </label>
+
+              <select id="paymentExpiryMonth">
+
+                <option value="" disabled selected>Month</option>
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+
+              </select>
+
+            </div>
+
+
+            <!-- EXPIRY YEAR -->
+            <div class="additional-field">
+
+              <label for="paymentExpiryYear">
+                Expiry Year <span class="required">*</span>
+              </label>
+
+              <select id="paymentExpiryYear">
+
+                <option value="" disabled selected>Year</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+                <option value="2030">2030</option>
+                <option value="2031">2031</option>
+                <option value="2032">2032</option>
+                <option value="2033">2033</option>
+                <option value="2034">2034</option>
+                <option value="2035">2035</option>
+                <option value="2036">2036</option>
+
+              </select>
+
+            </div>
+
+
+            <!-- CCV -->
+            <div class="additional-field payment-ccv-field">
+
+              <label for="paymentCCV">
+                CCV <span class="required">*</span>
+              </label>
+
+              <input
+                type="text"
+                id="paymentCCV"
+                inputmode="numeric"
+                autocomplete="cc-csc"
+                maxlength="4"
+                placeholder="CCV"
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- PAYMENT ACTIONS -->
+          <div class="payment-entry-actions">
+
+            <button
+              type="button"
+              class="back-btn"
+              id="paymentEntryBackBtn"
+            >
+              ← Back
+            </button>
+
+
+            <div class="payment-entry-actions-right">
+
+              <button
+                type="button"
+                class="payment-secondary-btn"
+                id="requestPaymentLinkBtn"
+              >
+                Request Payment Link
+              </button>
+
+
+              <button
+                type="button"
+                class="payment-cancel-btn"
+                id="cancelPaymentBtn"
+              >
+                Cancel Payment
+              </button>
+
+
+              <button
+                type="button"
+                class="payment-pay-btn"
+                id="payNowBtn"
+              >
+                Pay Now
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="important-footer" id="importantFooter" style="display:none;">
+    <div class="footer-inner">
+      <span class="footer-icon">🛈</span>
+      <div>
+        <p class="footer-title">Important Information</p>
+        <p class="footer-text">Quote and Policy Wording. Coverage under this insurance policy is subject to the terms, conditions, exclusions and limits described in the Product Disclosure Statement and Policy Wording. This information is general in nature and does not take into account your personal circumstances. Please ensure you read the Product Disclosure Statement carefully before purchasing this policy.</p>
+      </div>
+    </div>
+    <div class="footer-logo">
+      <img src="assets/logo/coast-logo.png" alt="Coast Insurance logo">
+    </div>
+  </footer>
+
+  <script src="js/jet-ski.js"></script>
+</body>
+</html>
