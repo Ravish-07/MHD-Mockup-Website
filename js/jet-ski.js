@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentSectionNum = 1;    // maps to section id="step-N"
   let referralRequired = false;
 
-const DEV_BYPASS_VALIDATION = false;
+const DEV_BYPASS_VALIDATION = true;
 
   const quoteState = {
     importantInfo: {},
