@@ -2495,7 +2495,10 @@ declineCloseBtn.addEventListener('click', exitDeclinedQuote);
 
     const isFormStep = sectionNum >= 2; // section 1 = intro, no chrome
     progressBar.style.display = isFormStep ? 'block' : 'none';
-    importantFooter.style.display = isFormStep ? 'flex' : 'none';
+    if (importantFooter) {
+      importantFooter.style.display =
+        isFormStep ? 'flex' : 'none';
+    }
 
     if (isFormStep) {
       const progressStepNum = sectionNum - 1; // OFFSET FIX: intro doesn't count
@@ -2539,6 +2542,13 @@ document
   });
 
 document.getElementById('getStartedBtn').addEventListener('click', () => goToSection(2));
+
+document
+  .getElementById('backBtn2')
+  .addEventListener(
+    'click',
+    () => goToSection(1)
+  );
 
 document.getElementById('continueStep2Btn').addEventListener('click', () => {
 
