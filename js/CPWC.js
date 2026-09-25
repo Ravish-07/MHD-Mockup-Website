@@ -1579,24 +1579,10 @@ Other
       let inputHtml = '';
 
       if (field.type === 'location') {
-        inputHtml = `
-          <div class="location-input-group">
-            <input
-              type="text"
-              id="locationAddress"
-              data-vessel-field="locationAddress"
-              placeholder="Start typing address..."
-            >
-
-            <select
-              id="location"
-              data-vessel-field="location"
-              class="location-select"
-            >
-              ${createSelectOptions(locationOptions)}
-            </select>
-          </div>
-        `;
+        inputHtml = addressHtml(
+          'locationAddress',
+          quoteState.vesselDetails
+        );
       } else if (field.type === 'select') {
         inputHtml = `
           <select
@@ -1782,7 +1768,193 @@ Other
         element.addEventListener('input', saveValue);
         element.addEventListener('change', saveValue);
       });
-  }
+
+    bindAddress(
+      list,
+      quoteState.vesselDetails,
+      'locationAddress',
+      checkStep3Complete
+    );
+}
+  
+const STATES = [
+  'ACT', 'NSW', 'NT', 'QLD',
+  'SA', 'TAS', 'VIC', 'WA'
+];
+
+function extractPostcode(text) {
+  const match = String(text || '').match(/\b\d{4}\b/);
+  return match ? match[0] : '';
+}
+
+function composeAddress(parts) {
+  return [
+    parts.street,
+    [parts.suburb, parts.state, parts.postcode]
+      .filter(Boolean)
+      .join(' ')
+  ]
+    .filter(Boolean)
+    .join(', ');
+}
+
+function addressHtml(
+  key,
+  store,
+  placeholder = 'Start typing address...'
+) {
+  const manual = !!store[`${key}Manual`];
+  const parts = store[`${key}Parts`] || {};
+
+  return `
+    <div class="address-field" data-address="${key}">
+      <div
+        class="address-lookup-wrap"
+        style="${manual ? 'display:none;' : ''}"
+      >
+        <input
+          type="text"
+          data-addr-lookup
+          autocomplete="off"
+          placeholder="${placeholder}"
+          value="${manual ? '' : (store[key] || '')}"
+        >
+      </div>
+
+      <div
+        class="address-manual"
+        style="${manual ? '' : 'display:none;'}"
+      >
+        <input
+          type="text"
+          data-addr-part="street"
+          placeholder="Street address"
+          value="${parts.street || ''}"
+        >
+
+        <input
+          type="text"
+          data-addr-part="suburb"
+          placeholder="Suburb"
+          value="${parts.suburb || ''}"
+        >
+
+        <select data-addr-part="state">
+          <option value="" disabled ${parts.state ? '' : 'selected'}>
+            State
+          </option>
+
+          ${STATES.map(state => `
+            <option
+              value="${state}"
+              ${parts.state === state ? 'selected' : ''}
+            >
+              ${state}
+            </option>
+          `).join('')}
+        </select>
+
+        <input
+          type="text"
+          data-addr-part="postcode"
+          inputmode="numeric"
+          maxlength="4"
+          placeholder="Postcode"
+          value="${parts.postcode || ''}"
+        >
+      </div>
+
+      <button
+        type="button"
+        class="link-btn"
+        data-addr-toggle
+      >
+        ${manual
+          ? 'Search for an address instead'
+          : 'Enter address manually'}
+      </button>
+    </div>
+  `;
+}
+
+function bindAddress(container, store, key, onChange) {
+  const wrapper =
+    container.querySelector(`[data-address="${key}"]`);
+
+  if (!wrapper) return;
+
+  const lookup =
+    wrapper.querySelector('[data-addr-lookup]');
+
+  lookup.addEventListener('input', () => {
+    store[key] = lookup.value;
+    store[`${key}Postcode`] =
+      extractPostcode(lookup.value);
+
+    if (onChange) onChange();
+  });
+
+  wrapper
+    .querySelectorAll('[data-addr-part]')
+    .forEach(field => {
+      const updateManualAddress = () => {
+        const parts =
+          store[`${key}Parts`] ||
+          (store[`${key}Parts`] = {});
+
+        parts[field.dataset.addrPart] =
+          field.value;
+
+        store[key] = composeAddress(parts);
+        store[`${key}Postcode`] =
+          parts.postcode || '';
+
+        if (onChange) onChange();
+      };
+
+      field.addEventListener('input', updateManualAddress);
+      field.addEventListener('change', updateManualAddress);
+    });
+
+  wrapper
+    .querySelector('[data-addr-toggle]')
+    .addEventListener('click', event => {
+      const button = event.currentTarget;
+      const manual = !store[`${key}Manual`];
+
+      store[`${key}Manual`] = manual;
+
+      wrapper
+        .querySelector('.address-lookup-wrap')
+        .style.display = manual ? 'none' : '';
+
+      wrapper
+        .querySelector('.address-manual')
+        .style.display = manual ? '' : 'none';
+
+      button.textContent =
+        manual
+          ? 'Search for an address instead'
+          : 'Enter address manually';
+
+      if (manual) {
+        const parts =
+          store[`${key}Parts`] ||
+          (store[`${key}Parts`] = {});
+
+        store[key] = composeAddress(parts);
+        store[`${key}Postcode`] =
+          parts.postcode || '';
+      } else {
+        store[key] = lookup.value;
+        store[`${key}Postcode`] =
+          extractPostcode(lookup.value);
+      }
+
+      if (onChange) onChange();
+    });
+}
+
 
   function formatCurrencyInput(input) {
     const digits =
@@ -1910,7 +2082,6 @@ Other
       'totalSumInsured',
       'storageMethod',
       'locationAddress',
-      'location',
       'layUpMonths',
       'liabilityLimit',
       'waterSkiing',
@@ -2765,7 +2936,74 @@ const additionalBoatFields = [
   }
 ];
 
+
 function createAdditionalBoatInput(field) {
+
+  // LOCATION ADDRESS
+  if (field.id === 'locationAddress') {
+    return `
+      <div class="address-field" data-additional-address>
+
+        <div class="address-lookup-wrap">
+          <input
+            type="text"
+            data-additional-address-lookup
+            autocomplete="off"
+            placeholder="Start typing address..."
+          >
+        </div>
+
+        <div
+          class="address-manual"
+          data-additional-address-manual
+          style="display:none;"
+        >
+          <input
+            type="text"
+            data-additional-address-part="street"
+            placeholder="Street address"
+          >
+
+          <input
+            type="text"
+            data-additional-address-part="suburb"
+            placeholder="Suburb"
+          >
+
+          <select data-additional-address-part="state">
+            <option value="" disabled selected>
+              State
+            </option>
+
+            ${STATES.map(state => `
+              <option value="${state}">
+                ${state}
+              </option>
+            `).join('')}
+          </select>
+
+          <input
+            type="text"
+            data-additional-address-part="postcode"
+            inputmode="numeric"
+            maxlength="4"
+            placeholder="Postcode"
+          >
+        </div>
+
+        <button
+          type="button"
+          class="link-btn"
+          data-additional-address-toggle
+        >
+          Enter address manually
+        </button>
+
+      </div>
+    `;
+  }
+
+  // SELECT
   if (field.type === 'select') {
     return `
       <select
@@ -2776,6 +3014,7 @@ function createAdditionalBoatInput(field) {
     `;
   }
 
+  // LENGTH
   if (field.type === 'length') {
     return `
       <div class="length-input-group">
@@ -2806,6 +3045,7 @@ function createAdditionalBoatInput(field) {
     `;
   }
 
+  // STANDARD / CURRENCY INPUT
   const inputType =
     field.type === 'currency'
       ? 'text'
@@ -2831,6 +3071,7 @@ function createAdditionalBoatInput(field) {
     >
   `;
 }
+
 
 function addAdditionalBoat() {
   additionalBoatCount++;
@@ -3260,6 +3501,12 @@ function updateAdditionalBoatsState() {
       const boat = {
         hasDifferentSkipper:
           card.dataset.differentSkipper || '',
+
+        locationAddress:
+          card.dataset.locationAddress || '',
+
+        locationAddressPostcode:
+          card.dataset.locationAddressPostcode || '',
 
         skippers: []
       };
@@ -3848,6 +4095,46 @@ const additionalInterestedParty =
 let insuredNameManuallyEdited = false;
 let postalAddressManuallyEdited = false;
 
+
+function convertCustomerAddress(
+  input,
+  key,
+  placeholder
+) {
+  const host = input.parentElement;
+
+  input.style.display = 'none';
+
+  host.insertAdjacentHTML(
+    'beforeend',
+    addressHtml(
+      key,
+      quoteState.additionalInformation,
+      placeholder
+    )
+  );
+
+  bindAddress(
+    host,
+    quoteState.additionalInformation,
+    key,
+    checkStep7Complete
+  );
+}
+
+convertCustomerAddress(
+  additionalResidentialAddress,
+  'residentialAddress',
+  'Start typing address...'
+);
+
+convertCustomerAddress(
+  additionalPostalAddress,
+  'postalAddress',
+  'Start typing address...'
+);
+
+
 function updateAutomaticInsuredName() {
   if (insuredNameManuallyEdited) {
     return;
@@ -3863,19 +4150,6 @@ function updateAutomaticInsuredName() {
 
   quoteState.additionalInformation
     .insuredName = fullName;
-}
-
-function updateAutomaticPostalAddress() {
-  if (postalAddressManuallyEdited) {
-    return;
-  }
-
-  additionalPostalAddress.value =
-    additionalResidentialAddress.value;
-
-  quoteState.additionalInformation
-    .postalAddress =
-      additionalResidentialAddress.value;
 }
 
 additionalFirstName.addEventListener(
@@ -3941,29 +4215,6 @@ additionalPhone.addEventListener(
   }
 );
 
-additionalResidentialAddress
-  .addEventListener(
-    'input',
-    () => {
-      quoteState.additionalInformation
-        .residentialAddress =
-          additionalResidentialAddress.value;
-
-      updateAutomaticPostalAddress();
-      checkStep7Complete();
-    }
-  );
-
-additionalPostalAddress.addEventListener(
-  'input',
-  () => {
-    postalAddressManuallyEdited = true;
-
-    quoteState.additionalInformation
-      .postalAddress =
-        additionalPostalAddress.value;
-  }
-);
 
 additionalInterestedParty
   .addEventListener(
@@ -4572,7 +4823,64 @@ const paymentCCV =
   document.getElementById(
     'paymentCCV'
   );
+const PAYMENT_BASE_AMOUNT = 1570.34;
 
+function getCardSurchargeRate() {
+  const cardType =
+    quoteState.payment.cardType;
+
+  if (cardType === 'Visa') return 0.01;
+  if (cardType === 'Mastercard') return 0.01;
+  if (cardType === 'American Express') return 0.015;
+
+  return 0;
+}
+
+function formatPaymentMoney(amount) {
+  return Number(amount || 0).toLocaleString(
+    'en-AU',
+    {
+      style: 'currency',
+      currency: 'AUD',
+      minimumFractionDigits: 2
+    }
+  );
+}
+
+function updatePaymentTotals() {
+  const amountDue =
+    PAYMENT_BASE_AMOUNT;
+
+  const surcharge =
+    amountDue * getCardSurchargeRate();
+
+  const totalPaid =
+    amountDue + surcharge;
+
+  document.getElementById(
+    'paymentAmountDue'
+  ).textContent =
+    formatPaymentMoney(amountDue);
+
+  document.getElementById(
+    'paymentSurcharge'
+  ).textContent =
+    formatPaymentMoney(surcharge);
+
+  document.getElementById(
+    'paymentTotalPaid'
+  ).textContent =
+    formatPaymentMoney(totalPaid);
+
+  quoteState.payment.amountDue =
+    amountDue;
+
+  quoteState.payment.surcharge =
+    surcharge;
+
+  quoteState.payment.totalPaid =
+    totalPaid;
+}
 function checkPaymentComplete() {
   if (DEV_BYPASS_VALIDATION) {
     payNowBtn.disabled = false;
@@ -4604,6 +4912,8 @@ paymentCardType.addEventListener(
     quoteState.payment.cardType =
       paymentCardType.value;
 
+    updatePaymentTotals();
+    updatePaymentTotals();
     checkPaymentComplete();
   }
 );
@@ -4709,19 +5019,241 @@ document
     });
   });
 
+function populatePaymentConfirmation() {
+  const info =
+    quoteState.additionalInformation;
+
+  const payment =
+    quoteState.payment;
+
+  const startDate =
+    document.getElementById(
+      'policyStartDate'
+    ).value;
+
+  const endDate =
+    document.getElementById(
+      'policyEndDate'
+    ).value;
+
+  const quoteNumber =
+    document.querySelector(
+      '.cpwc-quote-number'
+    )?.textContent
+      ?.replace('Quote Number:', '')
+      .trim() ||
+    'Not provided';
+
+
+  document.getElementById(
+    'confirmationEmailNote'
+  ).textContent =
+    info.email
+      ? `Confirmation documents will be sent to ${info.email}.`
+      : 'Your confirmation documents are ready.';
+
+
+  document.getElementById(
+    'policySummaryList'
+  ).innerHTML = `
+
+    <div class="cpwc-summary-row">
+
+      <span class="cpwc-summary-label">
+        Policy
+      </span>
+
+      <span class="cpwc-summary-details">
+        Comprehensive Pleasure Craft
+      </span>
+
+    </div>
+
+    <div class="cpwc-summary-row">
+
+      <span class="cpwc-summary-label">
+        Quote Number
+      </span>
+
+      <span class="cpwc-summary-details">
+        ${quoteNumber}
+      </span>
+
+    </div>
+
+    <div class="cpwc-summary-row">
+
+      <span class="cpwc-summary-label">
+        Insured Name
+      </span>
+
+      <span class="cpwc-summary-details">
+        ${info.insuredName || 'Not provided'}
+      </span>
+
+    </div>
+
+    <div class="cpwc-summary-row">
+
+      <span class="cpwc-summary-label">
+        Period of Insurance
+      </span>
+
+      <span class="cpwc-summary-details">
+        ${formatQuoteDate(startDate)}
+        –
+        ${formatQuoteDate(endDate)}
+      </span>
+
+    </div>
+  `;
+
+
+  document.getElementById(
+    'paymentSummaryList'
+  ).innerHTML = `
+
+    <div class="cpwc-summary-row">
+
+      <span class="cpwc-summary-label">
+        Payment Method
+      </span>
+
+      <span class="cpwc-summary-details">
+        ${payment.cardType || 'Card'}
+      </span>
+
+    </div>
+
+    <div class="cpwc-summary-row">
+
+      <span class="cpwc-summary-label">
+        Amount Due
+      </span>
+
+      <span class="cpwc-summary-details">
+        ${formatPaymentMoney(
+          payment.amountDue
+        )}
+      </span>
+
+    </div>
+
+    <div class="cpwc-summary-row">
+
+      <span class="cpwc-summary-label">
+        Card Surcharge
+      </span>
+
+      <span class="cpwc-summary-details">
+        ${formatPaymentMoney(
+          payment.surcharge
+        )}
+      </span>
+
+    </div>
+
+    <div class="cpwc-summary-row">
+
+      <span class="cpwc-summary-label">
+        Total Paid
+      </span>
+
+      <span class="cpwc-summary-details">
+        ${formatPaymentMoney(
+          payment.totalPaid
+        )}
+      </span>
+
+    </div>
+  `;
+}
+
+
+function showPaymentConfirmation() {
+  updatePaymentTotals();
+  populatePaymentConfirmation();
+
+  hideAllSections();
+
+  document.getElementById(
+    'step-9'
+  ).style.display = 'block';
+
+  progressBar.style.display =
+    'none';
+
+  window.scrollTo(0, 0);
+}
+
+
+function showConfirmationMessage(message) {
+  const toast =
+    document.getElementById(
+      'confirmationToast'
+    );
+
+  toast.textContent =
+    message;
+
+  toast.style.display =
+    'block';
+
+  clearTimeout(
+    showConfirmationMessage.timeout
+  );
+
+  showConfirmationMessage.timeout =
+    setTimeout(() => {
+      toast.style.display =
+        'none';
+    }, 4000);
+}
+
 // ---------- PAY NOW ----------
 
 payNowBtn.addEventListener(
   'click',
   () => {
-    console.log(
-      'CPWC payment submitted',
-      quoteState
-    );
+    showPaymentConfirmation();
   }
 );
 
 checkPaymentComplete();
+
+document
+  .getElementById('homeBtn')
+  .addEventListener(
+    'click',
+    () => {
+      window.location.href =
+        'products.html';
+    }
+  );
+
+
+document
+  .getElementById('receiptBtn')
+  .addEventListener(
+    'click',
+    () => {
+      showConfirmationMessage(
+        'Your receipt has been emailed to you.'
+      );
+    }
+  );
+
+
+document
+  .getElementById('certificateBtn')
+  .addEventListener(
+    'click',
+    () => {
+      showConfirmationMessage(
+        'Your Certificate of Currency has been emailed to you.'
+      );
+    }
+  );
 
 function updateProgressBar(activeStep) {
   document
@@ -4741,7 +5273,46 @@ function updateProgressBar(activeStep) {
       );
     });
 }
+// ---------- CLICKABLE PROGRESS BAR ----------
 
+const progressPageMap = {
+  1: showImportantInformation,
+  2: showVesselDetails,
+  3: showExperienceHistory,
+  4: showAdditionalBoats,
+  5: showYourQuote,
+  6: showYourDetails,
+  7: showPaymentPage
+};
+
+progressBar
+  .querySelectorAll('.progress-step')
+  .forEach(step => {
+
+    step.style.cursor = 'pointer';
+
+    step.addEventListener('click', () => {
+      const targetStep =
+        Number(step.dataset.step);
+
+      const activeStep =
+        Number(
+          progressBar.querySelector(
+            '.progress-step.active'
+          )?.dataset.step || 1
+        );
+
+      if (DEV_BYPASS_VALIDATION) {
+        progressPageMap[targetStep]?.();
+        return;
+      }
+
+      if (targetStep <= activeStep) {
+        progressPageMap[targetStep]?.();
+      }
+    });
+
+  });
 function hideAllSections() {
   document
     .querySelectorAll('.quote-step')

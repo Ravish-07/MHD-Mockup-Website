@@ -3245,3 +3245,353 @@ body.modal-open {
   box-sizing: border-box;
 }
 
+.logo-block {
+  text-decoration: none;
+  cursor: pointer;
+}
+/* ===== ADDRESS LOOKUP / MANUAL ENTRY ===== */
+
+.address-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+}
+
+.address-lookup-wrap {
+  width: 100%;
+}
+
+.address-lookup-wrap input,
+.address-manual input,
+.address-manual select {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #1f2937;
+  background: #ffffff;
+  outline: none;
+}
+
+.address-lookup-wrap input:focus,
+.address-manual input:focus,
+.address-manual select:focus {
+  border-color: #0f766e;
+}
+
+.address-manual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.address-manual input[data-addr-part="street"] {
+  grid-column: 1 / -1;
+}
+
+.link-btn {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: #08788b;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.link-btn:hover {
+  color: #09285c;
+}
+
+.link-btn:hover {
+  color: #09285c;
+}
+
+@media (max-width: 720px) {
+  .address-manual {
+    grid-template-columns: 1fr;
+  }
+
+  .address-manual input[data-addr-part="street"] {
+    grid-column: auto;
+  }
+}
+/* Keep address labels top aligned when manual fields expand */
+.field-row:has(.address-field) {
+  align-items: flex-start;
+}
+
+.field-row:has(.address-field) .field-label {
+  padding-top: 8px;
+}
+
+/* ===== EXPERIENCE SKIPPER ACCENT BOX ===== */
+
+#step-4 .skipper-table {
+  margin-top: 10px;
+  padding: 14px 16px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fafbfc;
+}
+
+/* ===== YOUR DETAILS: VESSELS + TRAILERS POLISH ===== */
+
+/* Vessel cards */
+#additionalVesselDetails .additional-vessel-card {
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fafbfc;
+}
+
+#additionalVesselDetails .additional-vessel-heading {
+  margin: 0 0 12px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #09285c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Keep identification fields in one row */
+#additionalVesselDetails .additional-vessel-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* Trailer accent box */
+.trailer-accent-box {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fafbfc;
+}
+
+.trailer-accent-box .additional-trailer-question {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+/* Dynamic trailer rows */
+#additionalTrailerRows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.additional-trailer-row {
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.additional-trailer-heading {
+  margin-bottom: 8px;
+  color: #09285c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.additional-trailer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 32px;
+  gap: 12px;
+  align-items: end;
+}
+
+#addAdditionalTrailerBtn {
+  margin-top: 10px;
+}
+
+@media (max-width: 850px) {
+  #additionalVesselDetails .additional-vessel-grid,
+  .additional-trailer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Force trailer question accent box */
+.additional-section.trailer-accent-box {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fafbfc;
+}
+
+.additional-section.trailer-accent-box
+.additional-trailer-question {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+
+/* ===== PAYMENT TOTAL ACCENT BOX ===== */
+
+.payment-total-strip {
+  margin: 14px 0 0;
+  padding: 12px 16px;
+  background: #f0fbfd;
+  border: 1px solid #c8e4ec;
+  border-radius: 10px;
+}
+
+.payment-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 4px 0;
+  color: #374151;
+  font-size: 13px;
+}
+
+.payment-total-row-muted {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.payment-total-row-final {
+  margin-top: 6px;
+  padding-top: 9px;
+  border-top: 1px dashed #b9e4ec;
+  color: #09285c;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.payment-total-row-final strong {
+  color: #0f766e;
+}
+
+
+/* ===== PAYMENT CONFIRMATION ===== */
+
+.confirmation-card {
+  text-align: left;
+}
+
+.confirmation-hero {
+  padding: 10px 0 22px;
+  text-align: center;
+}
+
+.confirmation-tick {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: #ecfdf5;
+  color: #0f766e;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.confirmation-hero h2 {
+  margin: 0 0 6px;
+  color: #09285c;
+  font-size: 20px;
+}
+
+.confirmation-hero p {
+  margin: 5px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.confirmation-email-note {
+  max-width: 500px;
+  margin: 10px auto 0 !important;
+}
+
+
+/* POLICY + PAYMENT SUMMARY */
+
+.confirmation-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.confirmation-list {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 18px 10px;
+}
+
+.confirmation-list .summary-row {
+  padding: 8px 0;
+}
+
+.confirmation-list .summary-label {
+  flex: 0 0 42%;
+}
+
+.confirmation-list .summary-value {
+  min-width: 0;
+  text-align: right;
+}
+
+
+/* CONFIRMATION BUTTONS */
+
+.confirmation-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+
+/* EMAIL / RECEIPT MESSAGE */
+
+.confirmation-toast {
+  width: fit-content;
+  max-width: 100%;
+  margin: 14px auto 0;
+  padding: 10px 16px;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 13px;
+  text-align: center;
+}
+
+.confirmation-actions + .confirmation-toast {
+  display: block;
+  clear: both;
+}
+
+/* MOBILE */
+
+@media (max-width: 720px) {
+  .confirmation-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .confirmation-actions {
+    flex-direction: column;
+  }
+
+  .confirmation-actions button {
+    width: 100%;
+  }
+}

@@ -429,18 +429,15 @@ input[data-currency="true"]::placeholder {
 }
 
 .cpwc-skipper-row textarea {
-  min-height: 70px;
+  height: 34px;
+  min-height: 34px;
+  max-height: 180px;
   resize: vertical;
+  overflow-y: auto;
+  line-height: 1.3;
 }
 
-/* Extend the first skipper's free-text box to the standard right edge */
-.cpwc-skipper-row textarea + span {
-  display: none;
-}
 
-.cpwc-skipper-row textarea:has(+ span) {
-  width: calc(100% + 40px);
-}
 
 /* ===== CPWC ADDITIONAL BOATS ===== */
 
@@ -1083,3 +1080,201 @@ input[data-currency="true"]::placeholder {
   color: #ffffff;
   cursor: not-allowed;
 }
+
+.logo-block {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* ===== ADDRESS LOOKUP / MANUAL ENTRY ===== */
+
+.address-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+}
+
+.address-lookup-wrap {
+  width: 100%;
+}
+
+.address-lookup-wrap input,
+.address-manual input,
+.address-manual select {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #1f2937;
+  background: #ffffff;
+  outline: none;
+}
+
+.address-lookup-wrap input:focus,
+.address-manual input:focus,
+.address-manual select:focus {
+  border-color: #0f766e;
+}
+
+.address-manual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.address-manual input[data-addr-part="street"],
+.address-manual input[data-additional-address-part="street"] {
+  grid-column: 1 / -1;
+}
+
+.link-btn {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: #08788b;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.link-btn:hover {
+  color: #09285c;
+}
+
+/* Keep label fixed at top when manual address expands */
+.field-row:has(.address-field) {
+  align-items: flex-start;
+}
+
+.field-row:has(.address-field) .field-label {
+  padding-top: 8px;
+}
+
+@media (max-width: 720px) {
+  .address-manual {
+    grid-template-columns: 1fr;
+  }
+
+  .address-manual input[data-addr-part="street"],
+  .address-manual input[data-additional-address-part="street"] {
+    grid-column: auto;
+  }
+}
+/* ===== EXPERIENCE SKIPPER ACCENT BOX ===== */
+
+.experience-card .skipper-table {
+  margin-top: 10px;
+  padding: 14px 16px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fafbfc;
+}
+
+/* ===== YOUR DETAILS: VESSELS + TRAILERS POLISH ===== */
+
+/* Vessel identification cards */
+#additionalVesselDetails .additional-vessel-card {
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fafbfc;
+  overflow: visible;
+}
+
+#additionalVesselDetails .additional-vessel-heading {
+  margin: 0 0 12px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #09285c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Remove subsection separation inside vessel card */
+#additionalVesselDetails .subsection-label {
+  margin: 10px 0 6px;
+}
+
+/* Hull fields: one line */
+#additionalVesselDetails .additional-vessel-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  padding: 0;
+}
+
+/* Hull currently has 3 fields, so they spread evenly */
+#additionalVesselDetails .subsection-label:first-of-type + .additional-vessel-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Trailer accent box */
+.trailer-accent-box {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fafbfc;
+}
+
+.trailer-accent-box .additional-trailer-question {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+/* Trailer rows */
+#additionalTrailerRows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#additionalTrailerRows .additional-trailer-row {
+  padding: 10px 0 0;
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  border-radius: 0;
+  background: transparent;
+}
+
+#additionalTrailerRows .additional-vessel-heading {
+  margin-bottom: 8px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #09285c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+#additionalTrailerRows .additional-vessel-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 32px;
+  gap: 12px;
+  padding: 0;
+  align-items: end;
+}
+
+#addAdditionalTrailerBtn {
+  margin-top: 10px;
+}
+
+@media (max-width: 850px) {
+  #additionalVesselDetails .additional-vessel-grid,
+  #additionalVesselDetails
+    .subsection-label:first-of-type
+    + .additional-vessel-grid,
+  #additionalTrailerRows .additional-vessel-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+

@@ -14,13 +14,17 @@
 <body>
 
   <header class="site-header">
-    <div class="logo-block">
+    <a
+      href="products.html"
+      class="logo-block"
+      aria-label="Return to products"
+    >
       <img
         src="assets/logo/coast-logo.png"
         alt="Coast Insurance logo"
         class="logo-img"
       >
-    </div>
+    </a>
   </header>
 
   <!-- PROGRESS BAR -->
@@ -177,15 +181,11 @@
         </div>
 
         <label class="intro-agreement-box">
-          <input
-            type="checkbox"
-            id="dutyAgreement"
-          >
-
+          <input type="checkbox" id="dutyAgreement">
           <span>
-            By continuing, you understand this Duty and you have read our
-            Product Disclosure Statement (PDS) and Financial Services Guide
-            (FSG).
+            By continuing, you acknowledge that you have read and understood this Duty,
+            the <a href="#" id="pdsLinkIntro" target="_blank" rel="noopener noreferrer">Product Disclosure Statement (PDS)</a> and
+            <a href="https://secure.ermonline.com.au/financialservices/gateway/intranet_gateway.cfm?eu=TU-5538AF79-C52E-67BF-1B0CF805C7125FDC-5538AF7A-E34D-4904-A87170AFF3B77ADC" target="_blank" rel="noopener noreferrer">Financial Services Guide (FSG)</a>.
           </span>
         </label>
 
@@ -1148,16 +1148,21 @@
 
         </div>
 
+
         <!-- VESSEL IDENTIFICATION -->
+        <p class="subsection-label">
+          Vessel Identification
+        </p>
+
         <div
-        class="additional-vessel-details"
-        id="additionalVesselDetails"
+          class="additional-vessel-details"
+          id="additionalVesselDetails"
         >
-        <!-- Vessel rows inserted by JavaScript -->
+          <!-- Vessel rows inserted by JavaScript -->
         </div>
 
         <!-- TRAILERS -->
-        <div class="additional-section">
+        <div class="additional-section trailer-accent-box">
 
         <div class="additional-trailer-question">
 
@@ -1615,6 +1620,27 @@
 
         </div>
 
+        <!-- PAYMENT TOTAL -->
+        <div
+          class="payment-total-strip"
+          id="paymentTotalStrip"
+        >
+          <div class="payment-total-row">
+            <span>Amount Due Today</span>
+            <span id="paymentAmountDue">$1,515.35</span>
+          </div>
+
+          <div class="payment-total-row payment-total-row-muted">
+            <span>Card Surcharge</span>
+            <span id="paymentSurcharge">$0.00</span>
+          </div>
+
+          <div class="payment-total-row payment-total-row-final">
+            <span>Total Paid Including Surcharge</span>
+            <strong id="paymentTotalPaid">$1,515.35</strong>
+          </div>
+        </div>
+        
         <!-- PAYMENT ACTIONS -->
         <div class="payment-entry-actions">
 
@@ -1661,6 +1687,106 @@
 
     </div>
     </section>
+
+
+    <!-- PAYMENT CONFIRMATION -->
+    <section
+      class="quote-step form-step"
+      id="step-9"
+      style="display:none;"
+    >
+      <div class="form-card confirmation-card">
+
+        <div class="confirmation-hero">
+
+          <div class="confirmation-tick">
+            <span>✓</span>
+          </div>
+
+          <h2>
+            Your payment has been successfully processed.
+          </h2>
+
+          <div class="review-title-accent"></div>
+
+          <p>
+            Thank you for choosing to insure your vessel with Coast.
+          </p>
+
+          <p
+            class="confirmation-email-note"
+            id="confirmationEmailNote"
+          ></p>
+
+        </div>
+
+        <div class="confirmation-grid">
+
+          <div class="cpwc-quote-panel">
+
+            <div class="cpwc-quote-panel-heading">
+              Policy Summary
+            </div>
+
+            <div
+              class="confirmation-list"
+              id="policySummaryList"
+            ></div>
+
+          </div>
+
+          <div class="cpwc-quote-panel">
+
+            <div class="cpwc-quote-panel-heading">
+              Payment Details
+            </div>
+
+            <div
+              class="confirmation-list"
+              id="paymentSummaryList"
+            ></div>
+
+          </div>
+
+        </div>
+
+        <div class="confirmation-actions">
+
+          <button
+            type="button"
+            class="back-btn"
+            id="homeBtn"
+          >
+            Home
+          </button>
+
+          <button
+            type="button"
+            class="cpwc-email-quote-btn"
+            id="receiptBtn"
+          >
+            Receipt
+          </button>
+
+          <button
+            type="button"
+            class="cpwc-email-quote-btn"
+            id="certificateBtn"
+          >
+            Certificate of Currency
+          </button>
+
+        </div>
+
+        <p
+          class="confirmation-toast"
+          id="confirmationToast"
+          style="display:none;"
+        ></p>
+
+      </div>
+    </section>
+
 
   </main>
 

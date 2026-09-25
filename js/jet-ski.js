@@ -157,6 +157,216 @@ const DEV_BYPASS_VALIDATION = true;
   }
 
 
+
+const STATES = [
+  'ACT',
+  'NSW',
+  'NT',
+  'QLD',
+  'SA',
+  'TAS',
+  'VIC',
+  'WA'
+];
+
+function extractPostcode(text) {
+  const match = String(text || '').match(/\b\d{4}\b/);
+  return match ? match[0] : '';
+}
+
+function composeAddress(parts) {
+  return [
+    parts.street,
+    [parts.suburb, parts.state, parts.postcode]
+      .filter(Boolean)
+      .join(' ')
+  ]
+    .filter(Boolean)
+    .join(', ');
+}
+
+function addressHtml(
+  key,
+  store,
+  placeholder = 'Start typing address...'
+) {
+  const manual = !!store[`${key}Manual`];
+  const parts = store[`${key}Parts`] || {};
+
+  return `
+    <div class="address-field" data-address="${key}">
+
+      <div
+        class="address-lookup-wrap"
+        style="${manual ? 'display:none;' : ''}"
+      >
+        <input
+          type="text"
+          data-addr-lookup
+          autocomplete="off"
+          placeholder="${placeholder}"
+          value="${manual ? '' : (store[key] || '')}"
+        >
+      </div>
+
+      <div
+        class="address-manual"
+        style="${manual ? '' : 'display:none;'}"
+      >
+        <input
+          type="text"
+          data-addr-part="street"
+          placeholder="Street address"
+          value="${parts.street || ''}"
+        >
+
+        <input
+          type="text"
+          data-addr-part="suburb"
+          placeholder="Suburb"
+          value="${parts.suburb || ''}"
+        >
+
+        <select data-addr-part="state">
+          <option
+            value=""
+            disabled
+            ${parts.state ? '' : 'selected'}
+          >
+            State
+          </option>
+
+          ${STATES.map(state => `
+            <option
+              value="${state}"
+              ${parts.state === state ? 'selected' : ''}
+            >
+              ${state}
+            </option>
+          `).join('')}
+        </select>
+
+        <input
+          type="text"
+          data-addr-part="postcode"
+          inputmode="numeric"
+          maxlength="4"
+          placeholder="Postcode"
+          value="${parts.postcode || ''}"
+        >
+      </div>
+
+      <button
+        type="button"
+        class="link-btn"
+        data-addr-toggle
+      >
+        ${
+          manual
+            ? 'Search for an address instead'
+            : 'Enter address manually'
+        }
+      </button>
+
+    </div>
+  `;
+}
+
+function bindAddress(container, store, key, onChange) {
+  const wrapper =
+    container.querySelector(`[data-address="${key}"]`);
+
+  if (!wrapper) return;
+
+  const lookup =
+    wrapper.querySelector('[data-addr-lookup]');
+
+  lookup.addEventListener('input', () => {
+    store[key] = lookup.value;
+    store[`${key}Postcode`] =
+      extractPostcode(lookup.value);
+
+    if (onChange) onChange();
+  });
+
+  wrapper
+    .querySelectorAll('[data-addr-part]')
+    .forEach(field => {
+      const updateManualAddress = () => {
+        const parts =
+          store[`${key}Parts`] ||
+          (store[`${key}Parts`] = {});
+
+        parts[field.dataset.addrPart] =
+          field.value;
+
+        store[key] =
+          composeAddress(parts);
+
+        store[`${key}Postcode`] =
+          parts.postcode || '';
+
+        if (onChange) onChange();
+      };
+
+      field.addEventListener(
+        'input',
+        updateManualAddress
+      );
+
+      field.addEventListener(
+        'change',
+        updateManualAddress
+      );
+    });
+
+  wrapper
+    .querySelector('[data-addr-toggle]')
+    .addEventListener('click', event => {
+      const button = event.currentTarget;
+
+      const manual =
+        !store[`${key}Manual`];
+
+      store[`${key}Manual`] = manual;
+
+      wrapper
+        .querySelector('.address-lookup-wrap')
+        .style.display =
+          manual ? 'none' : '';
+
+      wrapper
+        .querySelector('.address-manual')
+        .style.display =
+          manual ? '' : 'none';
+
+      button.textContent =
+        manual
+          ? 'Search for an address instead'
+          : 'Enter address manually';
+
+      if (manual) {
+        const parts =
+          store[`${key}Parts`] ||
+          (store[`${key}Parts`] = {});
+
+        store[key] =
+          composeAddress(parts);
+
+        store[`${key}Postcode`] =
+          parts.postcode || '';
+      } else {
+        store[key] = lookup.value;
+
+        store[`${key}Postcode`] =
+          extractPostcode(lookup.value);
+      }
+
+      if (onChange) onChange();
+    });
+}
+
+
 function formatCurrencyInput(input) {
   const digits = input.value.replace(/\D/g, '');
 
@@ -261,7 +471,14 @@ function renderVesselFields() {
   list.innerHTML = vesselFields.map(f => {
     let inputHtml = '';
 
-    if (f.type === 'length') {
+    if (f.id === 'locationAddress') {
+      inputHtml = addressHtml(
+        'locationAddress',
+        quoteState.vesselDetails
+      );
+    }
+
+    else if (f.type === 'length') {
       inputHtml = `
         <div class="length-input-group">
           <input
@@ -425,6 +642,13 @@ function renderVesselFields() {
     el.addEventListener('input', saveValue);
     el.addEventListener('change', saveValue);
   });
+
+  bindAddress(
+    list,
+    quoteState.vesselDetails,
+    'locationAddress',
+    checkStep3Complete
+  );
 }
 
 function checkStep3Complete() {
@@ -780,10 +1004,64 @@ function addJetSkiUnit() {
 
     let inputHtml = '';
 
+    if (f.id === 'locationAddress') {
+      inputHtml = `
+        <div class="address-field" data-unit-address>
+          <div class="address-lookup-wrap">
+            <input
+              type="text"
+              data-unit-address-lookup
+              autocomplete="off"
+              placeholder="Start typing address..."
+            >
+          </div>
 
-    // LENGTH
+          <div
+            class="address-manual"
+            data-unit-address-manual
+            style="display:none;"
+          >
+            <input
+              type="text"
+              data-unit-address-part="street"
+              placeholder="Street address"
+            >
 
-    if (f.type === 'length') {
+            <input
+              type="text"
+              data-unit-address-part="suburb"
+              placeholder="Suburb"
+            >
+
+            <select data-unit-address-part="state">
+              <option value="" disabled selected>State</option>
+              ${STATES.map(state =>
+                `<option value="${state}">${state}</option>`
+              ).join('')}
+            </select>
+
+            <input
+              type="text"
+              data-unit-address-part="postcode"
+              inputmode="numeric"
+              maxlength="4"
+              placeholder="Postcode"
+            >
+          </div>
+
+          <button
+            type="button"
+            class="link-btn"
+            data-unit-address-toggle
+          >
+            Enter address manually
+          </button>
+        </div>
+      `;
+    }
+
+    else if (f.type === 'length') {
+
 
       inputHtml = `
         <div class="length-input-group">
@@ -1037,7 +1315,83 @@ function addJetSkiUnit() {
 
   list.appendChild(card);
 
+const unitAddress = card.querySelector('[data-unit-address]');
 
+if (unitAddress) {
+  const lookup =
+    unitAddress.querySelector('[data-unit-address-lookup]');
+
+  const manual =
+    unitAddress.querySelector('[data-unit-address-manual]');
+
+  const toggle =
+    unitAddress.querySelector('[data-unit-address-toggle]');
+
+  const parts = {};
+
+  const saveManualAddress = () => {
+    unitAddress
+      .querySelectorAll('[data-unit-address-part]')
+      .forEach(field => {
+        parts[field.dataset.unitAddressPart] =
+          field.value;
+      });
+
+    card.dataset.locationAddress =
+      composeAddress(parts);
+
+    card.dataset.locationAddressPostcode =
+      parts.postcode || '';
+
+    updateAllUnitsState();
+    checkStep5Complete();
+  };
+
+  lookup.addEventListener('input', () => {
+    card.dataset.locationAddress = lookup.value;
+
+    card.dataset.locationAddressPostcode =
+      extractPostcode(lookup.value);
+
+    updateAllUnitsState();
+    checkStep5Complete();
+  });
+
+  unitAddress
+    .querySelectorAll('[data-unit-address-part]')
+    .forEach(field => {
+      field.addEventListener('input', saveManualAddress);
+      field.addEventListener('change', saveManualAddress);
+    });
+
+  toggle.addEventListener('click', () => {
+    const enteringManually =
+      manual.style.display === 'none';
+
+    manual.style.display =
+      enteringManually ? 'grid' : 'none';
+
+    unitAddress
+      .querySelector('.address-lookup-wrap')
+      .style.display =
+        enteringManually ? 'none' : '';
+
+    toggle.textContent =
+      enteringManually
+        ? 'Search for an address instead'
+        : 'Enter address manually';
+
+    if (enteringManually) {
+      saveManualAddress();
+    } else {
+      card.dataset.locationAddress = lookup.value;
+      card.dataset.locationAddressPostcode =
+        extractPostcode(lookup.value);
+
+      updateAllUnitsState();
+    }
+  });
+}
   // Default measurement unit
 
   const lengthUnit =
@@ -1376,6 +1730,13 @@ function updateAllUnitsState() {
       const data = {
         hasDifferentSkipper:
           card.dataset.differentSkipper || '',
+
+        locationAddress:
+          card.dataset.locationAddress || '',
+
+        locationAddressPostcode:
+          card.dataset.locationAddressPostcode || '',
+
         skippers: []
       };
 
@@ -1895,9 +2256,7 @@ quoteState.additionalInformation = {
   interestedParty: '',
   vessels: [],
   hasTrailer: '',
-  trailerMakeModel: '',
-  trailerYear: '',
-  trailerRegistration: '',
+  trailers: [],
   attachments: []
 };
 
@@ -1916,6 +2275,43 @@ const additionalInterestedParty = document.getElementById('additionalInterestedP
 let insuredNameManuallyEdited = false;
 let postalAddressManuallyEdited = false;
 
+function convertCustomerAddressToManual(
+  input,
+  key,
+  placeholder
+) {
+  const host = input.parentElement;
+
+  input.style.display = 'none';
+
+  host.insertAdjacentHTML(
+    'beforeend',
+    addressHtml(
+      key,
+      quoteState.additionalInformation,
+      placeholder
+    )
+  );
+
+  bindAddress(
+    host,
+    quoteState.additionalInformation,
+    key,
+    checkStep7Complete
+  );
+}
+
+convertCustomerAddressToManual(
+  additionalResidentialAddress,
+  'residentialAddress',
+  'Start typing address...'
+);
+
+convertCustomerAddressToManual(
+  additionalPostalAddress,
+  'postalAddress',
+  'Same as residential address'
+);
 
 // Automatically build Insured Name,
 // but stop overwriting it if the user edits it manually.
@@ -1965,28 +2361,9 @@ additionalPhone.addEventListener('input', () => {
 // Residential address automatically populates Postal Address
 // until the user manually changes Postal Address.
 
-additionalResidentialAddress.addEventListener('input', () => {
-  quoteState.additionalInformation.residentialAddress =
-    additionalResidentialAddress.value;
-
-  if (!postalAddressManuallyEdited) {
-    additionalPostalAddress.value =
-      additionalResidentialAddress.value;
-
-    quoteState.additionalInformation.postalAddress =
-      additionalResidentialAddress.value;
-  }
-
-  checkStep7Complete();
-});
 
 
-additionalPostalAddress.addEventListener('input', () => {
-  postalAddressManuallyEdited = true;
 
-  quoteState.additionalInformation.postalAddress =
-    additionalPostalAddress.value;
-});
 
 
 additionalInterestedParty.addEventListener('input', () => {
@@ -2118,7 +2495,7 @@ function updateAdditionalVesselState() {
 }
 
 
-// ---------- TRAILER ----------
+// ---------- TRAILERS ----------
 
 const additionalHasTrailer =
   document.getElementById('additionalHasTrailer');
@@ -2126,60 +2503,180 @@ const additionalHasTrailer =
 const additionalTrailerDetails =
   document.getElementById('additionalTrailerDetails');
 
-const additionalTrailerMakeModel =
-  document.getElementById('additionalTrailerMakeModel');
+const additionalTrailerRows =
+  document.getElementById('additionalTrailerRows');
 
-const additionalTrailerYear =
-  document.getElementById('additionalTrailerYear');
-
-const additionalTrailerRegistration =
-  document.getElementById('additionalTrailerRegistration');
+const addAdditionalTrailerBtn =
+  document.getElementById('addAdditionalTrailerBtn');
 
 
-additionalHasTrailer.addEventListener('change', () => {
+function addAdditionalTrailerRow() {
 
-  const value = additionalHasTrailer.value;
+  const trailerNumber =
+    additionalTrailerRows.children.length + 1;
 
-  quoteState.additionalInformation.hasTrailer = value;
+  const row =
+    document.createElement('div');
 
-  if (value === 'Yes') {
+  row.className =
+    'additional-trailer-row';
 
-    additionalTrailerDetails.style.display = 'grid';
+  row.innerHTML = `
+    <div class="additional-trailer-heading">
+      Trailer ${trailerNumber}
+    </div>
 
-  } else {
+    <div class="additional-trailer-grid">
 
-    additionalTrailerDetails.style.display = 'none';
+      <div class="additional-field">
+        <label>Trailer Make &amp; Model</label>
 
-    additionalTrailerMakeModel.value = '';
-    additionalTrailerYear.value = '';
-    additionalTrailerRegistration.value = '';
+        <input
+          type="text"
+          data-trailer-field="makeModel"
+        >
+      </div>
 
-    quoteState.additionalInformation.trailerMakeModel = '';
-    quoteState.additionalInformation.trailerYear = '';
-    quoteState.additionalInformation.trailerRegistration = '';
+      <div class="additional-field">
+        <label>Trailer Year Built</label>
+
+        <input
+          type="number"
+          min="1900"
+          max="9999"
+          placeholder="YYYY"
+          data-trailer-field="year"
+        >
+      </div>
+
+      <div class="additional-field">
+        <label>Trailer Registration Number</label>
+
+        <input
+          type="text"
+          data-trailer-field="registration"
+        >
+      </div>
+
+      <button
+        type="button"
+        class="remove-row-btn"
+        data-remove-trailer
+        aria-label="Remove trailer"
+      >
+        ×
+      </button>
+
+    </div>
+  `;
+
+  additionalTrailerRows.appendChild(row);
+
+  row
+    .querySelectorAll('input')
+    .forEach(input => {
+      input.addEventListener(
+        'input',
+        updateTrailerState
+      );
+    });
+
+  row
+    .querySelector('[data-remove-trailer]')
+    .addEventListener('click', () => {
+      row.remove();
+
+      renumberTrailerRows();
+      updateTrailerState();
+    });
+
+  updateTrailerState();
+}
+
+
+function renumberTrailerRows() {
+
+  additionalTrailerRows
+    .querySelectorAll('.additional-trailer-row')
+    .forEach((row, index) => {
+
+      row
+        .querySelector('.additional-trailer-heading')
+        .textContent =
+          `Trailer ${index + 1}`;
+
+    });
+}
+
+
+function updateTrailerState() {
+
+  const rows =
+    additionalTrailerRows
+      .querySelectorAll('.additional-trailer-row');
+
+  quoteState.additionalInformation.trailers =
+    Array.from(rows).map(row => ({
+
+      makeModel:
+        row.querySelector(
+          '[data-trailer-field="makeModel"]'
+        ).value,
+
+      year:
+        row.querySelector(
+          '[data-trailer-field="year"]'
+        ).value,
+
+      registration:
+        row.querySelector(
+          '[data-trailer-field="registration"]'
+        ).value
+
+    }));
+}
+
+
+additionalHasTrailer.addEventListener(
+  'change',
+  () => {
+
+    const value =
+      additionalHasTrailer.value;
+
+    quoteState.additionalInformation.hasTrailer =
+      value;
+
+    if (value === 'Yes') {
+
+      additionalTrailerDetails.style.display =
+        'block';
+
+      if (
+        additionalTrailerRows.children.length === 0
+      ) {
+        addAdditionalTrailerRow();
+      }
+
+    } else {
+
+      additionalTrailerDetails.style.display =
+        'none';
+
+      additionalTrailerRows.innerHTML = '';
+
+      quoteState.additionalInformation.trailers = [];
+    }
+
+    checkStep7Complete();
   }
-
-  checkStep7Complete();
-});
+);
 
 
-additionalTrailerMakeModel.addEventListener('input', () => {
-  quoteState.additionalInformation.trailerMakeModel =
-    additionalTrailerMakeModel.value;
-});
-
-
-additionalTrailerYear.addEventListener('input', () => {
-  quoteState.additionalInformation.trailerYear =
-    additionalTrailerYear.value;
-});
-
-
-additionalTrailerRegistration.addEventListener('input', () => {
-  quoteState.additionalInformation.trailerRegistration =
-    additionalTrailerRegistration.value;
-});
-
+addAdditionalTrailerBtn.addEventListener(
+  'click',
+  addAdditionalTrailerRow
+);
 
 // ---------- ATTACHMENTS ----------
 
@@ -2332,10 +2829,66 @@ const paymentExpiryYear =
 const paymentCCV =
   document.getElementById('paymentCCV');
 
+const PAYMENT_BASE_AMOUNT = 2148.89;
 
+function getCardSurchargeRate() {
+  const cardType =
+    quoteState.payment.cardType;
+
+  if (cardType === 'Visa') return 0.01;
+  if (cardType === 'Mastercard') return 0.01;
+  if (cardType === 'American Express') return 0.015;
+
+  return 0;
+}
+
+function formatPaymentMoney(amount) {
+  return amount.toLocaleString('en-AU', {
+    style: 'currency',
+    currency: 'AUD',
+    minimumFractionDigits: 2
+  });
+}
+
+function updatePaymentTotals() {
+  const amountDue =
+    PAYMENT_BASE_AMOUNT;
+
+  const surcharge =
+    amountDue * getCardSurchargeRate();
+
+  const totalPaid =
+    amountDue + surcharge;
+
+  document.getElementById(
+    'paymentAmountDue'
+  ).textContent =
+    formatPaymentMoney(amountDue);
+
+  document.getElementById(
+    'paymentSurcharge'
+  ).textContent =
+    formatPaymentMoney(surcharge);
+
+  document.getElementById(
+    'paymentTotalPaid'
+  ).textContent =
+    formatPaymentMoney(totalPaid);
+
+  quoteState.payment.amountDue =
+    amountDue;
+
+  quoteState.payment.surcharge =
+    surcharge;
+
+  quoteState.payment.totalPaid =
+    totalPaid;
+}
 paymentCardType.addEventListener('change', () => {
   quoteState.payment.cardType =
     paymentCardType.value;
+
+  updatePaymentTotals();
 });
 
 
@@ -2399,19 +2952,198 @@ document
 
   });
 
+function populatePaymentConfirmation() {
 
+  const info =
+    quoteState.additionalInformation;
+
+  const quote =
+    quoteState.yourQuote;
+
+  const payment =
+    quoteState.payment;
+
+  document.getElementById(
+    'confirmationEmailNote'
+  ).textContent =
+    info.email
+      ? `Confirmation documents will be sent to ${info.email}.`
+      : 'Your confirmation documents are ready.';
+
+
+  document.getElementById(
+    'policySummaryList'
+  ).innerHTML = `
+
+    <div class="summary-row">
+      <span class="summary-label">
+        Policy
+      </span>
+
+      <strong class="summary-value">
+        Jet Ski / Personal Watercraft
+      </strong>
+    </div>
+
+    <div class="summary-row">
+      <span class="summary-label">
+        Quote Number
+      </span>
+
+      <strong class="summary-value">
+        ${quote.quoteNumber}
+      </strong>
+    </div>
+
+    <div class="summary-row">
+      <span class="summary-label">
+        Insured Name
+      </span>
+
+      <strong class="summary-value">
+        ${info.insuredName || 'Not provided'}
+      </strong>
+    </div>
+
+    <div class="summary-row">
+      <span class="summary-label">
+        Period of Insurance
+      </span>
+
+      <strong class="summary-value">
+        ${formatSummaryDate(quote.policyStartDate)}
+        –
+        ${formatSummaryDate(quote.policyEndDate)}
+      </strong>
+    </div>
+  `;
+
+
+  document.getElementById(
+    'paymentSummaryList'
+  ).innerHTML = `
+
+    <div class="summary-row">
+      <span class="summary-label">
+        Payment Method
+      </span>
+
+      <strong class="summary-value">
+        ${payment.cardType || 'Card'}
+      </strong>
+    </div>
+
+    <div class="summary-row">
+      <span class="summary-label">
+        Amount Due
+      </span>
+
+      <strong class="summary-value">
+        ${formatPaymentMoney(payment.amountDue)}
+      </strong>
+    </div>
+
+    <div class="summary-row">
+      <span class="summary-label">
+        Card Surcharge
+      </span>
+
+      <strong class="summary-value">
+        ${formatPaymentMoney(payment.surcharge)}
+      </strong>
+    </div>
+
+    <div class="summary-row">
+      <span class="summary-label">
+        Total Paid
+      </span>
+
+      <strong class="summary-value">
+        ${formatPaymentMoney(payment.totalPaid)}
+      </strong>
+    </div>
+  `;
+}
+
+
+function showPaymentConfirmation() {
+
+  updatePaymentTotals();
+  populatePaymentConfirmation();
+
+  document
+    .querySelectorAll('.quote-step')
+    .forEach(section => {
+      section.style.display = 'none';
+    });
+
+  document.getElementById(
+    'step-9'
+  ).style.display = 'block';
+
+  const progressBar =
+    document.getElementById('progressBar');
+
+  if (progressBar) {
+    progressBar.style.display = 'none';
+  }
+
+  window.scrollTo(0, 0);
+}
+
+
+function showConfirmationMessage(message) {
+
+  const toast =
+    document.getElementById(
+      'confirmationToast'
+    );
+
+  toast.textContent = message;
+  toast.style.display = 'block';
+
+  clearTimeout(
+    showConfirmationMessage.timeout
+  );
+
+  showConfirmationMessage.timeout =
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 4000);
+}
 // ---------- PAY NOW ----------
 
 document
   .getElementById('payNowBtn')
   .addEventListener('click', () => {
 
-    // Prototype only
-    console.log('Pay Now clicked.');
+    showPaymentConfirmation();
 
   });
 
+document
+  .getElementById('homeBtn')
+  .addEventListener('click', () => {
+    window.location.href = 'products.html';
+  });
 
+document
+  .getElementById('receiptBtn')
+  .addEventListener('click', () => {
+    showConfirmationMessage(
+      'Your receipt has been emailed to you.'
+    );
+  });
+
+document
+  .getElementById('certificateBtn')
+  .addEventListener('click', () => {
+    showConfirmationMessage(
+      'Your Certificate of Currency has been emailed to you.'
+    );
+  });
+
+updatePaymentTotals();
 function applyReferralQuoteState() {
   const quoteSection = document.getElementById('step-6');
   const premiumPanel = quoteSection.querySelector('.premium-panel');
@@ -2513,6 +3245,37 @@ declineCloseBtn.addEventListener('click', exitDeclinedQuote);
     window.scrollTo(0, 0);
   }
 
+// ---------- CLICKABLE PROGRESS BAR ----------
+
+progressBar
+  .querySelectorAll('.progress-step')
+  .forEach(step => {
+
+    step.style.cursor = 'pointer';
+
+    step.addEventListener('click', () => {
+      const targetProgressStep =
+        Number(step.dataset.step);
+
+      const targetSection =
+        targetProgressStep + 1;
+
+      // Dev mode: unrestricted navigation
+      if (DEV_BYPASS_VALIDATION) {
+        goToSection(targetSection);
+        return;
+      }
+
+      // Production mode:
+      // only current or previously reached pages
+      if (targetSection <= currentSectionNum) {
+        goToSection(targetSection);
+      }
+    });
+
+  });
+
+  
   renderQuestions();
   checkStep2Complete();
   renderVesselFields();

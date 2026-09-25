@@ -10,9 +10,17 @@
 <body>
 
   <header class="site-header">
-    <div class="logo-block">
-      <img src="assets/logo/coast-logo.png" alt="Coast Insurance logo" class="logo-img">
-    </div>
+    <a
+      href="products.html"
+      class="logo-block"
+      aria-label="Return to products"
+    >
+      <img
+        src="assets/logo/coast-logo.png"
+        alt="Coast Insurance logo"
+        class="logo-img"
+      >
+    </a>
   </header>
 
   <div class="progress-bar" id="progressBar" style="display:none;">
@@ -118,11 +126,10 @@
 
         <label class="intro-agreement-box">
           <input type="checkbox" id="dutyAgreement">
-
           <span>
             By continuing, you acknowledge that you have read and understood this Duty,
-            the #Product Disclosure Statement (PDS)</a> and
-            #Financial Services Guide (FSG)</a>.
+            the <a href="#" id="pdsLinkIntro" target="_blank" rel="noopener noreferrer">Product Disclosure Statement (PDS)</a> and
+            <a href="https://secure.ermonline.com.au/financialservices/gateway/intranet_gateway.cfm?eu=TU-5538AF79-C52E-67BF-1B0CF805C7125FDC-5538AF7A-E34D-4904-A87170AFF3B77ADC" target="_blank" rel="noopener noreferrer">Financial Services Guide (FSG)</a>.
           </span>
         </label>
 
@@ -1186,8 +1193,8 @@
         </div>
 
 
-        <!-- TRAILER -->
-        <div class="additional-section">
+        <!-- TRAILERS -->
+        <div class="additional-section trailer-accent-box">
 
           <div class="additional-trailer-question">
 
@@ -1197,7 +1204,10 @@
             </span>
 
             <select id="additionalHasTrailer">
-              <option value="" disabled selected>Select</option>
+              <option value="" disabled selected>
+                Select
+              </option>
+
               <option value="No">No</option>
               <option value="Yes">Yes</option>
             </select>
@@ -1205,48 +1215,28 @@
           </div>
 
           <div
-            class="additional-trailer-details"
             id="additionalTrailerDetails"
             style="display:none;"
           >
 
-            <div class="additional-field">
-              <label for="additionalTrailerMakeModel">
-                Trailer Make &amp; Model
-              </label>
-              <input
-                type="text"
-                id="additionalTrailerMakeModel"
-              >
-            </div>
+            <p class="subsection-label">
+              Trailer Details
+            </p>
 
-            <div class="additional-field">
-              <label for="additionalTrailerYear">
-                Trailer Year Built
-              </label>
-              <input
-                type="number"
-                id="additionalTrailerYear"
-                min="1900"
-                max="9999"
-                placeholder="YYYY"
-              >
-            </div>
+            <div id="additionalTrailerRows"></div>
 
-            <div class="additional-field">
-              <label for="additionalTrailerRegistration">
-                Trailer Registration Number
-              </label>
-              <input
-                type="text"
-                id="additionalTrailerRegistration"
-              >
-            </div>
+            <button
+              type="button"
+              class="add-row-btn"
+              id="addAdditionalTrailerBtn"
+              aria-label="Add another trailer"
+            >
+              +
+            </button>
 
           </div>
 
         </div>
-
 
         <!-- ATTACHMENTS -->
         <div class="additional-attachments">
@@ -1608,6 +1598,26 @@
 
           </div>
 
+          <!-- PAYMENT TOTAL -->
+          <div
+            class="payment-total-strip"
+            id="paymentTotalStrip"
+          >
+            <div class="payment-total-row">
+              <span>Amount Due Today</span>
+              <span id="paymentAmountDue">$1,515.35</span>
+            </div>
+
+            <div class="payment-total-row payment-total-row-muted">
+              <span>Card Surcharge</span>
+              <span id="paymentSurcharge">$0.00</span>
+            </div>
+
+            <div class="payment-total-row payment-total-row-final">
+              <span>Total Paid Including Surcharge</span>
+              <strong id="paymentTotalPaid">$1,515.35</strong>
+            </div>
+          </div>
 
           <!-- PAYMENT ACTIONS -->
           <div class="payment-entry-actions">
@@ -1654,6 +1664,107 @@
           </div>
 
         </div>
+
+      </div>
+    </section>
+
+    <!-- PAYMENT CONFIRMATION -->
+    <section
+      class="quote-step form-step"
+      id="step-9"
+      style="display:none;"
+    >
+      <div class="form-card confirmation-card">
+
+        <div class="confirmation-hero">
+
+          <div class="confirmation-tick">
+            <span>✓</span>
+          </div>
+
+          <h2>
+            Your payment has been successfully processed.
+          </h2>
+
+          <p>
+            Your policy is now confirmed.
+          </p>
+
+          <p
+            class="confirmation-email-note"
+            id="confirmationEmailNote"
+          ></p>
+
+        </div>
+
+
+        <div class="confirmation-grid">
+
+          <!-- POLICY SUMMARY -->
+          <div class="quote-info-panel">
+
+            <div class="quote-info-heading">
+              Policy Summary
+            </div>
+
+            <div
+              class="confirmation-list"
+              id="policySummaryList"
+            ></div>
+
+          </div>
+
+
+          <!-- PAYMENT SUMMARY -->
+          <div class="quote-info-panel">
+
+            <div class="quote-info-heading">
+              Payment Summary
+            </div>
+
+            <div
+              class="confirmation-list"
+              id="paymentSummaryList"
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="confirmation-actions">
+
+          <button
+            type="button"
+            class="back-btn"
+            id="homeBtn"
+          >
+            Home
+          </button>
+
+          <button
+            type="button"
+            class="email-btn"
+            id="receiptBtn"
+          >
+            Receipt
+          </button>
+
+          <button
+            type="button"
+            class="email-btn"
+            id="certificateBtn"
+          >
+            Certificate of Currency
+          </button>
+
+        </div>
+
+        <p
+          class="confirmation-toast"
+          id="confirmationToast"
+          style="display:none;"
+        ></p>
 
       </div>
     </section>
