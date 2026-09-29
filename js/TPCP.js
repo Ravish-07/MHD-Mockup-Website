@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ));
   const money = n => '$' + Number(n || 0).toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const round2 = n => Math.round((n + Number.EPSILON) * 100) / 100;
+  const DAY_MS = 24 * 60 * 60 * 1000;
   const clone = o => JSON.parse(JSON.stringify(o));
   const pad = n => String(n).padStart(2, '0');
   const toInputDate = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -1908,7 +1909,7 @@ $('additionalBoatsList')
     // $20M liability limit (+20%)
     if (d.liabilityLimit === '20000000') running += running * LOADINGS.liability20M;
 
-    const basePremium = round2(running);
+    const basePremium = round2(running * policyPeriodFactor());
     const gst = round2(basePremium * GST_RATE);
     const stampDuty = round2((basePremium + gst) * STAMP_DUTY_RATE);
 
@@ -1919,6 +1920,15 @@ $('additionalBoatsList')
       excessRacing: racing ? base.excess * 2 : null,
       racing, claimCount, under25Count, anyConductFlag
     };
+  }
+
+  // Share of a full 12-month term covered by the chosen period; the premium is pro-rated by it.
+  function policyPeriodFactor() {
+    const start = parseDate(quoteState.yourQuote.policyStartDate);
+    const end = parseDate(quoteState.yourQuote.policyEndDate);
+    if (!start || !end || end <= start) return 1;
+    const fullTermDays = (addMonths(start, 12) - start) / DAY_MS;
+    return Math.min(1, Math.round((end - start) / DAY_MS) / fullTermDays);
   }
 
   function rateAllVessels() {
@@ -1962,174 +1972,164 @@ $('additionalBoatsList')
     }
   }
 
-  function renderQuotePremium(combined) {
-    const host = $('quotePremiumHost');
+  // Start no earlier than today and no later than 30 days out; end within 12 months of the start.
+  function renderPolicyPeriod() {
+    const today = startOfToday();
+    const start = parseDate(quoteState.yourQuote.policyStartDate);
+    const startInput = $('policyStartDate');
+    const endInput = $('policyEndDate');
 
-    if (!combined.allCategorised) {
-      host.innerHTML = `
-        <div class="quote-premium-panel quote-premium-pending">
-          <p>We need a little more information before we can calculate your premium.</p>
-          <p class="quote-premium-pending-sub">Complete the vessel and experience details for every boat to see pricing here.</p>
-        </div>`;
-      return;
-    }
+    startInput.min = toInputDate(today);
+    startInput.max = toInputDate(new Date(today.getTime() + 30 * DAY_MS));
+    startInput.value = quoteState.yourQuote.policyStartDate;
 
-    const rows = [
-      ['Total Base Premium', money(combined.basePremium)],
-      ['GST', money(combined.gst)],
-      ['Stamp Duty', money(combined.stampDuty)],
-      ['Administration Fee', money(combined.adminFee)],
-      ['Fee GST', money(combined.feeGst)]
-    ];
-
-    host.innerHTML = `
-      <div class="quote-premium-panel">
-        <div class="quote-premium-rows">
-          ${rows.map(([l, v]) => `<div class="quote-premium-row"><span>${l}</span><span>${v}</span></div>`).join('')}
-        </div>
-        <div class="quote-premium-total">
-          <span>Total Premium Payable</span>
-          <span>${money(combined.totalPremium)}</span>
-        </div>
-        <div class="quote-premium-instalment">
-          Or pay in ${INSTALMENTS} monthly instalments of <strong>${money(combined.instalment)}</strong>
-        </div>
-        <div class="quote-premium-broker">
-          Broker Commission (${Math.round(BROKER_COMMISSION_RATE * 100)}%): ${money(combined.brokerCommission)}
-        </div>
-      </div>`;
+    endInput.min = toInputDate(new Date(start.getTime() + DAY_MS));
+    endInput.max = toInputDate(addMonths(start, 12));
+    endInput.value = quoteState.yourQuote.policyEndDate;
   }
 
+  function renderQuotePremium(combined, referred) {
+    const showAmount = amount => money(referred || !combined.allCategorised ? 0 : amount);
+
+    $('quoteAnnualPremium').textContent = showAmount(combined.totalPremium);
+    $('quoteBasePremium').textContent = showAmount(combined.basePremium);
+    $('quoteGst').textContent = showAmount(combined.gst);
+    $('quoteStampDuty').textContent = showAmount(combined.stampDuty);
+    $('quoteAdminFee').textContent = showAmount(combined.adminFee);
+    $('quoteFeeGst').textContent = showAmount(combined.feeGst);
+    $('quoteTotalPremium').textContent = showAmount(combined.totalPremium);
+    $('quoteInstalment').textContent = showAmount(combined.instalment);
+    $('quoteBrokerCommission').textContent = showAmount(combined.brokerCommission);
+  }
+
+  function excessRowHtml(label, amount) {
+    return `<div class="your-quote-excess-row"><span>${esc(label)}</span><strong>${money(amount)}</strong></div>`;
+  }
+
+  // All Other Claims per vessel; Whilst Racing only for a vessel with racing cover.
   function renderExcess(combined) {
-    const rows = combined.rated.map((r, i) => {
+    const multiple = combined.rated.length > 1;
+
+    $('quoteExcessList').innerHTML = combined.rated.map((r, i) => {
       if (!r.rating) return '';
-      const label = combined.rated.length > 1 ? `Vessel ${i + 1}` : 'All Other Claims';
-      const racingRow = r.rating.racing
-        ? `<div class="excess-row"><span>${combined.rated.length > 1 ? `Vessel ${i + 1} — Whilst Racing` : 'Whilst Racing'}</span><span>${money(r.rating.excessRacing)}</span></div>`
-        : '';
-      return `<div class="excess-row"><span>${label}</span><span>${money(r.rating.excessAllOther)}</span></div>${racingRow}`;
-    }).join('');
-    $('excessBody').innerHTML = rows || '<p class="quote-premium-pending-sub">Excess will show here once vessel details are complete.</p>';
+      const prefix = multiple ? `Vessel ${i + 1}: ` : '';
+      return excessRowHtml(`${prefix}All Other Claims`, r.rating.excessAllOther) +
+        (r.rating.racing ? excessRowHtml(`${prefix}Whilst Racing`, r.rating.excessRacing) : '');
+    }).join('') || '<div class="your-quote-excess-row"><span>Excesses will show once vessel details are complete.</span></div>';
+  }
+
+  function coverRowHtml(label, value, note = '') {
+    return `
+      <div class="your-quote-cover-row">
+        <span class="your-quote-cover-tick">✓</span>
+        <strong>${esc(label)}</strong>
+        <span class="your-quote-cover-value">${value}${note ? `<small>${esc(note)}</small>` : ''}</span>
+      </div>`;
   }
 
   function renderCoverList() {
-    const anyRacing = quoteState.vessels.some(v => isSailing(v.details) && v.details.yachtRacing && v.details.yachtRacing !== 'No');
-    const anySkiing = quoteState.vessels.some(v => v.details.waterSkiing === 'Yes');
-    const liabilityLimits = [...new Set(quoteState.vessels.map(v => v.details.liabilityLimit).filter(Boolean))];
-    const liabilityLabel = liabilityLimits.length
-      ? liabilityLimits.map(l => LIABILITY_LIMITS.find(x => x.value === l)?.label || l).join(' / ')
-      : '—';
+    const vessels = quoteState.vessels.map(v => v.details);
+    const liabilityLabels = [...new Set(vessels.map(d => d.liabilityLimit).filter(Boolean))]
+      .map(limit => LIABILITY_LIMITS.find(x => x.value === limit)?.label || limit);
+    const racingAnswer = vessels.find(d => isSailing(d) && d.yachtRacing && d.yachtRacing !== 'No')?.yachtRacing;
+    const anyReferredPostcode = vessels.some(d => d.locationAddressPostcode && REFERRAL_POSTCODES.has(d.locationAddressPostcode));
+    const wreck = quoteState.yourQuote.wreck;
 
-    const rows = [
-      ['Policy Type', 'Third Party Legal Liability Only'],
-      ['Basis of Settlement', 'Legal Liability Only'],
-      ['Third Party Legal Liability', `${liabilityLabel} — any one claim or all claims arising from one accident`, TIP_LIABILITY],
-      ['Pollution', '$1,000,000 for any one Accident or series of Accidents caused by the one event'],
-      ['Geographical Limits', '250 Nautical Miles off the Australian Mainland including Tasmania. Subject to the vessel being south of 23.5° South between 1 December – 1 April.' +
-        (quoteState.vessels.some(v => v.details.locationAddressPostcode && REFERRAL_POSTCODES.has(v.details.locationAddressPostcode)) ? '' : '')],
-      ['Water Skiing and/or Aquaplaning Liability', anySkiing ? 'Yes' : 'No', TIP_WATER_SKIING],
-      ['Yacht Racing', anyRacing ? (quoteState.vessels.find(v => isSailing(v.details) && v.details.yachtRacing !== 'No')?.details.yachtRacing || 'Yes') : 'No', TIP_RACING],
-      ['Recovery or Removal of Wreck', quoteState.yourQuote.wreck === '1000000' ? '$1,000,000' : 'Not Insured',
-        'Availability subject to approval. Additional documentation may be required.']
-    ];
+    $('coverList').innerHTML = [
+      coverRowHtml('Policy Type', 'Third Party Legal Liability Only'),
+      coverRowHtml('Basis of Settlement', 'Legal Liability Only'),
+      coverRowHtml('Third Party Legal Liability', esc(liabilityLabels.join(' / ') || 'Not provided'),
+        'Any one claim or all claims arising from one accident'),
+      coverRowHtml('Pollution', '$1,000,000 for any one Accident or series of Accidents caused by the one event'),
+      coverRowHtml('Geographical Limits', '250 Nautical Miles off the Australian Mainland including Tasmania.',
+        anyReferredPostcode ? '' : 'Subject to the vessel being south of 23.5° South between 1 December - 1 April.'),
+      coverRowHtml('Water skiing and/or aquaplaning liability', vessels.some(d => d.waterSkiing === 'Yes') ? 'Yes' : 'No'),
+      coverRowHtml('Yacht Racing', esc(racingAnswer || 'No')),
+      coverRowHtml('Recovery or removal of wreck', `
+        <select id="wreckSelect" class="your-quote-cover-select">
+          <option value="not-insured" ${wreck === 'not-insured' ? 'selected' : ''}>Not Insured</option>
+          <option value="1000000" ${wreck === '1000000' ? 'selected' : ''}>$1,000,000</option>
+        </select>`, 'Availability subject to approval. Additional documentation may be required.')
+    ].join('');
 
-    $('coverList').innerHTML = rows.map(([l, v, tip]) => `
-      <div class="summary-row">
-        <span class="summary-label">${esc(l)}${tip ? `<span class="info-dot" data-tip="${esc(tip)}">ⓘ</span>` : ''}</span>
-        <span class="summary-value">${esc(v)}</span>
-      </div>`).join('') + `
-      <div class="summary-row wreck-toggle-row">
-        <span class="summary-label">Include Recovery or Removal of Wreck ($1,000,000)?</span>
-        <label class="mini-toggle">
-          <input type="checkbox" id="wreckToggle" ${quoteState.yourQuote.wreck === '1000000' ? 'checked' : ''}>
-          <span></span>
-        </label>
-      </div>`;
-
-    $('coverList').querySelectorAll('.info-dot').forEach(dot => {
-      dot.addEventListener('click', () => alert(dot.dataset.tip));
+    $('wreckSelect').addEventListener('change', event => {
+      quoteState.yourQuote.wreck = event.target.value;
+      renderQuoteStep();
     });
-
-    const toggle = $('wreckToggle');
-    if (toggle) {
-      toggle.addEventListener('change', () => {
-        quoteState.yourQuote.wreck = toggle.checked ? '1000000' : 'not-insured';
-        renderQuoteStep();
-      });
-    }
   }
 
-  function renderVesselSummary() {
-    $('vesselSummaryList').innerHTML = quoteState.vessels.map((v, i) => {
-      const d = v.details;
-      const lengthM = hullLengthInMetres(d);
-      const bits = [d.hullYearBuilt, d.hullMake === 'Other' ? d.hullMakeSpecify : d.hullMake, d.hullModel].filter(Boolean).join(' ');
-      return `
-        <div class="summary-row">
-          <span class="summary-label">Vessel ${i + 1}</span>
-          <span class="summary-value">
-            ${esc(bits || '—')}<br>
-            <em>${esc(d.locationAddress || '—')} · ${lengthM != null ? lengthM + 'm' : '—'}</em>
-          </span>
-        </div>`;
+  function summaryRowHtml(label, parts) {
+    return `
+      <div class="details-row">
+        <span class="details-label">${esc(label)}</span>
+        <span class="details-value">
+          ${parts.map(([name, value]) => `<span><strong>${esc(name)}:</strong> ${esc(value || 'Not provided')}</span>`).join('')}
+        </span>
+      </div>`;
+  }
+
+  function renderVesselSummary(combined, referred) {
+    $('vesselSummaryList').innerHTML = combined.rated.map(({ vessel, rating }, i) => {
+      const d = vessel.details;
+      const amount = value => money(referred || !rating ? 0 : value);
+      return summaryRowHtml(`Vessel ${i + 1}`, [
+        ['Hull Year Built', d.hullYearBuilt],
+        ['Hull Make', d.hullMake === 'Other' ? d.hullMakeSpecify : d.hullMake],
+        ['Hull Model', d.hullModel],
+        ['Location Address', d.locationAddress],
+        ['Total Sum Insured', d.totalSumInsured || 'Third Party Legal Liability Only'],
+        ['Base Premium', amount(rating?.basePremium)],
+        ['GST', amount(rating?.gst)],
+        ['Stamp Duty', amount(rating?.stampDuty)]
+      ]);
     }).join('');
   }
 
+  // Additional boats reuse the first vessel's skippers unless they have a different skipper.
   function renderSkipperSummary() {
-    const allSkippers = quoteState.vessels.flatMap((v, vi) =>
-      v.experience.skippers.map((s, si) => ({ ...s, vi, si, single: quoteState.vessels.length === 1 }))
+    const skippers = quoteState.vessels.flatMap((v, i) =>
+      i === 0 || v.hasDifferentSkipper === 'yes' ? v.experience.skippers : []
     );
-    $('skipperSummaryList').innerHTML = allSkippers.map(s => `
-      <div class="summary-row">
-        <span class="summary-label">${s.single ? `Skipper ${s.si + 1}` : `Vessel ${s.vi + 1} — Skipper ${s.si + 1}`}</span>
-        <span class="summary-value">${esc(s.name || '—')}${s.dob ? ` · ${formatDate(s.dob)}` : ''}</span>
-      </div>`).join('') || '<p class="quote-premium-pending-sub">No skipper details yet.</p>';
+
+    $('skipperSummaryList').innerHTML = skippers.map((s, i) =>
+      summaryRowHtml(`Skipper ${i + 1}`, [['Name', s.name], ['DOB', formatDate(s.dob)]])
+    ).join('');
+  }
+
+  // A referred quote shows $0.00, hides the details and blocks buying, and asks for review (same as the Jet Ski flow).
+  function applyReferralState(referred) {
+    qsa('.hide-on-referral').forEach(el => { el.style.display = referred ? 'none' : ''; });
+    ['emailQuoteBtn', 'continueBtn5'].forEach(id => {
+      $(id).disabled = referred;
+      $(id).classList.toggle('referral-disabled', referred);
+    });
+  }
+
+  function openReferralReview() {
+    $('referralInsuredName').value = quoteState.additionalInformation.insuredName || '';
+    $('referralEmail').value = quoteState.additionalInformation.email || '';
+    $('referralPhone').value = quoteState.additionalInformation.phone || '';
+    referralModalOpen();
   }
 
   function renderQuoteStep() {
     policyPeriodDefaults();
+    renderPolicyPeriod();
     $('quoteNumberText').textContent = quoteState.yourQuote.quoteNumber;
-    $('policyStartDate').value = quoteState.yourQuote.policyStartDate;
-    $('policyEndDate').value = quoteState.yourQuote.policyEndDate;
 
     const combined = combineQuote();
-    quoteState._combined = combined;
+    const referred = allReferralReasons().referReasons.length > 0;
 
-    const { referReasons } = allReferralReasons();
-    const incomplete = !combined.allCategorised;
+    $('quoteIncompleteNotice').style.display = combined.allCategorised || referred ? 'none' : 'block';
 
-    $('quoteIncompleteNotice').style.display = incomplete ? 'block' : 'none';
-    if (incomplete) {
-      $('quoteIncompleteNotice').textContent = 'Some vessel or experience details are still missing — go back and complete every vessel to see full pricing.';
-    }
-
-    document.querySelectorAll('.quote-hide-on-referral').forEach(el => {
-      el.style.display = (referReasons.length && !DEV_BYPASS_VALIDATION) ? 'none' : '';
-    });
-    // Even with DEV_BYPASS_VALIDATION true, still show what a referral would look like via the banner below,
-    // but do not hide the informational panels (so the flow can be exercised end-to-end while testing).
-    if (referReasons.length) {
-      let banner = document.getElementById('referralBanner');
-      if (!banner) {
-        banner = document.createElement('div');
-        banner.id = 'referralBanner';
-        banner.className = 'referral-banner';
-        $('quoteCard').insertBefore(banner, $('quoteIncompleteNotice').nextSibling);
-      }
-      banner.innerHTML = `<strong>This quote needs a quick review by our team</strong> before it can be finalised.
-        <ul>${referReasons.slice(0, 6).map(r => `<li>${esc(r)}</li>`).join('')}${referReasons.length > 6 ? `<li>+ ${referReasons.length - 6} more</li>` : ''}</ul>`;
-    } else {
-      const banner = document.getElementById('referralBanner');
-      if (banner) banner.remove();
-    }
-
-    renderQuotePremium(combined);
+    renderQuotePremium(combined, referred);
     renderExcess(combined);
     renderCoverList();
-    renderVesselSummary();
+    renderVesselSummary(combined, referred);
     renderSkipperSummary();
+    applyReferralState(referred);
 
-    $('continueBtn5').textContent = referReasons.length ? 'Submit for Review →' : 'Buy Online';
+    if (referred) openReferralReview();
   }
 
   $('policyStartDate').addEventListener('change', e => {
@@ -2144,9 +2144,16 @@ $('additionalBoatsList')
   });
   $('policyEndDate').addEventListener('change', e => {
     quoteState.yourQuote.policyEndDate = e.target.value;
+    renderQuoteStep();
   });
 
-
+  // Add Boat takes the user back to Additional Boats with a new boat started, pre-filled with the first vessel's experience.
+  $('addBoatBtn').addEventListener('click', () => {
+    const yesToggle = document.querySelector('#hasAdditionalBoatToggle .toggle-btn[data-value="yes"]');
+    goToSection(5);
+    if (hasAdditionalBoats === 'yes') addAdditionalBoat();
+    else yesToggle.click();
+  });
 
 
   // ---------- DECLINE / REFERRAL GATING ----------
@@ -2211,8 +2218,7 @@ $('additionalBoatsList')
       const ok = $('referralInsuredName').value.trim() && $('referralEmail').value.trim() && $('referralPhone').value.trim();
       if (!ok) { alert('Please complete all fields.'); return; }
     }
-    referralModalClose();
-    showToast('Thanks — your enquiry has been submitted for review. We will be in touch shortly.');
+    window.location.href = 'products.html';
   });
 
   function showToast(msg) {
@@ -2427,12 +2433,8 @@ $('additionalBoatsList')
   }
   populatePaymentSelects();
 
-  function currentTotals() {
-    return quoteState._combined || combineQuote();
-  }
-
   function renderPaymentMethodStep() {
-    const combined = currentTotals();
+    const combined = combineQuote();
     $('instalmentOptionText').textContent =
       combined.allCategorised ? `Pay in ${INSTALMENTS} monthly instalments of ${money(combined.instalment)}` : `Pay in ${INSTALMENTS} monthly instalments`;
 
@@ -2474,7 +2476,7 @@ $('additionalBoatsList')
   });
 
   function renderPaymentEntry() {
-    const combined = currentTotals();
+    const combined = combineQuote();
     const p = quoteState.payment;
 
     $('paymentCardType').value = p.cardType;
@@ -2538,7 +2540,7 @@ $('additionalBoatsList')
 
   // ---------- CONFIRMATION ----------
   function processPayment() {
-    const combined = currentTotals();
+    const combined = combineQuote();
     const p = quoteState.payment;
     const cardMeta = CARD_TYPES.find(c => c.value === p.cardType);
     const amountDue = p.method === 'instalments' ? combined.instalment : combined.totalPremium;
@@ -2716,32 +2718,7 @@ progressBar
     () => goToSection(5)
   );
 
-  $('continueBtn5').addEventListener(
-    'click',
-    () => {
-      const { referReasons } =
-        allReferralReasons();
-
-      if (referReasons.length) {
-        $('referralInsuredName').value =
-          quoteState.additionalInformation
-            .insuredName || '';
-
-        $('referralEmail').value =
-          quoteState.additionalInformation
-            .email || '';
-
-        $('referralPhone').value =
-          quoteState.additionalInformation
-            .phone || '';
-
-        referralModalOpen();
-        return;
-      }
-
-      goToSection(7);
-    }
-  );
+  $('continueBtn5').addEventListener('click', () => goToSection(7));
 
 
   // ----- Your Details -----

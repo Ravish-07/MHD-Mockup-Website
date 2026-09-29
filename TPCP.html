@@ -6,6 +6,7 @@
   <title>COAST Insurance — Third Party Only Pleasure Craft Quote</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/TPCP.css">
+  <link rel="stylesheet" href="css/quote-page.css">
 </head>
 <body>
 
@@ -370,87 +371,97 @@
 
     <!-- STEP 5 (progress): YOUR QUOTE -->
     <section class="quote-step form-step" id="tp-step-6" style="display:none;">
-      <div class="form-card quote-summary-card" id="quoteCard">
+      <div class="form-card your-quote-card">
 
         <div class="form-card-header">
           <div class="vessel-icon"><span>📄</span></div>
           <div>
             <h3 class="vessel-title">Your Quote</h3>
-            <p class="form-card-sub">Third Party Only Pleasure Craft · Legal Liability cover</p>
           </div>
         </div>
 
-        <div class="quote-number-display">
+        <div class="your-quote-number">
           <strong>Quote Number:</strong>
           <span id="quoteNumberText"></span>
         </div>
 
-        <div class="quote-notice" id="quoteIncompleteNotice" style="display:none;"></div>
+        <div class="quote-notice" id="quoteIncompleteNotice" style="display:none;">
+          Some vessel or experience details are still missing. Go back and complete every vessel to see your premium.
+        </div>
 
-        <div id="quotePremiumHost"></div>
+        <div class="your-quote-premium">
+          <div class="your-quote-premium-hero">
+            <span class="your-quote-premium-label">Annual Premium</span>
+            <strong class="your-quote-premium-amount" id="quoteAnnualPremium"></strong>
+            <span class="your-quote-premium-note">Total premium payable</span>
+          </div>
 
-        <div class="quote-hide-on-referral">
-          <div class="excess-panel">
-            <div class="excess-heading">Excesses</div>
-            <div class="excess-body" id="excessBody"></div>
+          <div class="your-quote-breakdown">
+            <div class="your-quote-breakdown-title">Insurance Premium Breakdown</div>
+            <div class="your-quote-breakdown-row"><span>Total Base Premium</span><strong id="quoteBasePremium"></strong></div>
+            <div class="your-quote-breakdown-row"><span>GST</span><strong id="quoteGst"></strong></div>
+            <div class="your-quote-breakdown-row"><span>Stamp Duty</span><strong id="quoteStampDuty"></strong></div>
+            <div class="your-quote-breakdown-row"><span>Administration Fee</span><strong id="quoteAdminFee"></strong></div>
+            <div class="your-quote-breakdown-row"><span>Fee GST</span><strong id="quoteFeeGst"></strong></div>
+            <div class="your-quote-breakdown-row your-quote-breakdown-total"><span>Total Premium Payable</span><strong id="quoteTotalPremium"></strong></div>
+            <div class="your-quote-breakdown-row"><span>Pay in 10 Instalments</span><strong id="quoteInstalment"></strong></div>
+            <div class="your-quote-breakdown-row"><span>Broker Commission 20%</span><strong id="quoteBrokerCommission"></strong></div>
           </div>
         </div>
 
-        <div class="cover-summary-panel">
-          <div class="cover-summary-heading">Your Cover</div>
-          <div class="quote-cover-list" id="coverList"></div>
+        <!-- Panels marked hide-on-referral are hidden while the quote is referred -->
+        <div class="details-panel hide-on-referral">
+          <div class="details-panel-heading">Excesses</div>
+          <div class="your-quote-excess-list" id="quoteExcessList"></div>
         </div>
 
-        <div class="quote-hide-on-referral">
+        <div class="details-panel">
+          <div class="details-panel-heading">Your Cover</div>
+          <div class="your-quote-cover-list" id="coverList"></div>
+        </div>
 
-          <div class="quote-info-panel">
-            <div class="quote-info-heading">Period of Insurance</div>
-            <div class="policy-period-row">
-              <span>From</span>
+        <div class="hide-on-referral">
+
+          <div class="details-panel">
+            <div class="details-panel-heading">Period of Insurance</div>
+            <div class="your-quote-period">
+              <label for="policyStartDate">From</label>
               <input type="date" id="policyStartDate">
-              <span>To</span>
+              <label for="policyEndDate">To</label>
               <input type="date" id="policyEndDate">
               <span>At 4pm Local Time</span>
             </div>
-            <p class="period-hint" id="periodHint">
-              Cover can start from today up to 30 days ahead, for a maximum of 12 months.
-            </p>
           </div>
 
-          <div class="quote-info-panel">
-            <div class="quote-info-heading">Vessel Details</div>
-            <div class="summary-list" id="vesselSummaryList"></div>
+          <div class="details-panel">
+            <div class="details-panel-heading">Vessel Details</div>
+            <div class="your-quote-summary-list" id="vesselSummaryList"></div>
           </div>
 
-          <div class="quote-info-panel">
-            <div class="quote-info-heading">Skipper Details</div>
-            <div class="summary-list" id="skipperSummaryList"></div>
+          <div class="details-panel">
+            <div class="details-panel-heading">Skipper Details</div>
+            <div class="your-quote-summary-list" id="skipperSummaryList"></div>
           </div>
 
-          <div class="pds-note">
+          <div class="your-quote-pds-note">
             <span class="section-divider-icon">🛈</span>
             <span>
-              It is important that you read and understand the product features and
-              details outlined in the
+              It is important that you read and understand the product features and details outlined in the
               <a href="#" id="pdsLinkQuote" target="_blank" rel="noopener noreferrer">Product Disclosure Statement (PDS)</a>.
             </span>
           </div>
 
-          <div class="pds-note">
+          <div class="your-quote-pds-note">
             <span class="section-divider-icon">🛈</span>
             <span>
               <strong>General Advice Warning</strong><br><br>
-
               This advice has been prepared and provided without taking into account your personal objectives,
               financial situation or needs.
-
               Because of this, before acting on the advice, you should consider its appropriateness
               (having regard to your objectives, needs and financial situation).
-
               To decide if this insurance product is right for you, please carefully read the relevant
               Product Disclosure Statement (PDS) and Target Market Determination (TMD) relating to the policy.
               <br><br>
-
               Click here to view our latest
               <a
                 href="https://secure.ermonline.com.au/financialservices/gateway/intranet_gateway.cfm?eu=TU-5538AF79-C52E-67BF-1B0CF805C7125FDC-5538AF7A-E34D-4904-A87170AFF3B77ADC"
@@ -459,22 +470,20 @@
               >Financial Services Guide (FSG)</a>.
             </span>
           </div>
-
         </div>
 
-        <div class="quote-actions">
-          <div class="quote-actions-left">
-            <button class="back-btn" id="backBtn5">← Back</button>
+        <div class="your-quote-actions">
+          <div class="your-quote-actions-left">
+            <button type="button" class="back-btn" id="backBtn5">← Back</button>
+            <button type="button" class="your-quote-add-boat-btn" id="addBoatBtn">+ Add Boat</button>
           </div>
-          <div class="quote-actions-right">
-            <button class="email-btn" id="emailQuoteBtn">Email Quote</button>
-            <button class="buy-btn" id="continueBtn5">Buy Online</button>
+          <div class="your-quote-actions-right">
+            <button type="button" class="secondary-action-btn" id="emailQuoteBtn">Email Quote</button>
+            <button type="button" class="your-quote-buy-btn" id="continueBtn5">Buy Online</button>
           </div>
         </div>
-
       </div>
     </section>
-
 
     <!-- EMAIL QUOTE MODAL -->
     <div class="quote-modal-overlay" id="emailQuoteModal" aria-hidden="true">

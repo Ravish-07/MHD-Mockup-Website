@@ -3822,7 +3822,7 @@ const checkout = setupCheckout({
   paymentBaseAmount: 1570.34,
   getPolicyVessels: () => [quoteState.vesselDetails, ...quoteState.additionalBoats],
   getQuoteNumber: () =>
-    document.querySelector('.cpwc-quote-number')?.textContent?.replace('Quote Number:', '').trim() ||
+    document.querySelector('.your-quote-number')?.textContent?.replace('Quote Number:', '').trim() ||
     'Not provided'
 });
 

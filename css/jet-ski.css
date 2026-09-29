@@ -1971,19 +1971,7 @@ body.modal-open {
 
 /* Referral-disabled quote buttons */
 
-.referral-disabled,
-.referral-disabled:hover {
-  background: #d1d5db !important;
-  border-color: #d1d5db !important;
-  color: #8b939c !important;
 
-  cursor: not-allowed !important;
-
-  transform: none !important;
-  box-shadow: none !important;
-
-  opacity: 0.75;
-}
 
 /* ===== COMPACT REVIEW / REFERRAL POPUP ===== */
 

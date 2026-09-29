@@ -1,0 +1,422 @@
+/* Your Quote page layout shared by all three quote flows (premium, excesses, cover, period, vessel and
+   skipper details, actions), plus the details panels also used on the confirmation screen. */
+
+.details-panel {
+  margin: 18px 0;
+  overflow: hidden;
+  border: 1px solid #c8e4ec;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.details-panel-heading {
+  padding: 10px 18px;
+  background: #e7f5f8;
+  color: #08788b;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.details-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.details-row:last-child {
+  border-bottom: none;
+}
+
+.details-label {
+  flex: 0 0 50%;
+  color: #1f2937;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.details-value {
+  display: flex;
+  flex: 0 0 50%;
+  max-width: 50%;
+  flex-direction: column;
+  gap: 4px;
+  padding-right: 18px;
+  box-sizing: border-box;
+  color: #1f2937;
+  font-size: 13px;
+  text-align: right;
+}
+
+.details-value > span {
+  display: block;
+}
+
+.details-value strong {
+  color: #1f2937;
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  .details-row {
+    flex-direction: column;
+  }
+
+  .details-label,
+  .details-value {
+    flex: none;
+    width: 100%;
+    max-width: none;
+    padding-right: 0;
+    text-align: left;
+  }
+}
+
+.secondary-action-btn {
+  padding: 10px 26px;
+  border: none;
+  border-radius: 8px;
+  background: #0891b2;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.secondary-action-btn:hover {
+  background: #0e7490;
+}
+
+@media (max-width: 760px) {
+  .details-row {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+
+  .details-row strong {
+    text-align: left;
+  }
+}
+
+.your-quote-card {
+  padding: 26px 30px;
+  text-align: left;
+}
+
+.your-quote-number {
+  margin: 14px 0 10px;
+  color: #08788b;
+  font-size: 14px;
+  text-align: center;
+}
+
+.your-quote-number strong {
+  font-weight: 700;
+}
+
+.your-quote-premium {
+  margin: 8px 0 18px;
+  overflow: hidden;
+  border: 1px solid #d7e4e5;
+  border-radius: 10px;
+}
+
+.your-quote-premium-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 20px;
+  background: linear-gradient(110deg, #075262, #08a5a3);
+  color: #ffffff;
+  text-align: center;
+}
+
+.your-quote-premium-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.your-quote-premium-amount {
+  margin: 4px 0 2px;
+  font-size: 32px;
+  line-height: 1.15;
+}
+
+.your-quote-premium-note {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.your-quote-breakdown {
+  padding: 14px 20px 16px;
+  background: linear-gradient(110deg, #d9f0f2, #e5f7f6);
+}
+
+.your-quote-breakdown-title {
+  margin-bottom: 6px;
+  color: #153b66;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.your-quote-breakdown-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(15, 118, 110, 0.12);
+  color: #374151;
+  font-size: 13px;
+}
+
+.your-quote-breakdown-row:last-child {
+  border-bottom: none;
+}
+
+.your-quote-breakdown-row strong {
+  color: #1f2937;
+}
+
+.your-quote-breakdown-total {
+  margin-top: 3px;
+  padding-top: 8px;
+  border-top: 1px solid #cbd5d1;
+  font-weight: 700;
+}
+
+.your-quote-breakdown-total span,
+.your-quote-breakdown-total strong {
+  color: #0f766e;
+  font-size: 14px;
+}
+
+.your-quote-excess-list {
+  padding: 6px 18px;
+  background: #f3f4f6;
+}
+
+.your-quote-excess-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid #e1e4e8;
+  color: #374151;
+  font-size: 13px;
+}
+
+.your-quote-excess-row:last-child {
+  border-bottom: none;
+}
+
+.your-quote-excess-row strong {
+  margin-left: 20px;
+  color: #1f2937;
+  text-align: right;
+}
+
+.your-quote-cover-list {
+  padding: 6px 18px 10px;
+}
+
+.your-quote-cover-row {
+  display: grid;
+  grid-template-columns:
+    24px
+    260px
+    minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  padding: 9px 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 13px;
+}
+
+.your-quote-cover-row:last-child {
+  border-bottom: none;
+}
+
+.your-quote-cover-tick {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #e6f7fb;
+  color: #079cc0;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.your-quote-cover-row > strong {
+  color: #1f2937;
+  font-size: 13px;
+  text-align: left;
+}
+
+.your-quote-cover-value {
+  color: #374151;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.your-quote-cover-value small {
+  display: block;
+  margin-top: 3px;
+  color: #6b7280;
+  font-size: 11.5px;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.your-quote-period {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  font-size: 13px;
+}
+
+.your-quote-period label,
+.your-quote-period span {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.your-quote-period input {
+  width: 155px;
+  padding: 7px 9px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.your-quote-period input:focus {
+  border-color: #079cc0;
+}
+
+.your-quote-summary-list {
+  padding: 6px 18px 10px;
+}
+
+.your-quote-pds-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 14px 0;
+  border-top: 1px solid #f0f0f0;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.your-quote-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.your-quote-actions-left,
+.your-quote-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.your-quote-add-boat-btn {
+  padding: 10px 20px;
+  border: 1px solid #0f766e;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0f766e;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.your-quote-add-boat-btn:hover {
+  background: #ecfdf5;
+}
+
+.your-quote-buy-btn {
+  padding: 10px 26px;
+  border: none;
+  border-radius: 8px;
+  background: #16a34a;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.your-quote-buy-btn:hover {
+  background: #15803d;
+}
+
+@media (max-width: 760px) {
+  .your-quote-cover-row {
+    grid-template-columns:
+      24px
+      minmax(0, 1fr);
+  }
+
+  .your-quote-cover-value {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .your-quote-cover-value small {
+    text-align: left;
+  }
+
+  .your-quote-period {
+    flex-wrap: wrap;
+  }
+
+  .your-quote-period input {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .your-quote-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .your-quote-actions-left,
+  .your-quote-actions-right {
+    justify-content: space-between;
+  }
+}
+
+/* Email Quote and Buy Online while a quote is referred */
+.referral-disabled,
+.referral-disabled:hover {
+  background: #d1d5db !important;
+  border-color: #d1d5db !important;
+  color: #8b939c !important;
+
+  cursor: not-allowed !important;
+
+  transform: none !important;
+  box-shadow: none !important;
+
+  opacity: 0.75;
+}

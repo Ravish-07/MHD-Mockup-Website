@@ -553,10 +553,6 @@ body {
   flex-wrap: wrap;
 }
 /* ===== YOUR QUOTE ===== */
-.summary-list {
-  display: flex;
-  flex-direction: column;
-}
 .summary-row {
   display: flex;
   justify-content: space-between;
@@ -579,32 +575,6 @@ body {
   text-align: right;
   flex: 1;
 }
-.pds-note {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  font-size: 12px;
-  color: #6b7280;
-  margin-top: 18px;
-  padding-top: 14px;
-  border-top: 1px solid #f0f0f0;
-}
-.pds-note a {
-  color: #0f766e;
-}
-.quote-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20px;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.quote-actions-left,
-.quote-actions-right {
-  display: flex;
-  gap: 10px;
-}
 .email-btn {
   background: #0891b2;
   color: #fff;
@@ -617,81 +587,6 @@ body {
 }
 .email-btn:hover {
   background: #0e7490;
-}
-.buy-btn {
-  background: #16a34a;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 26px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-.buy-btn:hover {
-  background: #15803d;
-}
-/* ===== YOUR QUOTE - UPDATED LAYOUT ===== */
-.quote-summary-card {
-  padding: 26px 30px;
-}
-/* Tick style cover details */
-.quote-cover-list {
-  display: flex;
-  flex-direction: column;
-}
-/* Section headings */
-.quote-summary-card .subsection-label {
-  margin: 16px 0 6px;
-  font-size: 14px;
-}
-/* Period of Insurance - one line */
-.policy-period-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  margin-top: 18px;
-  padding: 12px 0;
-
-  border-top: 1px solid #e5e7eb;
-  border-bottom: 1px solid #e5e7eb;
-
-  font-size: 13px;
-}
-.policy-period-row > strong {
-  color: #153b66;
-  margin-right: auto;
-  font-size: 14px;
-}
-.policy-period-row > span {
-  color: #6b7280;
-  font-weight: 600;
-}
-.policy-period-row input {
-  width: 155px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  padding: 7px 9px;
-  font-family: inherit;
-  font-size: 13px;
-  outline: none;
-}
-.policy-period-row input:focus {
-  border-color: #079cc0;
-}
-/* Make vessel/skipper summary compact */
-.quote-summary-card .summary-row {
-  padding: 6px 0;
-}
-.quote-summary-card .summary-label {
-  font-weight: 600;
-  color: #1f2937;
-}
-/* Bottom actions */
-.quote-summary-card .quote-actions {
-  padding-top: 16px;
-  border-top: 1px solid #f0f0f0;
 }
 /* ===== EMAIL QUOTE REVIEW MODAL ===== */
 .quote-modal-overlay {
@@ -1704,78 +1599,6 @@ body.modal-open {
 .decline-contact-row span:last-child {
   text-align: left;
 }
-/* ===== YOUR QUOTE - EXCESSES ===== */
-.excess-panel {
-  margin: 18px 0;
-  border: 1px solid #d8dde3;
-  border-radius: 10px;
-  overflow: hidden;
-}
-.excess-heading {
-  background: #d8dde3;
-  color: #374151;
-  padding: 10px 18px;
-  font-size: 14px;
-  font-weight: 700;
-}
-.excess-body {
-  background: #f3f4f6;
-  padding: 6px 18px;
-}
-.excess-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  color: #374151;
-  font-size: 13px;
-  border-bottom: 1px solid #e1e4e8;
-}
-.excess-row:last-child {
-  border-bottom: none;
-}
-.excess-row span {
-  font-weight: 400;
-}
-.excess-row strong {
-  font-weight: 700;
-  color: #1f2937;
-}
-/* ===== YOUR QUOTE - COVER SUMMARY ===== */
-.cover-summary-panel {
-  margin: 18px 0;
-  border: 1px solid #c8e4ec;
-  border-radius: 10px;
-  overflow: hidden;
-  background: #ffffff;
-}
-.cover-summary-heading {
-  background: #e7f5f8;
-  color: #08788b;
-  padding: 10px 18px;
-  font-size: 14px;
-  font-weight: 700;
-}
-.cover-summary-panel .quote-cover-list {
-  padding: 6px 18px 10px;
-  background: #ffffff;
-}
-.quote-summary-card .summary-value {
-  text-align: right;
-}
-/* ===== QUOTE NUMBER ===== */
-.quote-number-display {
-  text-align: center;
-  margin: 14px 0 10px;
-  color: #08788b;
-  font-size: 14px;
-}
-.quote-number-display strong {
-  font-weight: 700;
-}
-.quote-number-display span {
-  font-weight: 400;
-}
 /* ===== PERIOD / VESSEL INFO PANELS ===== */
 .quote-info-panel {
   margin: 18px 0;
@@ -1791,16 +1614,7 @@ body.modal-open {
   font-size: 14px;
   font-weight: 700;
 }
-/* Period of Insurance inside panel */
-.quote-info-panel .policy-period-row {
-  margin: 0;
-  padding: 12px 18px;
-  border: none;
-}
 /* Vessel Details inside panel */
-.quote-info-panel .summary-list {
-  padding: 6px 18px 10px;
-}
 .quote-info-panel .summary-row {
   padding: 8px 0;
 }
@@ -1826,29 +1640,6 @@ body.modal-open {
   padding: 20px 22px;
   margin: 18px 0;
 }
-
-.quote-premium-pending {
-  text-align: center;
-  color: #6b7280;
-}
-.quote-premium-pending-sub {
-  font-size: 13px;
-  color: #9ca3af;
-  margin-top: 4px;
-}
-
-.quote-premium-rows {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-.quote-premium-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  color: #374151;
-}
 .quote-premium-total {
   display: flex;
   justify-content: space-between;
@@ -1858,17 +1649,6 @@ body.modal-open {
   font-size: 20px;
   font-weight: 700;
   color: #09285c;
-}
-.quote-premium-instalment {
-  margin-top: 10px;
-  font-size: 13.5px;
-  color: #08788b;
-}
-.quote-premium-instalment strong { color: #09285c; }
-.quote-premium-broker {
-  margin-top: 8px;
-  font-size: 12.5px;
-  color: #9ca3af;
 }
 
 .quote-notice {
@@ -1881,21 +1661,6 @@ body.modal-open {
   margin-bottom: 14px;
 }
 
-/* ---------- Referral banner (inline, on the quote screen) ---------- */
-.referral-banner {
-  background: #fff7ed;
-  border: 1px solid #fdba74;
-  border-left: 4px solid #ea580c;
-  border-radius: 10px;
-  padding: 14px 18px;
-  margin: 16px 0;
-  font-size: 13.5px;
-  color: #7c2d12;
-}
-.referral-banner strong { display: block; margin-bottom: 6px; color: #9a3412; }
-.referral-banner ul { margin: 0; padding-left: 18px; }
-.referral-banner li { margin-bottom: 2px; }
-
 /* ---------- Quote info panels reused for extra sections ---------- */
 .quote-info-panel { margin-top: 16px; }
 
@@ -1904,62 +1669,9 @@ body.modal-open {
    label + value + gap add up to more than the row's width and long cover
    sentences (geographical limits, liability wording) overflow past the card
    edge instead of wrapping. Give the value room to shrink and wrap instead. */
-.quote-summary-card .summary-label {
-  flex: 0 0 38%;
-}
-.quote-summary-card .summary-value {
-  flex: 1 1 auto;
-  max-width: none;
+.summary-value {
   min-width: 0;
   word-break: break-word;
-}
-.summary-value,
-.quote-cover-list .summary-value,
-.excess-row span:last-child {
-  min-width: 0;
-  word-break: break-word;
-}
-
-.wreck-toggle-row {
-  align-items: center;
-  padding-top: 10px;
-  margin-top: 6px;
-  border-top: 1px dashed #e5e7eb;
-}
-
-.info-dot {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 6px;
-  color: #08788b;
-  cursor: pointer;
-  font-size: 13px;
-}
-
-.mini-toggle {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 22px;
-  flex-shrink: 0;
-}
-.mini-toggle input { opacity: 0; width: 0; height: 0; }
-.mini-toggle span {
-  position: absolute; inset: 0; cursor: pointer;
-  background: #d1d5db; border-radius: 999px; transition: 0.15s;
-}
-.mini-toggle span::before {
-  content: ""; position: absolute; height: 16px; width: 16px;
-  left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: 0.15s;
-}
-.mini-toggle input:checked + span { background: #0f766e; }
-.mini-toggle input:checked + span::before { transform: translateX(18px); }
-
-.period-hint {
-  margin-top: 8px;
-  font-size: 12.5px;
-  color: #9ca3af;
 }
 
 /* ---------- Address field (lookup / manual toggle) ---------- */
@@ -2437,10 +2149,25 @@ body.modal-open {
   transform: translateY(-50%);
 }
 
+/* Recovery or removal of wreck choice on Your Quote */
+.your-quote-cover-select {
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.your-quote-cover-select:focus {
+  border-color: #0f766e;
+}
+
 /* Every dropdown uses the same grey background. Kept last so it wins over the white text-box styles above. */
 select,
 .question-select,
 .additional-field select,
-.skipper-row select {
+.skipper-row select,
+.your-quote-cover-select {
   background-color: #efefef;
 }
