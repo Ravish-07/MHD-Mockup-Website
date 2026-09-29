@@ -1,5 +1,5 @@
-// Shared by the Jet Ski and Comprehensive Pleasure Craft quote flows: the address field, step
-// navigation, and the checkout steps (Your Details = step-7, Payment = step-8, Confirmation = step-9).
+// Shared by the quote flows: the address field and step navigation (Jet Ski and Comprehensive Pleasure
+// Craft), Your Details (step 7, same two flows) and Payment + Confirmation (steps 8 and 9, all three flows).
 
 const STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA'];
 
@@ -178,18 +178,7 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
     attachments: []
   };
 
-  quoteState.payment = {
-    method: '',
-    cardType: '',
-    cardholderName: '',
-    cardNumber: '',
-    expiryMonth: '',
-    expiryYear: '',
-    ccv: ''
-  };
-
   const info = quoteState.additionalInformation;
-  const payment = quoteState.payment;
 
   // ---------- YOUR DETAILS: CUSTOMER ----------
 
@@ -414,6 +403,37 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
     checkYourDetailsComplete();
   }
 
+  const { showPaymentPage } = setupPayment({
+    quoteState,
+    bypassValidation,
+    policyName,
+    getAmountDue: () => paymentBaseAmount,
+    getQuoteNumber,
+    showStep: showQuoteStep
+  });
+
+  byId('continueBtn7').addEventListener('click', showPaymentPage);
+  byId('backBtn8').addEventListener('click', showYourDetails);
+
+  return { showYourDetails, showPaymentPage };
+}
+
+// Payment (step 8) and Confirmation (step 9). showStep(sectionNumber) displays a step of the calling flow.
+function setupPayment({ quoteState, bypassValidation, policyName, getAmountDue, getQuoteNumber, showStep }) {
+  const byId = id => document.getElementById(id);
+
+  quoteState.payment = {
+    method: '',
+    cardType: '',
+    cardholderName: '',
+    cardNumber: '',
+    expiryMonth: '',
+    expiryYear: '',
+    ccv: ''
+  };
+
+  const payment = quoteState.payment;
+
   // ---------- PAYMENT ----------
 
   const paymentMethodSelection = byId('paymentMethodSelection');
@@ -425,7 +445,8 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
   const ccvInput = byId('paymentCCV');
 
   function showPaymentPage() {
-    showQuoteStep(8);
+    showStep(8);
+    updatePaymentTotals();
     paymentMethodSelection.style.display = 'block';
     paymentEntrySection.style.display = 'none';
   }
@@ -472,8 +493,8 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
   }
 
   function updatePaymentTotals() {
-    payment.amountDue = paymentBaseAmount;
-    payment.surcharge = paymentBaseAmount * getCardSurchargeRate();
+    payment.amountDue = getAmountDue();
+    payment.surcharge = payment.amountDue * getCardSurchargeRate();
     payment.totalPaid = payment.amountDue + payment.surcharge;
 
     byId('paymentAmountDue').textContent = formatPaymentMoney(payment.amountDue);
@@ -543,6 +564,8 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
   }
 
   function populatePaymentConfirmation() {
+    const info = quoteState.additionalInformation;
+
     byId('confirmationEmailNote').textContent = info.email
       ? `Confirmation documents will be sent to ${info.email}.`
       : 'Your confirmation documents are ready.';
@@ -579,7 +602,7 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
   payNowBtn.addEventListener('click', () => {
     updatePaymentTotals();
     populatePaymentConfirmation();
-    showQuoteStep(CONFIRMATION_SECTION);
+    showStep(CONFIRMATION_SECTION);
   });
 
   byId('homeBtn').addEventListener('click', () => {
@@ -592,10 +615,7 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
     showConfirmationMessage('Your Certificate of Currency has been emailed to you.');
   });
 
-  byId('continueBtn7').addEventListener('click', showPaymentPage);
-  byId('backBtn8').addEventListener('click', showYourDetails);
-
   checkPaymentComplete();
 
-  return { showYourDetails, showPaymentPage };
+  return { showPaymentPage };
 }

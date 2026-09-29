@@ -385,10 +385,6 @@
           <span id="quoteNumberText"></span>
         </div>
 
-        <div class="quote-notice" id="quoteIncompleteNotice" style="display:none;">
-          Some vessel or experience details are still missing. Go back and complete every vessel to see your premium.
-        </div>
-
         <div class="your-quote-premium">
           <div class="your-quote-premium-hero">
             <span class="your-quote-premium-label">Annual Premium</span>
@@ -764,142 +760,487 @@
     </section>
 
 
-    <!-- STEP 6 (progress): PAYMENT -->
-    <section class="quote-step form-step" id="tp-step-8" style="display:none;">
-      <div class="form-card payment-card">
+    <!-- PAYMENT -->
+    <section
+    class="quote-step form-step"
+    id="tp-step-8"
+    style="display:none;"
+    >
+    <div class="form-card payment-card">
 
+        <!-- HEADER -->
         <div class="form-card-header">
-          <div class="vessel-icon"><span>💳</span></div>
-          <div>
-            <h3 class="vessel-title">Complete Your Payment</h3>
-            <p class="form-card-sub">Please select how you would like to pay for your policy.</p>
+
+        <div class="vessel-icon">
+            <span>💳</span>
+        </div>
+
+        <div>
+            <h3 class="vessel-title">
+            Complete Your Payment
+            </h3>
+
+            <p class="form-card-sub">
+            Please select how you would like to pay
+            for your policy.
+            </p>
+        </div>
+
+        </div>
+
+        <!-- PREMIUM SUMMARY -->
+        <div class="your-quote-premium">
+          <div class="your-quote-premium-hero">
+            <span class="your-quote-premium-label">Annual Premium</span>
+            <strong class="your-quote-premium-amount" id="paymentAnnualPremium"></strong>
+            <span class="your-quote-premium-note">Total premium payable</span>
+          </div>
+          <div class="your-quote-breakdown">
+            <div class="your-quote-breakdown-title">Insurance Premium Breakdown</div>
+            <div class="your-quote-breakdown-row"><span>Total Base Premium</span><strong id="paymentBasePremium"></strong></div>
+            <div class="your-quote-breakdown-row"><span>GST</span><strong id="paymentGst"></strong></div>
+            <div class="your-quote-breakdown-row"><span>Stamp Duty</span><strong id="paymentStampDuty"></strong></div>
+            <div class="your-quote-breakdown-row"><span>Administration Fee</span><strong id="paymentAdminFee"></strong></div>
+            <div class="your-quote-breakdown-row"><span>Fee GST</span><strong id="paymentFeeGst"></strong></div>
+            <div class="your-quote-breakdown-row your-quote-breakdown-total"><span>Total Premium Payable</span><strong id="paymentTotalPremium"></strong></div>
+            <div class="your-quote-breakdown-row"><span>Pay in 10 Instalments</span><strong id="paymentInstalment"></strong></div>
           </div>
         </div>
 
-        <div id="paymentPremiumHost"></div>
-
+        <!-- PAYMENT METHOD SELECTION -->
         <div id="paymentMethodSelection">
-          <p class="subsection-label">How Would You Like to Pay?</p>
 
-          <div class="payment-method-grid payment-method-grid-two">
-            <button type="button" class="payment-method-option" data-payment-method="card">
-              <span class="payment-method-icon">💳</span>
-              <span class="payment-method-copy">
-                <strong>Credit / Debit Card</strong>
-                <small>Pay the full premium today</small>
-              </span>
+        <p class="subsection-label">
+            How Would You Like to Pay?
+        </p>
+
+        <div class="payment-method-grid">
+
+            <button
+            type="button"
+            class="payment-method-option"
+            data-payment-method="card"
+            >
+            <span class="payment-method-icon">
+                💳
+            </span>
+
+            <span class="payment-method-copy">
+                <strong>
+                Credit / Debit Card
+                </strong>
+
+                <small>
+                Pay securely using your card
+                </small>
+            </span>
             </button>
 
-            <button type="button" class="payment-method-option" data-payment-method="instalments">
-              <span class="payment-method-icon">10</span>
-              <span class="payment-method-copy">
-                <strong>Monthly Instalments</strong>
-                <small id="instalmentOptionText">Pay in 10 monthly instalments</small>
-              </span>
+            <button
+            type="button"
+            class="payment-method-option"
+            data-payment-method="stripe"
+            >
+            <span class="payment-method-icon">
+                S
+            </span>
+
+            <span class="payment-method-copy">
+                <strong>Stripe</strong>
+
+                <small>
+                Pay securely through Stripe
+                </small>
+            </span>
             </button>
+
+            <button
+            type="button"
+            class="payment-method-option"
+            data-payment-method="afterpay"
+            >
+            <span class="payment-method-icon">
+                4
+            </span>
+
+            <span class="payment-method-copy">
+                <strong>Afterpay</strong>
+
+                <small>
+                Pay in 4 instalments
+                </small>
+            </span>
+            </button>
+
+        </div>
+
+        <div class="payment-selection-actions">
+
+            <button
+            type="button"
+            class="back-btn"
+            id="backBtn8"
+            >
+            ← Back
+            </button>
+
+            <button
+            type="button"
+            class="continue-btn"
+            id="continueToPaymentBtn"
+            disabled
+            >
+            Continue to Payment →
+            </button>
+
+        </div>
+
+        </div>
+
+        <!-- PAYMENT ENTRY -->
+        <div
+        id="paymentEntrySection"
+        class="payment-entry-section"
+        style="display:none;"
+        >
+
+        <p class="subsection-label">
+            Payment Details
+        </p>
+
+        <div class="payment-entry-grid">
+
+            <div class="additional-field">
+
+            <label for="paymentCardType">
+                Card Type
+                <span class="required">*</span>
+            </label>
+
+            <select id="paymentCardType">
+
+                <option value="" disabled selected>
+                Select
+                </option>
+
+                <option value="visa-debit">
+                Visa Debit
+                </option>
+
+                <option value="visa-credit">
+                Visa Credit
+                </option>
+
+                <option value="mastercard-debit">
+                MasterCard Debit
+                </option>
+
+                <option value="mastercard-credit">
+                MasterCard Credit
+                </option>
+
+                <option value="mastercard-international">
+                MasterCard International
+                </option>
+
+                <option value="amex">
+                American Express
+                </option>
+
+            </select>
+
+            </div>
+
+            <div class="additional-field">
+
+            <label for="paymentCardholderName">
+                Cardholder Name
+                <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                id="paymentCardholderName"
+                autocomplete="cc-name"
+                placeholder="Name on card"
+            >
+
+            </div>
+
+            <div
+            class="additional-field
+            additional-field-full"
+            >
+
+            <label for="paymentCardNumber">
+                Card Number
+                <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                id="paymentCardNumber"
+                inputmode="numeric"
+                autocomplete="cc-number"
+                maxlength="19"
+                placeholder="0000 0000 0000 0000"
+            >
+
+            </div>
+
+            <div class="additional-field">
+
+            <label for="paymentExpiryMonth">
+                Expiry Month
+                <span class="required">*</span>
+            </label>
+
+            <select id="paymentExpiryMonth">
+
+                <option value="" disabled selected>
+                Month
+                </option>
+
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+
+            </select>
+
+            </div>
+
+            <div class="additional-field">
+
+            <label for="paymentExpiryYear">
+                Expiry Year
+                <span class="required">*</span>
+            </label>
+
+            <select id="paymentExpiryYear">
+
+                <option value="" disabled selected>
+                Year
+                </option>
+
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+                <option value="2030">2030</option>
+                <option value="2031">2031</option>
+                <option value="2032">2032</option>
+                <option value="2033">2033</option>
+                <option value="2034">2034</option>
+                <option value="2035">2035</option>
+                <option value="2036">2036</option>
+
+            </select>
+
+            </div>
+
+            <div
+            class="additional-field
+            payment-ccv-field"
+            >
+
+            <label for="paymentCCV">
+                CCV
+                <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                id="paymentCCV"
+                inputmode="numeric"
+                autocomplete="cc-csc"
+                maxlength="4"
+                placeholder="CCV"
+            >
+
+            </div>
+
+        </div>
+
+        <!-- PAYMENT TOTAL -->
+        <div
+          class="payment-total-strip"
+          id="paymentTotalStrip"
+        >
+          <div class="payment-total-row">
+            <span>Amount Due Today</span>
+            <span id="paymentAmountDue"></span>
           </div>
 
-          <div class="payment-selection-actions">
-            <button type="button" class="back-btn" id="backBtn7">← Back</button>
-            <button type="button" class="continue-btn" id="continueToPaymentBtn" disabled>Continue to Payment →</button>
+          <div class="payment-total-row payment-total-row-muted">
+            <span>Card Surcharge</span>
+            <span id="paymentSurcharge">$0.00</span>
+          </div>
+
+          <div class="payment-total-row payment-total-row-final">
+            <span>Total Paid Including Surcharge</span>
+            <strong id="paymentTotalPaid"></strong>
           </div>
         </div>
 
-        <div id="paymentEntrySection" class="payment-entry-section" style="display:none;">
+        <!-- PAYMENT ACTIONS -->
+        <div class="payment-entry-actions">
 
-          <p class="subsection-label">Payment Details</p>
-
-          <div class="payment-entry-grid">
-
-            <div class="additional-field">
-              <label for="paymentCardType">Card Type <span class="required">*</span></label>
-              <select id="paymentCardType"></select>
-            </div>
-
-            <div class="additional-field">
-              <label for="paymentCardholderName">Cardholder Name <span class="required">*</span></label>
-              <input type="text" id="paymentCardholderName" placeholder="Name on card" autocomplete="cc-name">
-            </div>
-
-            <div class="additional-field additional-field-full">
-              <label for="paymentCardNumber">Card Number <span class="required">*</span></label>
-              <input type="text" id="paymentCardNumber" inputmode="numeric" autocomplete="cc-number" placeholder="0000 0000 0000 0000">
-            </div>
-
-            <div class="additional-field">
-              <label for="paymentExpiryMonth">Expiry Month <span class="required">*</span></label>
-              <select id="paymentExpiryMonth"></select>
-            </div>
-
-            <div class="additional-field">
-              <label for="paymentExpiryYear">Expiry Year <span class="required">*</span></label>
-              <select id="paymentExpiryYear"></select>
-            </div>
-
-            <div class="additional-field payment-ccv-field">
-              <label for="paymentCCV">CCV <span class="required">*</span></label>
-              <input type="text" id="paymentCCV" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="CCV">
-            </div>
-
-          </div>
-
-          <div class="payment-total-strip" id="paymentTotalStrip"></div>
-
-          <div class="payment-entry-actions">
-            <button type="button" class="back-btn" id="paymentEntryBackBtn">← Back</button>
+            <button
+            type="button"
+            class="back-btn"
+            id="paymentEntryBackBtn"
+            >
+            ← Back
+            </button>
 
             <div class="payment-entry-actions-right">
-              <button type="button" class="payment-secondary-btn" id="requestPaymentLinkBtn">Request Payment Link</button>
-              <button type="button" class="payment-cancel-btn" id="cancelPaymentBtn">Cancel Payment</button>
-              <button type="button" class="payment-pay-btn" id="payNowBtn">Pay Now</button>
+
+            <button
+                type="button"
+                class="payment-secondary-btn"
+                id="requestPaymentLinkBtn"
+            >
+                Request Payment Link
+            </button>
+
+            <button
+                type="button"
+                class="payment-cancel-btn"
+                id="cancelPaymentBtn"
+            >
+                Cancel Payment
+            </button>
+
+            <button
+                type="button"
+                class="pay-now-btn"
+                id="payNowBtn"
+                disabled
+            >
+                Pay Now
+            </button>
+
             </div>
-          </div>
 
         </div>
 
-      </div>
+        </div>
+
+    </div>
     </section>
 
 
-    <!-- CONFIRMATION -->
-    <section class="quote-step form-step" id="tp-step-9" style="display:none;">
+    <!-- PAYMENT CONFIRMATION -->
+    <section
+      class="quote-step form-step"
+      id="tp-step-9"
+      style="display:none;"
+    >
       <div class="form-card confirmation-card">
 
         <div class="confirmation-hero">
-          <div class="confirmation-tick"><span>✓</span></div>
-          <h2>Your payment has been successfully processed.</h2>
+
+          <div class="confirmation-tick">
+            <span>✓</span>
+          </div>
+
+          <h2>
+            Your payment has been successfully processed.
+          </h2>
+
           <div class="review-title-accent"></div>
-          <p>Thank you for choosing to insure your vessel with Coast.</p>
-          <p class="confirmation-email-note" id="confirmationEmailNote"></p>
+
+          <p>
+            Thank you for choosing to insure your vessel with Coast.
+          </p>
+
+          <p
+            class="confirmation-email-note"
+            id="confirmationEmailNote"
+          ></p>
+
         </div>
 
         <div class="confirmation-grid">
 
-          <div class="quote-info-panel">
-            <div class="quote-info-heading">Policy Summary</div>
-            <div class="confirmation-list" id="policySummaryList"></div>
+          <div class="details-panel">
+
+            <div class="details-panel-heading">
+              Policy Summary
+            </div>
+
+            <div
+              class="confirmation-list"
+              id="policySummaryList"
+            ></div>
+
           </div>
 
-          <div class="quote-info-panel">
-            <div class="quote-info-heading">Payment Details</div>
-            <div class="confirmation-list" id="paymentSummaryList"></div>
+          <div class="details-panel">
+
+            <div class="details-panel-heading">
+              Payment Details
+            </div>
+
+            <div
+              class="confirmation-list"
+              id="paymentSummaryList"
+            ></div>
+
           </div>
 
         </div>
 
         <div class="confirmation-actions">
-          <button type="button" class="back-btn" id="homeBtn">Home</button>
-          <button type="button" class="email-btn" id="receiptBtn">Receipt</button>
-          <button type="button" class="email-btn" id="certificateBtn">Certificate of Currency</button>
+
+          <button
+            type="button"
+            class="back-btn"
+            id="homeBtn"
+          >
+            Home
+          </button>
+
+          <button
+            type="button"
+            class="secondary-action-btn"
+            id="receiptBtn"
+          >
+            Receipt
+          </button>
+
+          <button
+            type="button"
+            class="secondary-action-btn"
+            id="certificateBtn"
+          >
+            Certificate of Currency
+          </button>
+
         </div>
 
-        <p class="confirmation-toast" id="confirmationToast" style="display:none;"></p>
+        <p
+          class="confirmation-toast"
+          id="confirmationToast"
+          style="display:none;"
+        ></p>
 
       </div>
     </section>
 
+
   </main>
 
+  <script src="js/quote-checkout.js"></script>
   <script src="js/TPCP.js"></script>
 </body>
 </html>

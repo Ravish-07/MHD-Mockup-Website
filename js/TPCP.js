@@ -339,15 +339,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Built exactly as written. Set to false to flip Category 2 to "0 = Refer" if that is a typo.
   const CAT2_EXPERIENCE_AS_WRITTEN = true;
 
-  const CARD_TYPES = [
-    { value: 'visa-debit',               label: 'Visa Debit (0.4% transaction fee)',               rate: 0.004 },
-    { value: 'visa-credit',              label: 'Visa Credit (1.50% transaction fee)',             rate: 0.015 },
-    { value: 'mastercard-debit',         label: 'MasterCard Debit (0.40% transaction fee)',        rate: 0.004 },
-    { value: 'mastercard-credit',        label: 'MasterCard Credit (1.2% transaction fee)',        rate: 0.012 },
-    { value: 'mastercard-international', label: 'MasterCard International (4.8% transaction fee)', rate: 0.048 },
-    { value: 'amex',                     label: 'American Express (1.5% transaction fee)',         rate: 0.015 }
-  ];
-
   const PDS_URL = '#'; // TODO: link to the Third Party Only Pleasure Craft PDS
 
   // Tooltip copy taken from the cell comments on TPO PLEASURE CRAFT
@@ -413,11 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
       interestedParty: '',
       attachments: []
     },
-    payment: {
-      method: '', cardType: '', cardholderName: '', cardNumber: '', expiryMonth: '', expiryYear: '', ccv: ''
-    },
-    referral: { required: false, reasons: [] },
-    policy: null
+    referral: { required: false, reasons: [] }
   };
 
   const currentVessel = () => quoteState.vessels[quoteState.activeVessel];
@@ -1960,6 +1947,76 @@ $('additionalBoatsList')
   }
 
 
+  // ---------- EXAMPLE DATA (validation bypass only) ----------
+  // With DEV_BYPASS_VALIDATION on, a tester can skip fields. Blank answers are filled with this example
+  // (a plain Category 1 boat with no referral triggers) so the quote, payment and confirmation show real values.
+
+  const EXAMPLE_VESSEL_DETAILS = {
+    hullMake: 'Quintrex',
+    hullModel: '481 Coast Runner',
+    hullYearBuilt: '2018',
+    hullConstruction: 'Aluminium',
+    hullLength: '4.8',
+    hullLengthUnit: 'm',
+    hullType: 'Centre Console',
+    numMotors: '1',
+    motorMake: 'Yamaha',
+    motorType: 'Outboard Petrol',
+    purchaseDate: '2020-03-01',
+    purchasePrice: '$25,000',
+    storageMethod: 'Trailer - Garage / Shed',
+    locationAddress: '12 Harbour Road, Fremantle WA 6160',
+    locationAddressPostcode: '6160',
+    liabilityLimit: '10000000',
+    waterSkiing: 'No'
+  };
+
+  const EXAMPLE_SKIPPER = {
+    name: 'Alex Morgan',
+    dob: '1985-06-15',
+    licenceDate: '2010-01-20',
+    yearsOwning: '5+',
+    yearsSizeType: '5+',
+    previousBoats: '4.5m aluminium runabout, 2010-2018'
+  };
+
+  const EXAMPLE_CUSTOMER = {
+    firstName: 'Alex',
+    lastName: 'Morgan',
+    insuredName: 'Alex Morgan',
+    email: 'alex.morgan@example.com',
+    phone: '0400 000 000',
+    residentialAddress: '12 Harbour Road, Fremantle WA 6160'
+  };
+
+  function fillBlanks(target, example) {
+    Object.entries(example).forEach(([key, value]) => {
+      if (target[key] === undefined || target[key] === '') target[key] = value;
+    });
+  }
+
+  function fillExampleQuoteData() {
+    if (!DEV_BYPASS_VALIDATION) return;
+
+    quoteState.vessels.forEach((vessel, index) => {
+      fillBlanks(vessel.details, EXAMPLE_VESSEL_DETAILS);
+      if (index > 0 && !vessel.hasDifferentSkipper) vessel.hasDifferentSkipper = 'no';
+
+      const experience = vessel.experience;
+      fillBlanks(experience, { numOwners: '1', numSkippers: String(Math.min(experience.skippers.length, 4)) });
+      fillBlanks(experience.past5Years, { cancelledRefused: 'no', madeClaims: 'no' });
+      fillBlanks(experience.ever, { chargedConvicted: 'no', lostLicence: 'no' });
+      experience.skippers.forEach((skipper, skipperIndex) => {
+        fillBlanks(skipper, { ...EXAMPLE_SKIPPER, name: skipperIndex === 0 ? EXAMPLE_SKIPPER.name : `Example Skipper ${skipperIndex + 1}` });
+      });
+    });
+  }
+
+  function fillExampleCustomerData() {
+    if (DEV_BYPASS_VALIDATION) fillBlanks(quoteState.additionalInformation, EXAMPLE_CUSTOMER);
+  }
+
+
   // ---------- STEP 5 (progress step 4): YOUR QUOTE ----------
 
   function policyPeriodDefaults() {
@@ -2119,8 +2176,6 @@ $('additionalBoatsList')
 
     const combined = combineQuote();
     const referred = allReferralReasons().referReasons.length > 0;
-
-    $('quoteIncompleteNotice').style.display = combined.allCategorised || referred ? 'none' : 'block';
 
     renderQuotePremium(combined, referred);
     renderExcess(combined);
@@ -2415,177 +2470,32 @@ $('additionalBoatsList')
   }
 
 
-  // ---------- STEP 7 (progress step 6): PAYMENT ----------
+  // ---------- STEP 7 (progress step 6): PAYMENT AND CONFIRMATION (see quote-checkout.js) ----------
 
-  function populatePaymentSelects() {
-    $('paymentCardType').innerHTML =
-      '<option value="" disabled selected>Select</option>' +
-      CARD_TYPES.map(c => `<option value="${c.value}">${esc(c.label)}</option>`).join('');
-
-    $('paymentExpiryMonth').innerHTML =
-      '<option value="" disabled selected>Select</option>' +
-      Array.from({ length: 12 }, (_, i) => pad(i + 1)).map(m => `<option value="${m}">${m}</option>`).join('');
-
-    const startYear = new Date().getFullYear();
-    $('paymentExpiryYear').innerHTML =
-      '<option value="" disabled selected>Select</option>' +
-      Array.from({ length: 11 }, (_, i) => startYear + i).map(y => `<option value="${y}">${y}</option>`).join('');
-  }
-  populatePaymentSelects();
-
-  function renderPaymentMethodStep() {
+  function renderPaymentPremium() {
     const combined = combineQuote();
-    $('instalmentOptionText').textContent =
-      combined.allCategorised ? `Pay in ${INSTALMENTS} monthly instalments of ${money(combined.instalment)}` : `Pay in ${INSTALMENTS} monthly instalments`;
-
-    $('paymentPremiumHost').innerHTML = `
-      <div class="quote-premium-panel">
-        <div class="quote-premium-total">
-          <span>Total Premium Payable</span>
-          <span>${money(combined.totalPremium)}</span>
-        </div>
-      </div>`;
-
-    $('paymentMethodSelection').style.display = '';
-    $('paymentEntrySection').style.display = 'none';
-
-    qsa('.payment-method-option').forEach(btn => {
-      btn.classList.toggle('selected', btn.dataset.paymentMethod === quoteState.payment.method);
-    });
-    $('continueToPaymentBtn').disabled = DEV_BYPASS_VALIDATION ? false : !quoteState.payment.method;
+    [
+      ['paymentAnnualPremium', combined.totalPremium],
+      ['paymentBasePremium', combined.basePremium],
+      ['paymentGst', combined.gst],
+      ['paymentStampDuty', combined.stampDuty],
+      ['paymentAdminFee', combined.adminFee],
+      ['paymentFeeGst', combined.feeGst],
+      ['paymentTotalPremium', combined.totalPremium],
+      ['paymentInstalment', combined.instalment]
+    ].forEach(([id, amount]) => { $(id).textContent = money(amount); });
   }
 
-  qsa('.payment-method-option').forEach(btn => {
-    btn.addEventListener('click', () => {
-      quoteState.payment.method = btn.dataset.paymentMethod;
-      qsa('.payment-method-option').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      $('continueToPaymentBtn').disabled = false;
-    });
+  const checkoutPayment = setupPayment({
+    quoteState,
+    bypassValidation: DEV_BYPASS_VALIDATION,
+    policyName: 'Third Party Only Pleasure Craft',
+    getAmountDue: () => combineQuote().totalPremium,
+    getQuoteNumber: () => quoteState.yourQuote.quoteNumber,
+    showStep: goToSection
   });
 
-  $('continueToPaymentBtn').addEventListener('click', () => {
-    $('paymentMethodSelection').style.display = 'none';
-    $('paymentEntrySection').style.display = 'block';
-    renderPaymentEntry();
-  });
-
-  $('paymentEntryBackBtn').addEventListener('click', () => {
-    $('paymentEntrySection').style.display = 'none';
-    $('paymentMethodSelection').style.display = '';
-  });
-
-  function renderPaymentEntry() {
-    const combined = combineQuote();
-    const p = quoteState.payment;
-
-    $('paymentCardType').value = p.cardType;
-    $('paymentCardholderName').value = p.cardholderName;
-    $('paymentCardNumber').value = p.cardNumber;
-    $('paymentExpiryMonth').value = p.expiryMonth;
-    $('paymentExpiryYear').value = p.expiryYear;
-    $('paymentCCV').value = p.ccv;
-
-    const amountDue = p.method === 'instalments' ? combined.instalment : combined.totalPremium;
-    const cardMeta = CARD_TYPES.find(c => c.value === p.cardType);
-    const surcharge = cardMeta ? round2(amountDue * cardMeta.rate) : 0;
-
-    $('paymentTotalStrip').innerHTML = `
-      <div class="payment-total-row"><span>${p.method === 'instalments' ? 'Instalment Amount' : 'Amount Due Today'}</span><span>${money(amountDue)}</span></div>
-      ${cardMeta ? `<div class="payment-total-row payment-total-row-muted"><span>Card Surcharge (${cardMeta.label.match(/\(([^)]+)\)/)[1]})</span><span>${money(surcharge)}</span></div>` : ''}
-      <div class="payment-total-row payment-total-row-final"><span>Total Paid Including Surcharge</span><span>${money(round2(amountDue + surcharge))}</span></div>`;
-
-    checkPaymentEntryComplete();
-  }
-
-  ['paymentCardType', 'paymentCardholderName', 'paymentCardNumber', 'paymentExpiryMonth', 'paymentExpiryYear', 'paymentCCV'].forEach(id => {
-    $(id).addEventListener('input', onPaymentEntryChange);
-    $(id).addEventListener('change', onPaymentEntryChange);
-  });
-
-  function onPaymentEntryChange(e) {
-    const map = {
-      paymentCardType: 'cardType', paymentCardholderName: 'cardholderName', paymentCardNumber: 'cardNumber',
-      paymentExpiryMonth: 'expiryMonth', paymentExpiryYear: 'expiryYear', paymentCCV: 'ccv'
-    };
-    quoteState.payment[map[e.target.id]] = e.target.value;
-    renderPaymentEntry();
-  }
-
-  function isPaymentComplete() {
-    const p = quoteState.payment;
-    return !!(p.cardType && p.cardholderName && p.cardNumber && p.expiryMonth && p.expiryYear && p.ccv);
-  }
-
-  function checkPaymentEntryComplete() {
-    const disabled = DEV_BYPASS_VALIDATION ? false : !isPaymentComplete();
-    $('payNowBtn').disabled = disabled;
-    $('requestPaymentLinkBtn').disabled = false;
-  }
-
-  $('cancelPaymentBtn').addEventListener('click', () => {
-    quoteState.payment.method = '';
-    renderPaymentMethodStep();
-  });
-
-  $('requestPaymentLinkBtn').addEventListener('click', () => {
-    showToast('A secure payment link has been sent to your email address.');
-  });
-
-  $('payNowBtn').addEventListener('click', () => {
-    if (!DEV_BYPASS_VALIDATION && !isPaymentComplete()) return;
-    processPayment();
-  });
-
-
-  // ---------- CONFIRMATION ----------
-  function processPayment() {
-    const combined = combineQuote();
-    const p = quoteState.payment;
-    const cardMeta = CARD_TYPES.find(c => c.value === p.cardType);
-    const amountDue = p.method === 'instalments' ? combined.instalment : combined.totalPremium;
-    const surcharge = cardMeta ? round2(amountDue * cardMeta.rate) : 0;
-    const last4 = (p.cardNumber || '').replace(/\D/g, '').slice(-4) || '0000';
-
-    quoteState.policy = {
-      policyNumber: `TPCP-${Math.floor(100000 + Math.random() * 900000)}`,
-      insuredName: quoteState.additionalInformation.insuredName || '—',
-      startDate: quoteState.yourQuote.policyStartDate,
-      endDate: quoteState.yourQuote.policyEndDate,
-      amountPaid: round2(amountDue + surcharge),
-      cardLabel: cardMeta ? cardMeta.label.split(' (')[0] : '—',
-      last4,
-      paymentDate: toInputDate(new Date())
-    };
-
-    renderConfirmation();
-    goToSection(9);
-  }
-
-  function renderConfirmation() {
-    const pol = quoteState.policy;
-    if (!pol) return;
-
-    $('confirmationEmailNote').textContent =
-      `A confirmation email with your receipt and Certificate of Currency has been sent to ${quoteState.additionalInformation.email || 'your email address'}.`;
-
-    $('policySummaryList').innerHTML = [
-      ['Policy Number', pol.policyNumber],
-      ['Policy Type', 'Legal Liability Only'],
-      ['Policyholder', pol.insuredName],
-      ['Period of Insurance', `${formatDate(pol.startDate)} — ${formatDate(pol.endDate)}`]
-    ].map(([l, v]) => `<div class="summary-row"><span class="summary-label">${l}</span><span class="summary-value">${esc(v)}</span></div>`).join('');
-
-    $('paymentSummaryList').innerHTML = [
-      ['Amount Paid', money(pol.amountPaid)],
-      ['Payment Method', `${pol.cardLabel} ending in ${pol.last4}`],
-      ['Payment Date', formatDate(pol.paymentDate)]
-    ].map(([l, v]) => `<div class="summary-row"><span class="summary-label">${l}</span><span class="summary-value">${esc(v)}</span></div>`).join('');
-  }
-
-  $('homeBtn').addEventListener('click', () => { window.location.href = 'products.html'; });
-  $('receiptBtn').addEventListener('click', () => showToast('Your receipt has been emailed to you.'));
-  $('certificateBtn').addEventListener('click', () => showToast('Your Certificate of Currency has been emailed to you.'));
+  $('backBtn8').addEventListener('click', () => goToSection(7));
 
 
   // ---------- NAVIGATION ----------
@@ -2621,6 +2531,7 @@ $('additionalBoatsList')
     }
 
     if (n === 6) {
+      fillExampleQuoteData();
       renderQuoteStep();
     }
 
@@ -2629,11 +2540,8 @@ $('additionalBoatsList')
     }
 
     if (n === 8) {
-      renderPaymentMethodStep();
-    }
-
-    if (n === 9) {
-      renderConfirmation();
+      fillExampleCustomerData();
+      renderPaymentPremium();
     }
   }
 // ---------- CLICKABLE PROGRESS BAR ----------
@@ -2728,18 +2636,7 @@ progressBar
     () => goToSection(6)
   );
 
-  $('continueBtn6').addEventListener(
-    'click',
-    () => goToSection(8)
-  );
-
-
-  // ----- Payment -----
-
-  $('backBtn7').addEventListener(
-    'click',
-    () => goToSection(7)
-  );
+  $('continueBtn6').addEventListener('click', checkoutPayment.showPaymentPage);
 
 
   // ---------- PDS LINKS ----------
