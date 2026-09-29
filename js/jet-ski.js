@@ -3275,7 +3275,7 @@ progressBar
 
   });
 
-  
+
   renderQuestions();
   checkStep2Complete();
   renderVesselFields();

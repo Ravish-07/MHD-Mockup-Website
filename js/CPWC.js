@@ -1324,7 +1324,7 @@ Other
   .map(option => option.trim())
   .filter(Boolean);
 
-  
+
   const vesselFields = [
     {
     id: 'hullMake',
@@ -1776,7 +1776,7 @@ Other
       checkStep3Complete
     );
 }
-  
+
 const STATES = [
   'ACT', 'NSW', 'NT', 'QLD',
   'SA', 'TAS', 'VIC', 'WA'
