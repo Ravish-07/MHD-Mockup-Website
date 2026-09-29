@@ -55,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const addMonths = (d, n) => { const x = new Date(d); x.setMonth(x.getMonth() + n); return x; };
   const startOfToday = () => { const t = new Date(); return new Date(t.getFullYear(), t.getMonth(), t.getDate()); };
-  const optionNumber = v => (v === '5+' ? 5 : (v === '' || v == null ? NaN : Number(v)));
   const ci = (list, value) => list.some(x => x.toLowerCase() === String(value ?? '').trim().toLowerCase());
 
   function formatCurrencyInput(input) {
@@ -862,8 +861,6 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'lostLicence', text: 'Lost your boat or motor vehicle licence?', details: true }
   ];
 
-  const skipperCount = e => (e.numSkippers ? optionNumber(e.numSkippers) : 1);
-
   function renderExperienceStep() {
     quoteState.activeVessel = 0;
 
@@ -887,7 +884,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>`).join('');
 
-    renderSkipperCards();
+    renderSkipperRows();
     renderYesNoList('past5YearsList', past5YearsQuestions, 'past5Years');
     renderYesNoList('everList', everQuestions, 'ever');
     syncClaimsWrap();
@@ -902,25 +899,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const e = currentVessel().experience;
     e[el.dataset.expField] = el.value;
 
-    if (el.dataset.expField === 'numSkippers') {
-      const count = skipperCount(e);
-      while (e.skippers.length < count) e.skippers.push(blankSkipper());
-      e.skippers.length = count;
-      renderSkipperCards();
-    }
-
     checkStep4Complete();
   });
 
 
-  // ----- Skippers (duplicated per skipper, as per the workbook) -----
-  function skipperCardHtml(s, i) {
-    const yearsSelect = (field, value) => `
+  // ----- Skippers -----
+  function skipperYearsSelect(field, value) {
+    return `
       <select data-skipper-field="${field}">
         <option value="" disabled ${value === '' ? 'selected' : ''}>Select</option>
         ${YEARS_OPTIONS.map(o => `<option value="${o}" ${value === o ? 'selected' : ''}>${o}</option>`).join('')}
       </select>`;
+  }
 
+  // Additional boats still show each skipper as a card.
+  function skipperCardHtml(s, i) {
     return `
       <div class="skipper-card" data-skipper-index="${i}">
         <div class="skipper-card-head">Skipper ${i + 1}</div>
@@ -943,12 +936,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="additional-field">
             <label>Number of years owning a boat <span class="required">*</span></label>
-            ${yearsSelect('yearsOwning', s.yearsOwning)}
+            ${skipperYearsSelect('yearsOwning', s.yearsOwning)}
           </div>
 
           <div class="additional-field">
             <label>Number of years owning a boat of this size and type <span class="required">*</span></label>
-            ${yearsSelect('yearsSizeType', s.yearsSizeType)}
+            ${skipperYearsSelect('yearsSizeType', s.yearsSizeType)}
           </div>
 
           <div class="additional-field additional-field-full">
@@ -960,23 +953,50 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`;
   }
 
-  function renderSkipperCards() {
-    const e = currentVessel().experience;
-    $('skipperCards').innerHTML = e.skippers.map(skipperCardHtml).join('');
+  function skipperRowHtml(s, i) {
+    const today = toInputDate(startOfToday());
+
+    return `
+      <div class="skipper-row" data-skipper-index="${i}">
+        <input type="text" placeholder="Full Name" data-skipper-field="name" value="${esc(s.name)}">
+        <input type="date" data-skipper-field="dob" max="${today}" value="${esc(s.dob)}">
+        <input type="date" data-skipper-field="licenceDate" max="${today}" value="${esc(s.licenceDate)}">
+        ${skipperYearsSelect('yearsOwning', s.yearsOwning)}
+        ${skipperYearsSelect('yearsSizeType', s.yearsSizeType)}
+        <textarea rows="2" placeholder="Example: 6m Runabout, 2020-2024" data-skipper-field="previousBoats">${esc(s.previousBoats)}</textarea>
+        ${i > 0 ? `<button type="button" class="remove-row-btn" data-remove-skipper="${i}" aria-label="Remove skipper">×</button>` : '<span></span>'}
+      </div>`;
+  }
+
+  function renderSkipperRows() {
+    $('skipperRows').innerHTML = currentVessel().experience.skippers.map(skipperRowHtml).join('');
   }
 
   function onSkipperInput(ev) {
     const el = ev.target;
     const field = el.dataset.skipperField;
     if (!field) return;
-    const card = el.closest('.skipper-card');
-    const i = Number(card.dataset.skipperIndex);
+    const i = Number(el.closest('.skipper-row').dataset.skipperIndex);
     currentVessel().experience.skippers[i][field] = el.value;
     checkStep4Complete();
   }
 
-  $('skipperCards').addEventListener('input', onSkipperInput);
-  $('skipperCards').addEventListener('change', onSkipperInput);
+  $('skipperRows').addEventListener('input', onSkipperInput);
+  $('skipperRows').addEventListener('change', onSkipperInput);
+
+  $('skipperRows').addEventListener('click', ev => {
+    const btn = ev.target.closest('[data-remove-skipper]');
+    if (!btn) return;
+    currentVessel().experience.skippers.splice(Number(btn.dataset.removeSkipper), 1);
+    renderSkipperRows();
+    checkStep4Complete();
+  });
+
+  $('addSkipperBtn').addEventListener('click', () => {
+    currentVessel().experience.skippers.push(blankSkipper());
+    renderSkipperRows();
+    checkStep4Complete();
+  });
 
 
   // ----- Yes / No questions -----

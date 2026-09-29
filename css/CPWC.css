@@ -325,8 +325,7 @@ input[data-currency="true"]::placeholder {
 
 .cpwc-skipper-row input,
 .cpwc-skipper-row select,
-.cpwc-skipper-row textarea,
-.history-specify input {
+.cpwc-skipper-row textarea {
   width: 100%;
   box-sizing: border-box;
   border: 1px solid #d1d5db;
@@ -340,8 +339,7 @@ input[data-currency="true"]::placeholder {
 
 .cpwc-skipper-row input:focus,
 .cpwc-skipper-row select:focus,
-.cpwc-skipper-row textarea:focus,
-.history-specify input:focus {
+.cpwc-skipper-row textarea:focus {
   border-color: #0f766e;
 }
 
@@ -352,12 +350,6 @@ input[data-currency="true"]::placeholder {
 
 .experience-question-block .question-row {
   border-bottom: none;
-}
-
-.history-specify {
-  width: 420px;
-  max-width: 100%;
-  margin: 0 0 10px auto;
 }
 
 /* Claims settlement field */

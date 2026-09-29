@@ -1980,7 +1980,8 @@ const past5YearsQuestions = [
   {
     id: 'cancelledRefused',
     text:
-      'Had any insurances cancelled, refused or had special conditions imposed?'
+      'Had any insurances cancelled, refused or had special conditions imposed?',
+    details: true
   },
   {
     id: 'madeClaims',
@@ -1994,12 +1995,14 @@ const everQuestions = [
   {
     id: 'chargedConvicted',
     text:
-      'Been charged or convicted with any offence?'
+      'Been charged or convicted with any offence?',
+    details: true
   },
   {
     id: 'lostLicence',
     text:
-      'Lost your boat or motor vehicle licence?'
+      'Lost your boat or motor vehicle licence?',
+    details: true
   }
 ];
 
@@ -2205,10 +2208,10 @@ function renderHistoryQuestions(
       </div>
 
       ${
-        question.specify
+        question.details
           ? `
             <div
-              class="history-specify"
+              class="detail-row"
               style="display:none;"
             >
               <input
@@ -2249,17 +2252,17 @@ function renderHistoryQuestions(
           stateKey
         ][questionId] = value;
 
-        const specifyWrap =
-          block.querySelector('.history-specify');
+        const detailRow =
+          block.querySelector('.detail-row');
 
-        if (specifyWrap) {
-          specifyWrap.style.display =
+        if (detailRow) {
+          detailRow.style.display =
             value === 'yes'
               ? 'block'
               : 'none';
 
           if (value !== 'yes') {
-            specifyWrap
+            detailRow
               .querySelector('input').value = '';
 
             quoteState.experienceHistory[
@@ -2281,7 +2284,7 @@ function renderHistoryQuestions(
     });
 
   list
-    .querySelectorAll('.history-specify input')
+    .querySelectorAll('.detail-row input')
     .forEach(input => {
       input.addEventListener('input', () => {
         const block =
@@ -2550,6 +2553,21 @@ function checkStep4Complete() {
 
 
 
+  const detailsComplete =
+    [
+      ['past5Years', past5YearsQuestions],
+      ['ever', everQuestions]
+    ].every(([group, questionList]) =>
+      questionList
+        .filter(question =>
+          question.details &&
+          history[group][question.id] === 'yes'
+        )
+        .every(question =>
+          (history[group][`${question.id}Details`] || '').trim() !== ''
+        )
+    );
+
   const claimsComplete =
     history.past5Years.madeClaims !== 'yes' ||
     (
@@ -2566,6 +2584,7 @@ function checkStep4Complete() {
     skippersComplete &&
     pastQuestionsComplete &&
     everQuestionsComplete &&
+    detailsComplete &&
     claimsComplete
     );
 }

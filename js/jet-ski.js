@@ -578,13 +578,13 @@ function updateSkippersState() {
 document.getElementById('addSkipperBtn').addEventListener('click', addSkipperRow);
 
 const past5YearsQuestions = [
-  { id: 'cancelledRefused', text: 'Had any insurances cancelled, refused or had special conditions imposed?' },
+  { id: 'cancelledRefused', text: 'Had any insurances cancelled, refused or had special conditions imposed?', details: true },
   { id: 'madeClaims', text: 'Made any boat / PWC insurance claims?' }
 ];
 
 const everQuestions = [
-  { id: 'chargedConvicted', text: 'Been charged or convicted with any offence?' },
-  { id: 'lostLicence', text: 'Lost your boat / PWC or motor vehicle licence?' }
+  { id: 'chargedConvicted', text: 'Been charged or convicted with any offence?', details: true },
+  { id: 'lostLicence', text: 'Lost your boat / PWC or motor vehicle licence?', details: true }
 ];
 
 function renderYesNoList(containerId, questionsArr, stateKey) {
@@ -597,7 +597,19 @@ function renderYesNoList(containerId, questionsArr, stateKey) {
         <button type="button" class="toggle-btn" data-value="no">No</button>
       </div>
     </div>
+    ${q.details ? `
+      <div class="detail-row" data-detail-for="${q.id}" style="display:none;">
+        <input type="text" data-detail="${q.id}" placeholder="Please Specify">
+      </div>
+    ` : ''}
   `).join('');
+
+  list.querySelectorAll('[data-detail]').forEach(input => {
+    input.addEventListener('input', () => {
+      quoteState.experienceHistory[stateKey][`${input.dataset.detail}Details`] = input.value;
+      checkStep4Complete();
+    });
+  });
 
   list.querySelectorAll('.toggle-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -609,6 +621,15 @@ function renderYesNoList(containerId, questionsArr, stateKey) {
       btn.classList.add('selected');
 
       quoteState.experienceHistory[stateKey][qid] = value;
+
+      const detail = list.querySelector(`[data-detail-for="${qid}"]`);
+      if (detail) {
+        detail.style.display = value === 'yes' ? 'block' : 'none';
+        if (value !== 'yes') {
+          detail.querySelector('input').value = '';
+          quoteState.experienceHistory[stateKey][`${qid}Details`] = '';
+        }
+      }
 
       if (stateKey === 'past5Years' && qid === 'madeClaims') {
         const claimsWrap = document.getElementById('claimsWrap');
@@ -692,6 +713,12 @@ function checkStep4Complete() {
   const past5YearsAnswered = past5YearsQuestions.every(q => eh.past5Years[q.id] !== undefined);
   const everAnswered = everQuestions.every(q => eh.ever[q.id] !== undefined);
 
+  const detailsFilled = [['past5Years', past5YearsQuestions], ['ever', everQuestions]].every(([group, questionList]) =>
+    questionList
+      .filter(q => q.details && eh[group][q.id] === 'yes')
+      .every(q => (eh[group][`${q.id}Details`] || '').trim() !== '')
+  );
+
   let claimsValid = true;
   if (eh.past5Years.madeClaims === 'yes') {
     claimsValid = eh.claims.length > 0 && eh.claims.every(c =>
@@ -699,7 +726,7 @@ function checkStep4Complete() {
     );
   }
 
-  const complete = topFieldsFilled && skippersFilled && past5YearsAnswered && everAnswered && claimsValid;
+  const complete = topFieldsFilled && skippersFilled && past5YearsAnswered && everAnswered && detailsFilled && claimsValid;
   document.getElementById('continueBtn4').disabled = !complete;
 }
 

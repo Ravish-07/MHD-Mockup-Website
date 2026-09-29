@@ -641,6 +641,25 @@ body {
   font-size: 15px;
 }
 
+/* "Please Specify" box shown under a history question answered Yes */
+.detail-row {
+  margin: -6px 0 14px;
+}
+
+.detail-row input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 13.5px;
+  font-family: inherit;
+  outline: none;
+}
+
+.detail-row input:focus {
+  border-color: #0f766e;
+}
+
 .claims-header-row {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr 32px;
