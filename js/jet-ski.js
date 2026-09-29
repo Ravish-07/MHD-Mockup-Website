@@ -1116,7 +1116,7 @@ function addJetSkiUnit() {
 
         <button
           type="button"
-          class="add-row-btn unit-add-skipper-btn"
+          class="add-row-btn"
           data-add-unit-skipper
         >
           +
