@@ -1,0 +1,61 @@
+/* Search panel opened from any dropdown (js/searchable-select.js). */
+
+.searchable-select-panel {
+  position: fixed;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  max-height: 320px;
+  overflow: hidden;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.searchable-select-panel[hidden] {
+  display: none;
+}
+
+.searchable-select-search {
+  margin: 8px;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.searchable-select-search:focus {
+  border-color: #0f766e;
+}
+
+.searchable-select-list {
+  margin: 0;
+  padding: 0 0 6px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.searchable-select-list li {
+  padding: 7px 12px;
+  color: #1f2937;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.searchable-select-list li.selected {
+  font-weight: 600;
+  color: #0f766e;
+}
+
+.searchable-select-list li.highlighted {
+  background: #e6f7fb;
+}
+
+.searchable-select-list .searchable-select-empty {
+  color: #6b7280;
+  cursor: default;
+}
