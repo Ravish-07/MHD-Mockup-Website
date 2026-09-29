@@ -620,25 +620,6 @@ input[data-currency="true"]::placeholder {
   font-size: 14px;
 }
 
-/* Common quote panels */
-
-.cpwc-quote-panel {
-  margin: 18px 0;
-  overflow: hidden;
-  border: 1px solid #c8e4ec;
-  border-radius: 10px;
-  background: #ffffff;
-}
-
-.cpwc-quote-panel-heading {
-  padding: 10px 18px;
-  background: #e7f5f8;
-  color: #08788b;
-  font-size: 14px;
-  font-weight: 700;
-  text-align: left;
-}
-
 /* Excesses */
 
 .cpwc-excess-list {
@@ -759,63 +740,6 @@ input[data-currency="true"]::placeholder {
   padding: 6px 18px 10px;
 }
 
-.cpwc-summary-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  padding: 10px 0;
-  border-bottom: 1px solid #f3f4f6;
-}
-
-.cpwc-summary-row:last-child {
-  border-bottom: none;
-}
-
-.cpwc-summary-label {
-  flex: 0 0 50%;
-  color: #1f2937;
-  font-size: 13px;
-  font-weight: 600;
-  text-align: left;
-}
-
-.cpwc-summary-details {
-  display: flex;
-  flex: 0 0 50%;
-  max-width: 50%;
-  flex-direction: column;
-  gap: 4px;
-  padding-right: 18px;
-  box-sizing: border-box;
-  color: #1f2937;
-  font-size: 13px;
-  text-align: right;
-}
-
-.cpwc-summary-details > span {
-  display: block;
-}
-
-.cpwc-summary-details strong {
-  color: #1f2937;
-  font-weight: 700;
-}
-
-@media (max-width: 760px) {
-  .cpwc-summary-row {
-    flex-direction: column;
-  }
-
-  .cpwc-summary-label,
-  .cpwc-summary-details {
-    flex: none;
-    width: 100%;
-    max-width: none;
-    padding-right: 0;
-    text-align: left;
-  }
-}
-
 /* PDS notice */
 
 .cpwc-pds-note {
@@ -865,22 +789,6 @@ input[data-currency="true"]::placeholder {
   background: #ecfdf5;
 }
 
-.cpwc-email-quote-btn {
-  padding: 10px 26px;
-  border: none;
-  border-radius: 8px;
-  background: #0891b2;
-  color: #ffffff;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.cpwc-email-quote-btn:hover {
-  background: #0e7490;
-}
-
 .cpwc-buy-btn {
   padding: 10px 26px;
   border: none;
@@ -924,15 +832,6 @@ input[data-currency="true"]::placeholder {
     min-width: 150px;
   }
 
-  .cpwc-summary-row {
-    grid-template-columns: 1fr;
-    gap: 3px;
-  }
-
-  .cpwc-summary-row strong {
-    text-align: left;
-  }
-
   .cpwc-quote-actions {
     flex-direction: column;
     align-items: stretch;
@@ -945,99 +844,6 @@ input[data-currency="true"]::placeholder {
 }
 
 /* ===== CPWC YOUR DETAILS: VESSELS & TRAILERS ===== */
-
-.additional-vessel-details {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 12px;
-}
-
-.additional-vessel-card {
-  overflow: hidden;
-  border: 1px solid #d7e9ec;
-  border-radius: 8px;
-  background: #ffffff;
-}
-
-.additional-vessel-heading {
-  padding: 10px 16px;
-  border-bottom: 1px solid #d7e9ec;
-  background: #edf8fa;
-  color: #08788b;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.additional-vessel-card .subsection-label {
-  margin: 14px 16px 8px;
-}
-
-.additional-vessel-grid {
-  display: grid;
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
-  gap: 12px 16px;
-  padding: 0 16px 16px;
-}
-
-#additionalTrailerSection {
-  margin-top: 16px;
-}
-
-.additional-trailer-row {
-  position: relative;
-}
-
-.additional-trailer-row
-.remove-row-btn {
-  align-self: end;
-  width: 32px;
-  height: 32px;
-}
-
-@media (max-width: 700px) {
-  .additional-vessel-grid {
-    grid-template-columns: 1fr;
-  }
-}
-.payment-cancel-btn {
-  padding: 10px 22px;
-  border: 1px solid #dc2626;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #dc2626;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.payment-cancel-btn:hover {
-  background: #fef2f2;
-}
-
-.cpwc-final-pay-btn {
-  padding: 10px 26px;
-  border: none;
-  border-radius: 8px;
-  background: #16a34a;
-  color: #ffffff;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.cpwc-final-pay-btn:hover {
-  background: #15803d;
-}
-
-.cpwc-final-pay-btn:disabled {
-  background: #d1d5db;
-  color: #ffffff;
-  cursor: not-allowed;
-}
 
 .logo-block {
   text-decoration: none;
@@ -1131,103 +937,4 @@ input[data-currency="true"]::placeholder {
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   background: #fafbfc;
-}
-
-/* Vessel identification cards */
-#additionalVesselDetails .additional-vessel-card {
-  padding: 14px 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  background: #fafbfc;
-  overflow: visible;
-}
-
-#additionalVesselDetails .additional-vessel-heading {
-  margin: 0 0 12px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: #09285c;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-/* Remove subsection separation inside vessel card */
-#additionalVesselDetails .subsection-label {
-  margin: 10px 0 6px;
-}
-
-/* Hull fields: one line */
-#additionalVesselDetails .additional-vessel-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  padding: 0;
-}
-
-/* Hull currently has 3 fields, so they spread evenly */
-#additionalVesselDetails .subsection-label:first-of-type + .additional-vessel-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-/* Trailer accent box */
-.trailer-accent-box {
-  margin-top: 16px;
-  padding: 14px 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  background: #fafbfc;
-}
-
-.trailer-accent-box .additional-trailer-question {
-  margin: 0;
-  padding: 0;
-  border: none;
-}
-
-/* Trailer rows */
-#additionalTrailerRows {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-#additionalTrailerRows .additional-trailer-row {
-  padding: 10px 0 0;
-  border: none;
-  border-top: 1px solid #e5e7eb;
-  border-radius: 0;
-  background: transparent;
-}
-
-#additionalTrailerRows .additional-vessel-heading {
-  margin-bottom: 8px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: #09285c;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-#additionalTrailerRows .additional-vessel-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr 32px;
-  gap: 12px;
-  padding: 0;
-  align-items: end;
-}
-
-#addAdditionalTrailerBtn {
-  margin-top: 10px;
-}
-
-@media (max-width: 850px) {
-  #additionalVesselDetails .additional-vessel-grid,
-  #additionalVesselDetails
-    .subsection-label:first-of-type
-    + .additional-vessel-grid,
-  #additionalTrailerRows .additional-vessel-grid {
-    grid-template-columns: 1fr;
-  }
 }

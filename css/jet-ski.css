@@ -1797,8 +1797,7 @@ body {
 }
 
 .payment-secondary-btn,
-.payment-cancel-btn,
-.payment-pay-btn {
+.payment-cancel-btn {
   border-radius: 8px;
 
   padding: 10px 18px;
@@ -1836,20 +1835,6 @@ body {
 
 .payment-cancel-btn:hover {
   background: #fef2f2;
-}
-
-
-/* Pay */
-
-.payment-pay-btn {
-  background: #16a34a;
-  color: #fff;
-
-  border: 1px solid #0f766e;
-}
-
-.payment-pay-btn:hover {
-  background: #0c5c56;
 }
 
 
@@ -2857,27 +2842,12 @@ body.modal-open {
   border-top: 1px solid #e5e7eb;
 }
 
-.additional-trailer-heading {
-  margin-bottom: 8px;
-  color: #09285c;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.additional-trailer-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr 32px;
-  gap: 12px;
-  align-items: end;
-}
-
 #addAdditionalTrailerBtn {
   margin-top: 10px;
 }
 
 @media (max-width: 850px) {
-  #additionalVesselDetails .additional-vessel-grid,
-  .additional-trailer-grid {
+  #additionalVesselDetails .additional-vessel-grid {
     grid-template-columns: 1fr;
   }
 }

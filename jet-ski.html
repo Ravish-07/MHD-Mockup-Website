@@ -6,6 +6,7 @@
   <title>COAST Insurance — Jet Ski Quote</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/jet-ski.css">
+  <link rel="stylesheet" href="css/quote-checkout.css">
 </head>
 <body>
 
@@ -1080,459 +1081,556 @@
     </div>
 
 
-    <!-- STEP 6 (progress): ADDITIONAL INFORMATION -->
-    <section class="quote-step form-step" id="step-7" style="display:none;">
-      <div class="form-card additional-info-card">
+    <!-- PAGE 6: YOUR DETAILS -->
+    <section
+        class="quote-step form-step"
+        id="step-7"
+        style="display:none;"
+        >
+    <div class="form-card additional-info-card">
 
         <!-- HEADER -->
         <div class="form-card-header">
-          <div class="tmd-icon">
-            <span>👤</span>
-          </div>
 
-          <div>
-            <h3 class="tmd-title">Your Details</h3>
-            <p class="form-card-sub">
-              Please provide your contact details and any additional information required for your policy.
-            </p>
-          </div>
+        <div class="tmd-icon">
+            <span>👤</span>
         </div>
 
+        <div>
+            <h3 class="tmd-title">
+            Your Details
+            </h3>
+
+            <p class="form-card-sub">
+            Please provide your contact details and any
+            additional information required for your policy.
+            </p>
+        </div>
+
+        </div>
 
         <!-- CUSTOMER DETAILS -->
         <div class="additional-info-grid">
 
-          <div class="additional-field">
+        <div class="additional-field">
             <label for="additionalFirstName">
-              First Name <span class="required">*</span>
+            First Name
+            <span class="required">*</span>
             </label>
-            <input type="text" id="additionalFirstName">
-          </div>
 
-          <div class="additional-field">
+            <input
+            type="text"
+            id="additionalFirstName"
+            >
+        </div>
+
+        <div class="additional-field">
             <label for="additionalLastName">
-              Last Name <span class="required">*</span>
+            Last Name
+            <span class="required">*</span>
             </label>
-            <input type="text" id="additionalLastName">
-          </div>
 
-          <div class="additional-field additional-field-full">
+            <input
+            type="text"
+            id="additionalLastName"
+            >
+        </div>
+
+        <div
+            class="additional-field
+            additional-field-full"
+        >
             <label for="additionalInsuredName">
-              Insured Name
+            Insured Name
             </label>
-            <input type="text" id="additionalInsuredName">
-          </div>
 
-          <div class="additional-field">
+            <input
+            type="text"
+            id="additionalInsuredName"
+            >
+        </div>
+
+        <div class="additional-field">
             <label for="additionalEmail">
-              Email <span class="required">*</span>
+            Email
+            <span class="required">*</span>
             </label>
-            <input
-              type="email"
-              id="additionalEmail"
-              placeholder="name@example.com"
-            >
-          </div>
 
-          <div class="additional-field">
+            <input
+            type="email"
+            id="additionalEmail"
+            placeholder="name@example.com"
+            >
+        </div>
+
+        <div class="additional-field">
             <label for="additionalPhone">
-              Phone Number <span class="required">*</span>
+            Phone Number
+            <span class="required">*</span>
             </label>
-            <input
-              type="tel"
-              id="additionalPhone"
-              inputmode="numeric"
-              placeholder="Enter phone number"
-            >
-          </div>
 
-          <div class="additional-field additional-field-full">
+            <input
+            type="tel"
+            id="additionalPhone"
+            inputmode="numeric"
+            placeholder="Enter phone number"
+            >
+        </div>
+
+        <div
+            class="additional-field
+            additional-field-full"
+        >
             <label for="additionalResidentialAddress">
-              Residential Address <span class="required">*</span>
+            Residential Address
+            <span class="required">*</span>
             </label>
-            <input
-              type="text"
-              id="additionalResidentialAddress"
-              placeholder="Start typing address..."
-            >
-          </div>
 
-          <div class="additional-field additional-field-full">
+            <input
+            type="text"
+            id="additionalResidentialAddress"
+            placeholder="Start typing address..."
+            >
+        </div>
+
+        <div
+            class="additional-field
+            additional-field-full"
+        >
             <label for="additionalPostalAddress">
-              Postal Address <span class="optional-label">(if different to above)</span>
+            Postal Address
+            <span class="optional-label">
+                (if different to above)
+            </span>
             </label>
-            <input
-              type="text"
-              id="additionalPostalAddress"
-              placeholder="Same as residential address"
-            >
-          </div>
 
-          <div class="additional-field additional-field-full">
-            <label for="additionalInterestedParty">
-              Interested Party
-            </label>
             <input
-              type="text"
-              id="additionalInterestedParty"
-              placeholder="Optional"
+            type="text"
+            id="additionalPostalAddress"
+            placeholder="Same as residential address"
             >
-          </div>
+        </div>
+
+        <div
+            class="additional-field
+            additional-field-full"
+        >
+            <label for="additionalInterestedParty">
+            Interested Party
+            </label>
+
+            <input
+            type="text"
+            id="additionalInterestedParty"
+            placeholder="Optional"
+            >
+        </div>
 
         </div>
 
 
         <!-- VESSEL IDENTIFICATION -->
-        <p class="subsection-label">Vessel Identification</p>
+        <p class="subsection-label">
+          Vessel Identification
+        </p>
 
         <div
           class="additional-vessel-details"
           id="additionalVesselDetails"
         >
-          <!-- Jet Ski identification rows injected by JS -->
+          <!-- Vessel rows inserted by JavaScript -->
         </div>
-
 
         <!-- TRAILERS -->
         <div class="additional-section trailer-accent-box">
 
-          <div class="additional-trailer-question">
+        <div class="additional-trailer-question">
 
             <span>
-              Do you have trailer(s) to insure with the vessel(s)?
-              <span class="required">*</span>
+            Do you have trailer(s) to insure with the vessel(s)?
+            <span class="required">*</span>
             </span>
 
             <select id="additionalHasTrailer">
-              <option value="" disabled selected>
+            <option value="" disabled selected>
                 Select
-              </option>
+            </option>
 
-              <option value="No">No</option>
-              <option value="Yes">Yes</option>
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
             </select>
 
-          </div>
+        </div>
 
-          <div
-            id="additionalTrailerDetails"
+        <div
+            id="additionalTrailerSection"
             style="display:none;"
-          >
+        >
 
             <p class="subsection-label">
-              Trailer Details
+            Trailer Details
             </p>
 
             <div id="additionalTrailerRows"></div>
 
             <button
-              type="button"
-              class="add-row-btn"
-              id="addAdditionalTrailerBtn"
-              aria-label="Add another trailer"
+            type="button"
+            class="add-row-btn"
+            id="addAdditionalTrailerBtn"
             >
-              +
+            +
             </button>
 
-          </div>
+        </div>
 
         </div>
 
         <!-- ATTACHMENTS -->
         <div class="additional-attachments">
 
-          <div>
-            <strong>Attachments</strong>
-            <p>
-              Recent photographs of vessel(s), out of water survey or other supporting documents.
-            </p>
-          </div>
+        <div>
+            <strong>
+            Attachments
+            </strong>
 
-          <input
+            <p>
+            Recent photographs of the vessel(s), an
+            out-of-water survey or other supporting
+            documents.
+            </p>
+        </div>
+
+        <input
             type="file"
             id="additionalAttachments"
             multiple
-          >
+        >
 
         </div>
-
 
         <!-- INFORMATION NOTE -->
         <div class="additional-info-note">
-          <span>ⓘ</span>
-          <p>
-            Your information is securely stored and will only be used for policy,
-            administrative and communication purposes.
-          </p>
-        </div>
 
+        <span>ⓘ</span>
+
+        <p>
+            Your information is securely stored and will only
+            be used for policy, administrative and
+            communication purposes.
+        </p>
+
+        </div>
 
         <!-- ACTIONS -->
         <div class="form-actions vessel-actions">
 
-          <button
+        <button
+            type="button"
             class="back-btn"
             id="backBtn7"
-          >
+        >
             ← Back
-          </button>
+        </button>
 
-          <button
+        <button
+            type="button"
             class="continue-btn"
             id="continueBtn7"
-          >
-            Continue →
-          </button>
+        >
+            Continue to Payment →
+        </button>
 
         </div>
 
-      </div>
+    </div>
     </section>
 
-    <!-- STEP 7 (progress): PAYMENT -->
-    <section class="quote-step form-step" id="step-8" style="display:none;">
-      <div class="form-card payment-card">
+    <!-- PAGE 7: PAYMENT -->
+    <section
+    class="quote-step form-step"
+    id="step-8"
+    style="display:none;"
+    >
+    <div class="form-card payment-card">
 
         <!-- HEADER -->
         <div class="form-card-header">
-          <div class="vessel-icon">
-            <span>💳</span>
-          </div>
 
-          <div>
-            <h3 class="vessel-title">Complete Your Payment</h3>
-            <p class="form-card-sub">
-              Please select how you would like to pay for your policy.
-            </p>
-          </div>
+        <div class="vessel-icon">
+            <span>💳</span>
         </div>
 
+        <div>
+            <h3 class="vessel-title">
+            Complete Your Payment
+            </h3>
+
+            <p class="form-card-sub">
+            Please select how you would like to pay
+            for your policy.
+            </p>
+        </div>
+
+        </div>
 
         <!-- PREMIUM SUMMARY -->
         <div class="premium-panel payment-premium-panel">
 
-          <div class="premium-main">
-            <span class="premium-label">ANNUAL PREMIUM</span>
-            <strong class="premium-amount">$2,148.89</strong>
-            <span class="premium-note">Total premium payable</span>
-          </div>
+        <div class="premium-main">
 
-          <div class="premium-breakdown">
+            <span class="premium-label">
+            ANNUAL PREMIUM
+            </span>
+
+            <strong class="premium-amount">
+            $2,148.89
+            </strong>
+
+            <span class="premium-note">
+            Total premium payable
+            </span>
+
+        </div>
+
+        <div class="premium-breakdown">
 
             <div class="premium-breakdown-title">
-              Insurance Premium Breakdown
+            Insurance Premium Breakdown
             </div>
 
             <div class="premium-line">
-              <span>Total Base Premium</span>
-              <strong>$1,746.36</strong>
+            <span>Total Base Premium</span>
+            <strong>$1,746.36</strong>
             </div>
 
             <div class="premium-line">
-              <span>GST</span>
-              <strong>$174.64</strong>
+            <span>GST</span>
+            <strong>$174.64</strong>
             </div>
 
             <div class="premium-line">
-              <span>Stamp Duty</span>
-              <strong>$172.89</strong>
+            <span>Stamp Duty</span>
+            <strong>$172.89</strong>
             </div>
 
             <div class="premium-line">
-              <span>Administration Fee</span>
-              <strong>$50.00</strong>
+            <span>Administration Fee</span>
+            <strong>$50.00</strong>
             </div>
 
             <div class="premium-line">
-              <span>Fee GST</span>
-              <strong>$5.00</strong>
+            <span>Fee GST</span>
+            <strong>$5.00</strong>
             </div>
 
             <div class="premium-line premium-total">
-              <span>Total Premium Payable</span>
-              <strong>$2,148.89</strong>
+            <span>Total Premium Payable</span>
+            <strong>$2,148.89</strong>
             </div>
 
             <div class="premium-line">
-              <span>Pay in 10 Instalments</span>
-              <strong>$232.12</strong>
+            <span>Pay in 10 Instalments</span>
+            <strong>$232.12</strong>
             </div>
 
-          </div>
         </div>
 
+        </div>
 
         <!-- PAYMENT METHOD SELECTION -->
         <div id="paymentMethodSelection">
 
-          <p class="subsection-label">How Would You Like to Pay?</p>
+        <p class="subsection-label">
+            How Would You Like to Pay?
+        </p>
 
-          <div class="payment-method-grid">
+        <div class="payment-method-grid">
 
             <button
-              type="button"
-              class="payment-method-option"
-              data-payment-method="card"
+            type="button"
+            class="payment-method-option"
+            data-payment-method="card"
             >
-              <span class="payment-method-icon">💳</span>
+            <span class="payment-method-icon">
+                💳
+            </span>
 
-              <span class="payment-method-copy">
-                <strong>Credit / Debit Card</strong>
-                <small>Pay securely using your card</small>
-              </span>
+            <span class="payment-method-copy">
+                <strong>
+                Credit / Debit Card
+                </strong>
+
+                <small>
+                Pay securely using your card
+                </small>
+            </span>
             </button>
 
-
             <button
-              type="button"
-              class="payment-method-option"
-              data-payment-method="stripe"
+            type="button"
+            class="payment-method-option"
+            data-payment-method="stripe"
             >
-              <span class="payment-method-icon">S</span>
+            <span class="payment-method-icon">
+                S
+            </span>
 
-              <span class="payment-method-copy">
+            <span class="payment-method-copy">
                 <strong>Stripe</strong>
-                <small>Pay securely through Stripe</small>
-              </span>
+
+                <small>
+                Pay securely through Stripe
+                </small>
+            </span>
             </button>
 
-
             <button
-              type="button"
-              class="payment-method-option"
-              data-payment-method="afterpay"
+            type="button"
+            class="payment-method-option"
+            data-payment-method="afterpay"
             >
-              <span class="payment-method-icon">4</span>
+            <span class="payment-method-icon">
+                4
+            </span>
 
-              <span class="payment-method-copy">
+            <span class="payment-method-copy">
                 <strong>Afterpay</strong>
-                <small>Pay in 4 instalments</small>
-              </span>
+
+                <small>
+                Pay in 4 instalments
+                </small>
+            </span>
             </button>
-
-          </div>
-
-
-          <div class="payment-selection-actions">
-
-            <button
-              type="button"
-              class="back-btn"
-              id="backBtn8"
-            >
-              ← Back
-            </button>
-
-            <button
-              type="button"
-              class="continue-btn"
-              id="continueToPaymentBtn"
-              disabled
-            >
-              Continue to Payment →
-            </button>
-
-          </div>
 
         </div>
 
+        <div class="payment-selection-actions">
+
+            <button
+            type="button"
+            class="back-btn"
+            id="backBtn8"
+            >
+            ← Back
+            </button>
+
+            <button
+            type="button"
+            class="continue-btn"
+            id="continueToPaymentBtn"
+            disabled
+            >
+            Continue to Payment →
+            </button>
+
+        </div>
+
+        </div>
 
         <!-- PAYMENT ENTRY -->
         <div
-          id="paymentEntrySection"
-          class="payment-entry-section"
-          style="display:none;"
+        id="paymentEntrySection"
+        class="payment-entry-section"
+        style="display:none;"
         >
 
-          <p class="subsection-label">Payment Details</p>
+        <p class="subsection-label">
+            Payment Details
+        </p>
 
+        <div class="payment-entry-grid">
 
-          <div class="payment-entry-grid">
-
-            <!-- CARD TYPE -->
             <div class="additional-field">
 
-              <label for="paymentCardType">
-                Card Type <span class="required">*</span>
-              </label>
+            <label for="paymentCardType">
+                Card Type
+                <span class="required">*</span>
+            </label>
 
-              <select id="paymentCardType">
+            <select id="paymentCardType">
 
-                <option value="" disabled selected>Select</option>
+                <option value="" disabled selected>
+                Select
+                </option>
 
                 <option value="visa-debit">
-                  Visa Debit
+                Visa Debit
                 </option>
 
                 <option value="visa-credit">
-                  Visa Credit
+                Visa Credit
                 </option>
 
                 <option value="mastercard-debit">
-                  MasterCard Debit
+                MasterCard Debit
                 </option>
 
                 <option value="mastercard-credit">
-                  MasterCard Credit
+                MasterCard Credit
                 </option>
 
                 <option value="mastercard-international">
-                  MasterCard International
+                MasterCard International
                 </option>
 
                 <option value="amex">
-                  American Express
+                American Express
                 </option>
 
-              </select>
+            </select>
 
             </div>
 
-
-            <!-- CARDHOLDER NAME -->
             <div class="additional-field">
 
-              <label for="paymentCardholderName">
-                Cardholder Name <span class="required">*</span>
-              </label>
+            <label for="paymentCardholderName">
+                Cardholder Name
+                <span class="required">*</span>
+            </label>
 
-              <input
+            <input
                 type="text"
                 id="paymentCardholderName"
+                autocomplete="cc-name"
                 placeholder="Name on card"
-              >
+            >
 
             </div>
 
+            <div
+            class="additional-field
+            additional-field-full"
+            >
 
-            <!-- CARD NUMBER -->
-            <div class="additional-field additional-field-full">
+            <label for="paymentCardNumber">
+                Card Number
+                <span class="required">*</span>
+            </label>
 
-              <label for="paymentCardNumber">
-                Card Number <span class="required">*</span>
-              </label>
-
-              <input
+            <input
                 type="text"
                 id="paymentCardNumber"
                 inputmode="numeric"
                 autocomplete="cc-number"
+                maxlength="19"
                 placeholder="0000 0000 0000 0000"
-              >
+            >
 
             </div>
 
-
-            <!-- EXPIRY MONTH -->
             <div class="additional-field">
 
-              <label for="paymentExpiryMonth">
-                Expiry Month <span class="required">*</span>
-              </label>
+            <label for="paymentExpiryMonth">
+                Expiry Month
+                <span class="required">*</span>
+            </label>
 
-              <select id="paymentExpiryMonth">
+            <select id="paymentExpiryMonth">
 
-                <option value="" disabled selected>Month</option>
+                <option value="" disabled selected>
+                Month
+                </option>
+
                 <option value="01">01</option>
                 <option value="02">02</option>
                 <option value="03">03</option>
@@ -1546,21 +1644,23 @@
                 <option value="11">11</option>
                 <option value="12">12</option>
 
-              </select>
+            </select>
 
             </div>
 
-
-            <!-- EXPIRY YEAR -->
             <div class="additional-field">
 
-              <label for="paymentExpiryYear">
-                Expiry Year <span class="required">*</span>
-              </label>
+            <label for="paymentExpiryYear">
+                Expiry Year
+                <span class="required">*</span>
+            </label>
 
-              <select id="paymentExpiryYear">
+            <select id="paymentExpiryYear">
 
-                <option value="" disabled selected>Year</option>
+                <option value="" disabled selected>
+                Year
+                </option>
+
                 <option value="2026">2026</option>
                 <option value="2027">2027</option>
                 <option value="2028">2028</option>
@@ -1573,100 +1673,101 @@
                 <option value="2035">2035</option>
                 <option value="2036">2036</option>
 
-              </select>
+            </select>
 
             </div>
 
+            <div
+            class="additional-field
+            payment-ccv-field"
+            >
 
-            <!-- CCV -->
-            <div class="additional-field payment-ccv-field">
+            <label for="paymentCCV">
+                CCV
+                <span class="required">*</span>
+            </label>
 
-              <label for="paymentCCV">
-                CCV <span class="required">*</span>
-              </label>
-
-              <input
+            <input
                 type="text"
                 id="paymentCCV"
                 inputmode="numeric"
                 autocomplete="cc-csc"
                 maxlength="4"
                 placeholder="CCV"
-              >
-
-            </div>
-
-          </div>
-
-          <!-- PAYMENT TOTAL -->
-          <div
-            class="payment-total-strip"
-            id="paymentTotalStrip"
-          >
-            <div class="payment-total-row">
-              <span>Amount Due Today</span>
-              <span id="paymentAmountDue">$1,515.35</span>
-            </div>
-
-            <div class="payment-total-row payment-total-row-muted">
-              <span>Card Surcharge</span>
-              <span id="paymentSurcharge">$0.00</span>
-            </div>
-
-            <div class="payment-total-row payment-total-row-final">
-              <span>Total Paid Including Surcharge</span>
-              <strong id="paymentTotalPaid">$1,515.35</strong>
-            </div>
-          </div>
-
-          <!-- PAYMENT ACTIONS -->
-          <div class="payment-entry-actions">
-
-            <button
-              type="button"
-              class="back-btn"
-              id="paymentEntryBackBtn"
             >
-              ← Back
-            </button>
-
-
-            <div class="payment-entry-actions-right">
-
-              <button
-                type="button"
-                class="payment-secondary-btn"
-                id="requestPaymentLinkBtn"
-              >
-                Request Payment Link
-              </button>
-
-
-              <button
-                type="button"
-                class="payment-cancel-btn"
-                id="cancelPaymentBtn"
-              >
-                Cancel Payment
-              </button>
-
-
-              <button
-                type="button"
-                class="payment-pay-btn"
-                id="payNowBtn"
-              >
-                Pay Now
-              </button>
 
             </div>
-
-          </div>
 
         </div>
 
-      </div>
+        <!-- PAYMENT TOTAL -->
+        <div
+          class="payment-total-strip"
+          id="paymentTotalStrip"
+        >
+          <div class="payment-total-row">
+            <span>Amount Due Today</span>
+            <span id="paymentAmountDue">$1,515.35</span>
+          </div>
+
+          <div class="payment-total-row payment-total-row-muted">
+            <span>Card Surcharge</span>
+            <span id="paymentSurcharge">$0.00</span>
+          </div>
+
+          <div class="payment-total-row payment-total-row-final">
+            <span>Total Paid Including Surcharge</span>
+            <strong id="paymentTotalPaid">$1,515.35</strong>
+          </div>
+        </div>
+
+        <!-- PAYMENT ACTIONS -->
+        <div class="payment-entry-actions">
+
+            <button
+            type="button"
+            class="back-btn"
+            id="paymentEntryBackBtn"
+            >
+            ← Back
+            </button>
+
+            <div class="payment-entry-actions-right">
+
+            <button
+                type="button"
+                class="payment-secondary-btn"
+                id="requestPaymentLinkBtn"
+            >
+                Request Payment Link
+            </button>
+
+            <button
+                type="button"
+                class="payment-cancel-btn"
+                id="cancelPaymentBtn"
+            >
+                Cancel Payment
+            </button>
+
+            <button
+                type="button"
+                class="pay-now-btn"
+                id="payNowBtn"
+                disabled
+            >
+                Pay Now
+            </button>
+
+            </div>
+
+        </div>
+
+        </div>
+
+    </div>
     </section>
+
 
     <!-- PAYMENT CONFIRMATION -->
     <section
@@ -1686,8 +1787,10 @@
             Your payment has been successfully processed.
           </h2>
 
+          <div class="review-title-accent"></div>
+
           <p>
-            Your policy is now confirmed.
+            Thank you for choosing to insure your vessel with Coast.
           </p>
 
           <p
@@ -1697,13 +1800,11 @@
 
         </div>
 
-
         <div class="confirmation-grid">
 
-          <!-- POLICY SUMMARY -->
-          <div class="quote-info-panel">
+          <div class="details-panel">
 
-            <div class="quote-info-heading">
+            <div class="details-panel-heading">
               Policy Summary
             </div>
 
@@ -1714,12 +1815,10 @@
 
           </div>
 
+          <div class="details-panel">
 
-          <!-- PAYMENT SUMMARY -->
-          <div class="quote-info-panel">
-
-            <div class="quote-info-heading">
-              Payment Summary
+            <div class="details-panel-heading">
+              Payment Details
             </div>
 
             <div
@@ -1730,7 +1829,6 @@
           </div>
 
         </div>
-
 
         <div class="confirmation-actions">
 
@@ -1744,7 +1842,7 @@
 
           <button
             type="button"
-            class="email-btn"
+            class="secondary-action-btn"
             id="receiptBtn"
           >
             Receipt
@@ -1752,7 +1850,7 @@
 
           <button
             type="button"
-            class="email-btn"
+            class="secondary-action-btn"
             id="certificateBtn"
           >
             Certificate of Currency
@@ -1771,6 +1869,7 @@
 
   </main>
 
+  <script src="js/quote-checkout.js"></script>
   <script src="js/jet-ski.js"></script>
 </body>
 </html>
