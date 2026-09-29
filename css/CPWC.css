@@ -930,3 +930,9 @@ input[data-currency="true"]::placeholder {
   border-radius: 10px;
   background: #fafbfc;
 }
+
+/* Every dropdown uses the same grey background. Kept last so it wins over the white text-box styles above. */
+.cpwc-skipper-row select,
+.address-manual select {
+  background-color: #efefef;
+}

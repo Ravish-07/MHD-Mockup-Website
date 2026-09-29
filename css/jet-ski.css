@@ -3047,3 +3047,12 @@ body.modal-open {
     width: 100%;
   }
 }
+
+/* Every dropdown uses the same grey background. Kept last so it wins over the white text-box styles above. */
+select,
+.question-select,
+.additional-field select,
+.additional-trailer-question select,
+.address-manual select {
+  background-color: #efefef;
+}

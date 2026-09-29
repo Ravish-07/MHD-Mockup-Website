@@ -2436,3 +2436,11 @@ body.modal-open {
   top: 50%;
   transform: translateY(-50%);
 }
+
+/* Every dropdown uses the same grey background. Kept last so it wins over the white text-box styles above. */
+select,
+.question-select,
+.additional-field select,
+.skipper-row select {
+  background-color: #efefef;
+}
