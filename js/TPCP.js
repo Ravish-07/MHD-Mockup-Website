@@ -912,46 +912,16 @@ document.addEventListener('DOMContentLoaded', () => {
       </select>`;
   }
 
-  // Additional boats still show each skipper as a card.
-  function skipperCardHtml(s, i) {
-    return `
-      <div class="skipper-card" data-skipper-index="${i}">
-        <div class="skipper-card-head">Skipper ${i + 1}</div>
-        <div class="skipper-grid">
-
-          <div class="additional-field">
-            <label>Skipper name <span class="required">*</span></label>
-            <input type="text" placeholder="Full Name" data-skipper-field="name" value="${esc(s.name)}">
-          </div>
-
-          <div class="additional-field">
-            <label>Date of birth <span class="required">*</span></label>
-            <input type="date" data-skipper-field="dob" max="${toInputDate(startOfToday())}" value="${esc(s.dob)}">
-          </div>
-
-          <div class="additional-field">
-            <label>Date boat licence obtained <span class="required">*</span></label>
-            <input type="date" data-skipper-field="licenceDate" max="${toInputDate(startOfToday())}" value="${esc(s.licenceDate)}">
-          </div>
-
-          <div class="additional-field">
-            <label>Number of years owning a boat <span class="required">*</span></label>
-            ${skipperYearsSelect('yearsOwning', s.yearsOwning)}
-          </div>
-
-          <div class="additional-field">
-            <label>Number of years owning a boat of this size and type <span class="required">*</span></label>
-            ${skipperYearsSelect('yearsSizeType', s.yearsSizeType)}
-          </div>
-
-          <div class="additional-field additional-field-full">
-            <label>Details of previous boats owned <span class="optional-label">(length, type, period of ownership YYYY-YYYY)</span></label>
-            <input type="text" data-skipper-field="previousBoats" placeholder="e.g. 6.2m runabout, 2015-2021" value="${esc(s.previousBoats)}">
-          </div>
-
-        </div>
-      </div>`;
-  }
+  const SKIPPER_HEADER_ROW = `
+    <div class="skipper-header-row">
+      <span>Skipper name</span>
+      <span>Date of birth</span>
+      <span>Date boat licence obtained</span>
+      <span>Years owning a boat</span>
+      <span>Years owning a boat of this size and type</span>
+      <span>Previous boats owned, including length, type and ownership period</span>
+      <span></span>
+    </div>`;
 
   function skipperRowHtml(s, i) {
     const today = toInputDate(startOfToday());
@@ -1227,7 +1197,7 @@ function renderAdditionalBoats() {
 
             <button
               type="button"
-              class="remove-row-btn"
+              class="remove-additional-boat-btn"
               data-remove-additional-boat="${vesselIndex}"
               aria-label="Remove additional boat"
             >
@@ -1237,7 +1207,7 @@ function renderAdditionalBoats() {
           </div>
 
 
-          <div class="field-list">
+          <div class="additional-boat-fields">
 
             ${vesselFields.map(field => {
 
@@ -1310,7 +1280,7 @@ function renderAdditionalBoats() {
 
           <div class="additional-skipper-question">
 
-            <span>
+            <span class="additional-skipper-question-text">
               Will this boat have a different skipper?
               <span class="required">*</span>
             </span>
@@ -1347,7 +1317,7 @@ function renderAdditionalBoats() {
 
 
           <div
-            class="additional-skipper-section"
+            class="additional-boat-skipper-section"
             style="display:${
               boat.hasDifferentSkipper === 'yes'
                 ? 'block'
@@ -1359,27 +1329,28 @@ function renderAdditionalBoats() {
               Skipper Details
             </p>
 
-            <div
-              class="additional-skipper-cards"
-              data-additional-skipper-cards
-            >
-              ${
-                boat.hasDifferentSkipper === 'yes'
-                  ? boat.experience.skippers
-                      .map(skipperCardHtml)
-                      .join('')
-                  : ''
-              }
-            </div>
+            <div class="skipper-table">
+              ${SKIPPER_HEADER_ROW}
 
-            <button
-              type="button"
-              class="add-row-btn"
-              data-add-additional-skipper
-              aria-label="Add another skipper"
-            >
-              +
-            </button>
+              <div class="skipper-rows">
+                ${
+                  boat.hasDifferentSkipper === 'yes'
+                    ? boat.experience.skippers
+                        .map(skipperRowHtml)
+                        .join('')
+                    : ''
+                }
+              </div>
+
+              <button
+                type="button"
+                class="add-row-btn"
+                data-add-additional-skipper
+                aria-label="Add another skipper"
+              >
+                +
+              </button>
+            </div>
 
           </div>
 
@@ -1728,6 +1699,22 @@ $('additionalBoatsList')
       return;
     }
 
+
+    // REMOVE SKIPPER
+    const removeSkipper =
+      event.target.closest(
+        '[data-remove-skipper]'
+      );
+
+    if (removeSkipper) {
+      boat.experience.skippers.splice(
+        Number(removeSkipper.dataset.removeSkipper),
+        1
+      );
+
+      renderAdditionalBoats();
+      return;
+    }
 
     // ADD SKIPPER
     const addSkipper =
