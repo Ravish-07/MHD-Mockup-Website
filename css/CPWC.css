@@ -185,28 +185,6 @@ body {
   min-width: 130px;
 }
 
-/* Address and state on one line */
-
-.vessel-card .field-input-wrap .location-input-group {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-}
-
-.vessel-card .field-input-wrap .location-input-group input {
-  flex: 1 1 0;
-  width: 0;
-  min-width: 0;
-}
-
-.vessel-card .field-input-wrap .location-input-group select {
-  flex: 0 0 110px;
-  width: 110px;
-  min-width: 110px;
-}
-
 /* Light grey currency placeholders */
 
 input[data-currency="true"]::placeholder {
@@ -255,8 +233,6 @@ input[data-currency="true"]::placeholder {
   left: 50%;
   bottom: calc(100% + 9px);
   z-index: 500;
-
-  width: 280px;
   padding: 10px 12px;
 
   background: #fff6c3;
@@ -360,11 +336,6 @@ input[data-currency="true"]::placeholder {
   font-family: inherit;
   font-size: 12.5px;
   outline: none;
-}
-
-.cpwc-skipper-row textarea {
-  min-height: 36px;
-  resize: vertical;
 }
 
 .cpwc-skipper-row input:focus,
@@ -784,8 +755,6 @@ input[data-currency="true"]::placeholder {
 
 /* Vessel and skipper summaries */
 
-/* Vessel and skipper summaries */
-
 .cpwc-summary-list {
   padding: 6px 18px 10px;
 }
@@ -835,7 +804,6 @@ input[data-currency="true"]::placeholder {
 @media (max-width: 760px) {
   .cpwc-summary-row {
     flex-direction: column;
-    gap: 6px;
   }
 
   .cpwc-summary-label,
@@ -1017,12 +985,6 @@ input[data-currency="true"]::placeholder {
   margin-top: 16px;
 }
 
-#additionalTrailerRows {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
 .additional-trailer-row {
   position: relative;
 }
@@ -1032,10 +994,6 @@ input[data-currency="true"]::placeholder {
   align-self: end;
   width: 32px;
   height: 32px;
-}
-
-#addAdditionalTrailerBtn {
-  margin-top: 12px;
 }
 
 @media (max-width: 700px) {
@@ -1174,8 +1132,6 @@ input[data-currency="true"]::placeholder {
   border-radius: 10px;
   background: #fafbfc;
 }
-
-/* ===== YOUR DETAILS: VESSELS + TRAILERS POLISH ===== */
 
 /* Vessel identification cards */
 #additionalVesselDetails .additional-vessel-card {

@@ -255,21 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // PAGE 2: VESSEL DETAILS
   // ==================================================
 
-  const locationOptions = [
-    'WA South',
-    'WA North',
-    'SA',
-    'NT',
-    'QLD Gold Coast',
-    'QLD Brisbane',
-    'QLD Sunshine Coast',
-    'QLD North',
-    'QLD Far North',
-    'NSW',
-    'VIC',
-    'TAS'
-  ];
-
   const hullMakeOptions = `
 29er
 49er
@@ -3701,20 +3686,6 @@ function setQuoteValue(elementId, value) {
   }
 }
 
-function getSpecifiedValue(
-  object,
-  fieldName
-) {
-  const specifyField =
-    `${fieldName}Specify`;
-
-  return (
-    object[specifyField] ||
-    object[fieldName] ||
-    'Not provided'
-  );
-}
-
 function populateQuoteCover() {
   const details =
     quoteState.vesselDetails;
@@ -4093,7 +4064,6 @@ const additionalInterestedParty =
   );
 
 let insuredNameManuallyEdited = false;
-let postalAddressManuallyEdited = false;
 
 
 function convertCustomerAddress(
@@ -4985,22 +4955,6 @@ paymentCCV.addEventListener(
     checkPaymentComplete();
   }
 );
-
-// ---------- REQUEST PAYMENT LINK ----------
-
-document
-  .getElementById(
-    'requestPaymentLinkBtn'
-  )
-  .addEventListener(
-    'click',
-    () => {
-      console.log(
-        'CPWC payment link requested',
-        quoteState
-      );
-    }
-  );
 
 // ---------- CANCEL PAYMENT ----------
 

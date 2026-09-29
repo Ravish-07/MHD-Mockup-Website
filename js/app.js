@@ -42,15 +42,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   searchBtn.addEventListener('click', applyFilters);
-  searchInput.addEventListener('keyup', (e) => {
-    if (e.key === 'Enter') applyFilters();
-    applyFilters(); // live filter as you type
-  });
-
-  // Optional: click a card to log which plan was selected (placeholder for routing later)
-  cards.forEach(card => {
-    card.addEventListener('click', () => {
-      console.log('Selected plan:', card.dataset.name);
-    });
-  });
+  searchInput.addEventListener('input', applyFilters);
 });

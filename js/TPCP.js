@@ -422,7 +422,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const currentVessel = () => quoteState.vessels[quoteState.activeVessel];
 
-  let referralShownForKey = '';   // stops the referral popup re-opening on every re-render
   let insuredNameManuallyEdited = false;
   let postalAddressManuallyEdited = false;
 
@@ -1129,7 +1128,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==================================================
 
 let hasAdditionalBoats = '';
-let additionalBoatCount = 0;
 
 
 function createAdditionalBoat() {
@@ -1167,8 +1165,6 @@ function addAdditionalBoat() {
     createAdditionalBoat();
 
   quoteState.vessels.push(boat);
-
-  additionalBoatCount++;
 
   renderAdditionalBoats();
 }
@@ -1762,8 +1758,6 @@ $('additionalBoatsList')
     const lengthM = hullLengthInMetres(d);
     const storage = d.storageMethod;
     const motorGroup = motorTypeGroup(d.motorType);
-    const skipperYears = v.experience.skippers.map(s => (s.yearsOwning === '5+' ? 5 : Number(s.yearsOwning || 0)));
-    const minExperience = skipperYears.length ? Math.min(...skipperYears) : 0;
 
     if (lengthM == null || !storage || !d.motorType) return null;
 
@@ -2094,7 +2088,7 @@ $('additionalBoatsList')
     const combined = combineQuote();
     quoteState._combined = combined;
 
-    const { declineReasons, referReasons } = allReferralReasons();
+    const { referReasons } = allReferralReasons();
     const incomplete = !combined.allCategorised;
 
     $('quoteIncompleteNotice').style.display = incomplete ? 'block' : 'none';
@@ -2255,10 +2249,6 @@ $('additionalBoatsList')
 
     renderAdditionalVesselList();
     checkStep6Complete();
-  }
-
-  function additionalField(id, value, onInput) {
-    return { id, value, onInput };
   }
 
   $('additionalFirstName').addEventListener('input', e => { quoteState.additionalInformation.firstName = e.target.value; syncInsuredName(); });

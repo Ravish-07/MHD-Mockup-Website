@@ -6,8 +6,6 @@ if (sessionStorage.getItem('coastAuthed') !== 'true') {
 document.addEventListener('DOMContentLoaded', () => {
 
   const progressBar = document.getElementById('progressBar');
-  const importantFooter = document.getElementById('importantFooter');
-  const totalProgressSteps = 7; // intro screen is NOT counted
   let currentSectionNum = 1;    // maps to section id="step-N"
   let referralRequired = false;
 
@@ -2273,7 +2271,6 @@ const additionalPostalAddress = document.getElementById('additionalPostalAddress
 const additionalInterestedParty = document.getElementById('additionalInterestedParty');
 
 let insuredNameManuallyEdited = false;
-let postalAddressManuallyEdited = false;
 
 function convertCustomerAddressToManual(
   input,
@@ -2941,17 +2938,6 @@ paymentCCV.addEventListener('input', () => {
 });
 
 
-// ---------- REQUEST PAYMENT LINK ----------
-
-document
-  .getElementById('requestPaymentLinkBtn')
-  .addEventListener('click', () => {
-
-    // Prototype only
-    console.log('Request Payment Link clicked.');
-
-  });
-
 function populatePaymentConfirmation() {
 
   const info =
@@ -3227,10 +3213,6 @@ declineCloseBtn.addEventListener('click', exitDeclinedQuote);
 
     const isFormStep = sectionNum >= 2; // section 1 = intro, no chrome
     progressBar.style.display = isFormStep ? 'block' : 'none';
-    if (importantFooter) {
-      importantFooter.style.display =
-        isFormStep ? 'flex' : 'none';
-    }
 
     if (isFormStep) {
       const progressStepNum = sectionNum - 1; // OFFSET FIX: intro doesn't count

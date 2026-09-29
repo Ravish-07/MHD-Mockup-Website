@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  // SHA-256 hash of your chosen password — see instructions below for how to generate this.
-  // This is NOT real security, only obfuscation. See the note in chat.
+  // SHA-256 of the access password. Anyone can read this file, so this only keeps casual visitors out.
   const CORRECT_HASH = '775f52fdde142217998ddaa50f41574bec9eea80c47fc706c401dd9f1f4c2931';
 
   const form = document.getElementById('loginForm');
