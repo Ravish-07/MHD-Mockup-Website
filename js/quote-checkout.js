@@ -239,15 +239,85 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
     info.interestedParty = event.target.value;
   });
 
-  // ---------- YOUR DETAILS: VESSEL IDENTIFICATION ----------
+  const { renderVesselIdentification } = setupVesselAndTrailerDetails({
+    info,
+    getPolicyVessels,
+    onTrailerAnswer: () => checkYourDetailsComplete()
+  });
+
+  byId('additionalAttachments').addEventListener('change', event => {
+    info.attachments = Array.from(event.target.files);
+  });
+
+  function checkYourDetailsComplete() {
+    const continueButton = byId('continueBtn7');
+
+    if (bypassValidation) {
+      continueButton.disabled = false;
+      return;
+    }
+
+    const customerComplete =
+      info.firstName.trim() !== '' &&
+      info.lastName.trim() !== '' &&
+      info.email.trim() !== '' &&
+      info.phone.trim() !== '' &&
+      info.residentialAddress.trim() !== '';
+
+    continueButton.disabled = !(customerComplete && info.hasTrailer !== '');
+  }
+
+  function showYourDetails() {
+    renderVesselIdentification();
+    showQuoteStep(7);
+    checkYourDetailsComplete();
+  }
+
+  const { showPaymentPage } = setupPayment({
+    quoteState,
+    bypassValidation,
+    policyName,
+    getAmountDue: () => paymentBaseAmount,
+    getQuoteNumber,
+    showStep: showQuoteStep
+  });
+
+  byId('continueBtn7').addEventListener('click', showPaymentPage);
+  byId('backBtn8').addEventListener('click', showYourDetails);
+
+  return { showYourDetails, showPaymentPage };
+}
+
+// Your Details: Vessel Identification (one card per policy vessel, motor model and year pre-filled from the
+// vessel) and the trailer question with trailer rows. extraSections(vessel) can add rows of fields to a card.
+function setupVesselAndTrailerDetails({ info, getPolicyVessels, onTrailerAnswer, extraSections = () => [] }) {
+  const byId = id => document.getElementById(id);
+
+  // ---------- VESSEL IDENTIFICATION ----------
 
   const vesselDetailsContainer = byId('additionalVesselDetails');
 
-  function vesselFieldHtml(label, field, attributes = 'type="text"') {
+  function vesselFieldHtml([label, field, attributes = 'type="text"', options]) {
+    const control = options
+      ? `<select data-additional-vessel-field="${field}">
+          <option value="" disabled selected>Select</option>
+          ${options.map(option => `<option value="${option}">${option}</option>`).join('')}
+        </select>`
+      : `<input ${attributes} data-additional-vessel-field="${field}">`;
+
     return `
       <div class="additional-field">
         <label>${label}</label>
-        <input ${attributes} data-additional-vessel-field="${field}">
+        ${control}
+      </div>
+    `;
+  }
+
+  function sectionHtml(heading, fields) {
+    return `
+      <p class="subsection-label">${heading}</p>
+      <div class="additional-vessel-grid">
+        ${fields.map(vesselFieldHtml).join('')}
       </div>
     `;
   }
@@ -257,25 +327,25 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
       <div class="additional-vessel-card" data-vessel-index="${index}">
         <div class="additional-vessel-heading">Vessel ${index + 1}</div>
 
-        <p class="subsection-label">Hull Details</p>
-        <div class="additional-vessel-grid">
-          ${vesselFieldHtml('Hull Name', 'hullName')}
-          ${vesselFieldHtml('Hull Registration Number', 'hullRegistration')}
-          ${vesselFieldHtml('Hull Identification Number (HIN)', 'hin')}
-        </div>
+        ${sectionHtml('Hull Details', [
+          ['Hull Name', 'hullName'],
+          ['Hull Registration Number', 'hullRegistration'],
+          ['Hull Identification Number (HIN)', 'hin']
+        ])}
 
-        <p class="subsection-label">Motor Details</p>
-        <div class="additional-vessel-grid">
-          ${vesselFieldHtml('Motor Model', 'motorModel', `type="text" value="${vessel.motorMake || ''}"`)}
-          ${vesselFieldHtml('Motor Year Built', 'motorYear', `type="number" min="1900" max="9999" placeholder="YYYY" value="${vessel.motorYear || ''}"`)}
-          ${vesselFieldHtml('Motor Horsepower', 'motorHorsepower', 'type="number" min="0"')}
-          ${vesselFieldHtml('Motor Serial Number', 'motorSerialNumber')}
-        </div>
+        ${extraSections(vessel).map(section => sectionHtml(section.heading, section.fields)).join('')}
+
+        ${sectionHtml('Motor Details', [
+          ['Motor Model', 'motorModel', `type="text" value="${vessel.motorMake || ''}"`],
+          ['Motor Year Built', 'motorYear', `type="number" min="1900" max="9999" placeholder="YYYY" value="${vessel.motorYear || ''}"`],
+          ['Motor Horsepower', 'motorHorsepower', 'type="number" min="0"'],
+          ['Motor Serial Number', 'motorSerialNumber']
+        ])}
       </div>
     `).join('');
 
-    vesselDetailsContainer.querySelectorAll('input').forEach(input => {
-      input.addEventListener('input', updateVesselIdentificationState);
+    vesselDetailsContainer.querySelectorAll('input, select').forEach(control => {
+      control.addEventListener('input', updateVesselIdentificationState);
     });
 
     updateVesselIdentificationState();
@@ -285,22 +355,15 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
     const cards = vesselDetailsContainer.querySelectorAll('.additional-vessel-card');
 
     info.vessels = Array.from(cards).map((card, index) => {
-      const valueOf = field => card.querySelector(`[data-additional-vessel-field="${field}"]`)?.value || '';
-
-      return {
-        vesselNumber: index + 1,
-        hullName: valueOf('hullName'),
-        hullRegistration: valueOf('hullRegistration'),
-        hin: valueOf('hin'),
-        motorModel: valueOf('motorModel'),
-        motorYear: valueOf('motorYear'),
-        motorHorsepower: valueOf('motorHorsepower'),
-        motorSerialNumber: valueOf('motorSerialNumber')
-      };
+      const vessel = { vesselNumber: index + 1 };
+      card.querySelectorAll('[data-additional-vessel-field]').forEach(control => {
+        vessel[control.dataset.additionalVesselField] = control.value;
+      });
+      return vessel;
     });
   }
 
-  // ---------- YOUR DETAILS: TRAILERS ----------
+  // ---------- TRAILERS ----------
 
   const hasTrailerSelect = byId('additionalHasTrailer');
   const trailerSection = byId('additionalTrailerSection');
@@ -370,52 +433,12 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
       info.trailers = [];
     }
 
-    checkYourDetailsComplete();
+    onTrailerAnswer();
   });
 
   byId('addAdditionalTrailerBtn').addEventListener('click', addTrailerRow);
 
-  byId('additionalAttachments').addEventListener('change', event => {
-    info.attachments = Array.from(event.target.files);
-  });
-
-  function checkYourDetailsComplete() {
-    const continueButton = byId('continueBtn7');
-
-    if (bypassValidation) {
-      continueButton.disabled = false;
-      return;
-    }
-
-    const customerComplete =
-      info.firstName.trim() !== '' &&
-      info.lastName.trim() !== '' &&
-      info.email.trim() !== '' &&
-      info.phone.trim() !== '' &&
-      info.residentialAddress.trim() !== '';
-
-    continueButton.disabled = !(customerComplete && info.hasTrailer !== '');
-  }
-
-  function showYourDetails() {
-    renderVesselIdentification();
-    showQuoteStep(7);
-    checkYourDetailsComplete();
-  }
-
-  const { showPaymentPage } = setupPayment({
-    quoteState,
-    bypassValidation,
-    policyName,
-    getAmountDue: () => paymentBaseAmount,
-    getQuoteNumber,
-    showStep: showQuoteStep
-  });
-
-  byId('continueBtn7').addEventListener('click', showPaymentPage);
-  byId('backBtn8').addEventListener('click', showYourDetails);
-
-  return { showYourDetails, showPaymentPage };
+  return { renderVesselIdentification };
 }
 
 // Payment (step 8) and Confirmation (step 9). showStep(sectionNumber) displays a step of the calling flow.

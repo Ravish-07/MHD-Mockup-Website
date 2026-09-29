@@ -6,6 +6,7 @@
   <title>COAST Insurance — Third Party Only Pleasure Craft Quote</title>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/TPCP.css">
+  <link rel="stylesheet" href="css/quote-checkout.css">
   <link rel="stylesheet" href="css/quote-page.css">
 </head>
 <body>
@@ -735,8 +736,61 @@
 
         </div>
 
-        <p class="subsection-label">Vessel Identification</p>
-        <div class="additional-vessel-list" id="additionalVesselList"></div>
+        <p class="subsection-label">
+          Vessel Identification
+        </p>
+
+        <div
+          class="additional-vessel-details"
+          id="additionalVesselDetails"
+        >
+          <!-- Vessel rows inserted by JavaScript -->
+        </div>
+
+        <!-- TRAILERS -->
+        <div class="additional-section trailer-accent-box">
+
+        <div class="additional-trailer-question">
+
+            <span>
+            Do you have trailer(s) to insure with the vessel(s)?
+            <span class="required">*</span>
+            </span>
+
+            <select id="additionalHasTrailer">
+            <option value="" disabled selected>
+                Select
+            </option>
+
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+            </select>
+
+        </div>
+
+        <div
+            id="additionalTrailerSection"
+            style="display:none;"
+        >
+
+            <p class="subsection-label">
+            Trailer Details
+            </p>
+
+            <div id="additionalTrailerRows"></div>
+
+            <button
+            type="button"
+            class="add-row-btn"
+            id="addAdditionalTrailerBtn"
+            >
+            +
+            </button>
+
+        </div>
+
+        </div>
+
 
         <div class="additional-attachments">
           <div>

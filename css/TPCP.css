@@ -1678,18 +1678,6 @@ body.modal-open {
 .detail-row input:focus { border-color: #0f766e; }
 
 /* ---------- Your Details: vessel identification blocks ---------- */
-.additional-vessel-list {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  margin: 14px 0 22px;
-}
-.additional-vessel-block {
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 16px 18px 18px;
-  background: #fafbfc;
-}
 .additional-vessel-heading {
   font-size: 13px;
   font-weight: 700;
@@ -2158,6 +2146,65 @@ body.modal-open {
   background: #d1d5db;
   color: #ffffff;
   cursor: not-allowed;
+}
+
+/* Trailer question on Your Details: same as the Jet Ski and CPWC pages */
+.additional-trailer-question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.additional-trailer-question select {
+  width: 180px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 7px 10px;
+
+  font-family: inherit;
+  font-size: 13px;
+  background: #fff;
+  outline: none;
+}
+
+.additional-trailer-question select:focus {
+  border-color: #079cc0;
+}
+
+@media (max-width: 850px) {
+.additional-trailer-question {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 850px) {
+.additional-trailer-question select {
+    width: 100%;
+  }
+}
+
+.trailer-accent-box .additional-trailer-question {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.additional-section.trailer-accent-box
+.additional-trailer-question {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.additional-trailer-question select {
+  background-color: #efefef;
 }
 
 /* Every dropdown uses the same grey background. Kept last so it wins over the white text-box styles above. */

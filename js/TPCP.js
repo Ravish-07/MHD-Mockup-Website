@@ -382,8 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const newVessel = (previous) => ({
     details: { totalSumInsured: 'Third Party Legal Liability Only', hullLengthUnit: 'm' },
     // ADD BOAT: "Experience & History screen to be pre-filled but allow override"
-    experience: previous ? clone(previous.experience) : blankExperience(),
-    additional: {}
+    experience: previous ? clone(previous.experience) : blankExperience()
   });
 
   const todayForNumber = new Date();
@@ -1122,8 +1121,6 @@ function createAdditionalBoat() {
     experience: clone(
       primary.experience
     ),
-
-    additional: {},
 
     hasDifferentSkipper: ''
   };
@@ -2315,7 +2312,7 @@ $('additionalBoatsList')
         a.residentialAddress ? `Same as residential: ${a.residentialAddress}` : 'Same as residential unless entered';
     }
 
-    renderAdditionalVesselList();
+    vesselAndTrailerDetails.renderVesselIdentification();
     checkStep6Complete();
   }
 
@@ -2346,122 +2343,27 @@ $('additionalBoatsList')
     quoteState.additionalInformation.attachments = Array.from(e.target.files).map(f => f.name);
   });
 
-  // Vessel identification, duplicated per boat (Hull Name / Registration / HIN, Mast/Rigging/Sails if
-  // sailing, Motor details per motor, Trailer details) — exactly the "Additional Information" screen.
-  function additionalVesselHtml(v, i, multi) {
-    const d = v.details;
-    const a = v.additional || (v.additional = {});
-    const sailing = isSailing(d);
-    const hasMotor = d.numMotors && d.numMotors !== '0';
-
-    return `
-      <div class="additional-vessel-block" data-avessel="${i}">
-        ${multi ? `<p class="additional-vessel-heading">Vessel ${i + 1}${d.hullModel ? ` — ${esc(d.hullModel)}` : ''}</p>` : ''}
-
-        <div class="additional-info-grid">
-          <div class="additional-field">
-            <label>Hull Name</label>
-            <input type="text" data-avfield="hullName" value="${esc(a.hullName || '')}">
-          </div>
-          <div class="additional-field">
-            <label>Hull Registration Number</label>
-            <input type="text" data-avfield="hullRegNumber" value="${esc(a.hullRegNumber || '')}">
-          </div>
-          <div class="additional-field">
-            <label>Hull Identification Number (HIN)</label>
-            <input type="text" data-avfield="hin" value="${esc(a.hin || '')}">
-          </div>
-
-          ${sailing ? `
-            <div class="additional-field">
-              <label>Mast Year</label>
-              <input type="number" data-avfield="mastYear" placeholder="YYYY" value="${esc(a.mastYear || '')}">
-            </div>
-            <div class="additional-field">
-              <label>Rigging Type</label>
-              <select data-avfield="riggingType">
-                <option value="" disabled ${a.riggingType ? '' : 'selected'}>Select</option>
-                ${RIGGING_TYPES.map(o => `<option value="${o}" ${a.riggingType === o ? 'selected' : ''}>${o}</option>`).join('')}
-              </select>
-            </div>
-            <div class="additional-field">
-              <label>Rigging Year</label>
-              <input type="number" data-avfield="riggingYear" placeholder="YYYY" value="${esc(a.riggingYear || '')}">
-            </div>
-            <div class="additional-field">
-              <label>Sails Material</label>
-              <input type="text" data-avfield="sailsMaterial" value="${esc(a.sailsMaterial || '')}">
-            </div>
-            <div class="additional-field">
-              <label>Sails Year</label>
-              <input type="number" data-avfield="sailsYear" placeholder="YYYY" value="${esc(a.sailsYear || '')}">
-            </div>` : ''}
-
-          ${hasMotor ? `
-            <div class="additional-field">
-              <label>Motor Model</label>
-              <input type="text" data-avfield="motorModel" value="${esc(a.motorModel || '')}">
-            </div>
-            <div class="additional-field">
-              <label>Motor Year Built</label>
-              <input type="number" data-avfield="motorYearBuilt" placeholder="YYYY" value="${esc(a.motorYearBuilt || '')}">
-            </div>
-            <div class="additional-field">
-              <label>Motor Horsepower</label>
-              <input type="number" data-avfield="motorHorsepower" min="0" value="${esc(a.motorHorsepower || '')}">
-            </div>
-            <div class="additional-field">
-              <label>Motor Serial Number</label>
-              <input type="text" data-avfield="motorSerial" value="${esc(a.motorSerial || '')}">
-            </div>` : ''}
-
-          <div class="additional-field">
-            <label>Do you have trailer(s) to insure with the vessel(s)?</label>
-            <select data-avfield="hasTrailer">
-              <option value="" disabled ${a.hasTrailer ? '' : 'selected'}>Select</option>
-              <option value="No" ${a.hasTrailer === 'No' ? 'selected' : ''}>No</option>
-              <option value="Yes" ${a.hasTrailer === 'Yes' ? 'selected' : ''}>Yes</option>
-            </select>
-          </div>
-
-          ${a.hasTrailer === 'Yes' ? `
-            <div class="additional-field">
-              <label>Trailer Make &amp; Model</label>
-              <input type="text" data-avfield="trailerMakeModel" value="${esc(a.trailerMakeModel || '')}">
-            </div>
-            <div class="additional-field">
-              <label>Trailer Year Built</label>
-              <input type="number" data-avfield="trailerYearBuilt" placeholder="YYYY" value="${esc(a.trailerYearBuilt || '')}">
-            </div>
-            <div class="additional-field">
-              <label>Trailer Registration Number</label>
-              <input type="text" data-avfield="trailerRegNumber" value="${esc(a.trailerRegNumber || '')}">
-            </div>` : ''}
-        </div>
-      </div>`;
-  }
-
-  function renderAdditionalVesselList() {
-    const multi = quoteState.vessels.length > 1;
-    $('additionalVesselList').innerHTML = quoteState.vessels.map((v, i) => additionalVesselHtml(v, i, multi)).join('');
-  }
-
-  $('additionalVesselList').addEventListener('input', onAdditionalVesselInput);
-  $('additionalVesselList').addEventListener('change', ev => {
-    onAdditionalVesselInput(ev);
-    if (ev.target.dataset.avfield === 'hasTrailer') renderAdditionalVesselList();
+  // Vessel identification and trailers use the shared Your Details layout; sailing boats also get the
+  // workbook's mast, rigging and sails questions.
+  const vesselAndTrailerDetails = setupVesselAndTrailerDetails({
+    info: quoteState.additionalInformation,
+    getPolicyVessels: () => quoteState.vessels.map(v => v.details),
+    onTrailerAnswer: () => checkStep6Complete(),
+    extraSections: details => (isSailing(details) ? [{
+      heading: 'Mast & Sails Details',
+      fields: [
+        ['Mast Year', 'mastYear', 'type="number" min="1900" max="9999" placeholder="YYYY"'],
+        ['Rigging Type', 'riggingType', '', RIGGING_TYPES],
+        ['Rigging Year', 'riggingYear', 'type="number" min="1900" max="9999" placeholder="YYYY"'],
+        ['Sails Material', 'sailsMaterial'],
+        ['Sails Year', 'sailsYear', 'type="number" min="1900" max="9999" placeholder="YYYY"']
+      ]
+    }] : [])
   });
-
-  function onAdditionalVesselInput(ev) {
-    const el = ev.target;
-    if (!el.dataset.avfield) return;
-    const i = Number(el.closest('[data-avessel]').dataset.avessel);
-    quoteState.vessels[i].additional[el.dataset.avfield] = el.value;
-  }
 
   function isAdditionalComplete() {
     const a = quoteState.additionalInformation;
-    return !!(a.firstName && a.lastName && a.email && a.phone && (a.residentialAddress && a.residentialAddress.trim()));
+    return !!(a.firstName && a.lastName && a.email && a.phone && (a.residentialAddress && a.residentialAddress.trim()) && a.hasTrailer);
   }
 
   function checkStep6Complete() {
