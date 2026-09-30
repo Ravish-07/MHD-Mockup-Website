@@ -1569,38 +1569,24 @@ Other
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
-  function layUpSelectHtml(id, placeholder, options) {
-    return `
-      <select
-        data-vessel-field="${id}"
-        aria-label="${placeholder}"
-      >
-        <option value="" selected>${placeholder}</option>
-        ${options.map(([value, label]) =>
-          `<option value="${value}">${label}</option>`
-        ).join('')}
-      </select>
-    `;
+  const MONTH_VALUE = /^\d{4}-(0[1-9]|1[0-2])$/;
+
+  function layUpMonthLabel(value) {
+    const [year, month] = value.split('-');
+
+    return `${LAY_UP_MONTHS[Number(month) - 1]} ${year}`;
   }
 
+  // Two calendar-style month pickers. Left empty, the picker opens on the current month.
   function layUpRangeHtml() {
-    const monthOptions = LAY_UP_MONTHS.map(
-      (name, index) => [String(index + 1), name.slice(0, 3)]
-    );
-
-    const firstYear = new Date().getFullYear();
-
-    const yearOptions = [0, 1, 2].map(
-      offset => [String(firstYear + offset), String(firstYear + offset)]
-    );
-
-    const box = (prefix, caption) => `
+    const box = (id, caption) => `
       <div class="layup-box">
         <span class="layup-box-label">${caption}</span>
-        <div class="layup-selects">
-          ${layUpSelectHtml(`${prefix}Month`, 'Mth', monthOptions)}
-          ${layUpSelectHtml(`${prefix}Year`, 'Year', yearOptions)}
-        </div>
+        <input
+          type="month"
+          data-vessel-field="${id}"
+          aria-label="Lay-up ${caption.toLowerCase()}"
+        >
       </div>
     `;
 
@@ -1613,55 +1599,30 @@ Other
   }
 
   function updateLayUpRange(root, store) {
-    const details = store;
+    const toInput = fieldEl(root, 'layUpTo');
 
-    const fromMonth = Number(details.layUpFromMonth) || 0;
-    const fromYear = Number(details.layUpFromYear) || 0;
+    const from = MONTH_VALUE.test(store.layUpFrom || '')
+      ? store.layUpFrom
+      : '';
 
-    const toMonthSelect = fieldEl(root, 'layUpToMonth');
-    const toYearSelect = fieldEl(root, 'layUpToYear');
+    // Earlier months are locked in To (same month is allowed)
+    toInput.min = from;
 
-    // Clear a To value that now falls before From
-    if (fromYear && Number(details.layUpToYear) < fromYear) {
-      toYearSelect.value = '';
-      details.layUpToYear = '';
+    if (from && store.layUpTo && store.layUpTo < from) {
+      toInput.value = '';
+      store.layUpTo = '';
     }
 
-    if (
-      fromMonth && fromYear &&
-      Number(details.layUpToYear) === fromYear &&
-      Number(details.layUpToMonth) < fromMonth
-    ) {
-      toMonthSelect.value = '';
-      details.layUpToMonth = '';
-    }
+    const to = MONTH_VALUE.test(store.layUpTo || '')
+      ? store.layUpTo
+      : '';
 
-    // Lock earlier years and months in To (same month is allowed)
-    Array.from(toYearSelect.options).forEach(option => {
-      option.disabled =
-        option.value !== '' &&
-        fromYear > 0 &&
-        Number(option.value) < fromYear;
-    });
-
-    const sameYear =
-      fromMonth > 0 &&
-      fromYear > 0 &&
-      Number(details.layUpToYear) === fromYear;
-
-    Array.from(toMonthSelect.options).forEach(option => {
-      option.disabled =
-        option.value !== '' &&
-        sameYear &&
-        Number(option.value) < fromMonth;
-    });
-
-    const toMonth = Number(details.layUpToMonth) || 0;
-    const toYear = Number(details.layUpToYear) || 0;
-
-    details.layUpMonths =
-      fromMonth && fromYear && toMonth && toYear
-        ? String((toYear - fromYear) * 12 + toMonth - fromMonth + 1)
+    store.layUpMonths =
+      from && to
+        ? String(
+            (Number(to.slice(0, 4)) - Number(from.slice(0, 4))) * 12 +
+            Number(to.slice(5)) - Number(from.slice(5)) + 1
+          )
         : '';
   }
 
@@ -2031,14 +1992,12 @@ Other
       });
 
     const layUpKeys = [
-      'layUpFromMonth',
-      'layUpFromYear',
-      'layUpToMonth',
-      'layUpToYear'
+      'layUpFrom',
+      'layUpTo'
     ];
 
     const layUpFilled = layUpKeys.filter(
-      key => store[key]
+      key => MONTH_VALUE.test(store[key] || '')
     ).length;
 
     const layUpComplete =
@@ -3226,7 +3185,7 @@ function populateQuoteCover() {
     layUpMonths > 0
       ? `${layUpMonths} month${
           layUpMonths === 1 ? '' : 's'
-        } (${LAY_UP_MONTHS[details.layUpFromMonth - 1]} ${details.layUpFromYear} – ${LAY_UP_MONTHS[details.layUpToMonth - 1]} ${details.layUpToYear})`
+        } (${layUpMonthLabel(details.layUpFrom)} – ${layUpMonthLabel(details.layUpTo)})`
       : 'Not Applicable'
   );
 
