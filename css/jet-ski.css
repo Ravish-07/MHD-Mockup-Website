@@ -1029,12 +1029,13 @@ body {
   justify-content: center;
 }
 
-/* Option not included in this quote: solid red circle, white cross.
+/* Option not included in this quote: pastel red circle (matches the pastel blue tick), solid red cross.
    The cross is drawn with two bars so it sits exactly in the middle (the ✕ glyph sits low and left).
-   To roll back to the previous look (pastel circle, red cross) add class="soft-cross" to <body>. */
+   Previous looks, if needed: add class="solid-cross" to <body> (solid red circle, white cross)
+   or class="soft-cross" (pastel blue circle, red cross). */
 .cover-tick.excluded {
   position: relative;
-  background: #dc2626;
+  background: #fde2e2;
   font-size: 0; /* hides the ✕ character; the bars below draw the cross */
 }
 
@@ -1047,7 +1048,7 @@ body {
   width: 9px;
   height: 2px;
   border-radius: 1px;
-  background: #fff;
+  background: #dc2626;
 }
 
 .cover-tick.excluded::before {
@@ -1058,13 +1059,17 @@ body {
   transform: translate(-50%, -50%) rotate(-45deg);
 }
 
-body.soft-cross .cover-tick.excluded {
-  background: #e6f7fb;
+body.solid-cross .cover-tick.excluded {
+  background: #dc2626;
 }
 
-body.soft-cross .cover-tick.excluded::before,
-body.soft-cross .cover-tick.excluded::after {
-  background: #dc2626;
+body.solid-cross .cover-tick.excluded::before,
+body.solid-cross .cover-tick.excluded::after {
+  background: #fff;
+}
+
+body.soft-cross .cover-tick.excluded {
+  background: #e6f7fb;
 }
 
 .quote-cover-row strong {
