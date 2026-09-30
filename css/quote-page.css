@@ -256,6 +256,11 @@
   font-weight: 700;
 }
 
+/* Option not included in this quote: same pastel circle, solid red cross */
+.your-quote-cover-tick.excluded {
+  color: #dc2626;
+}
+
 .your-quote-cover-row > strong {
   color: #1f2937;
   font-size: 13px;

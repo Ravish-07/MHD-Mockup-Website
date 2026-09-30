@@ -2072,10 +2072,11 @@ $('additionalBoatsList')
     }).join('') || '<div class="your-quote-excess-row"><span>Excesses will show once vessel details are complete.</span></div>';
   }
 
-  function coverRowHtml(label, value, note = '') {
+  // included = false shows the red cross instead of the tick (option not part of this quote).
+  function coverRowHtml(label, value, note = '', included = true) {
     return `
       <div class="your-quote-cover-row">
-        <span class="your-quote-cover-tick">✓</span>
+        <span class="your-quote-cover-tick${included ? '' : ' excluded'}">${included ? '✓' : '✕'}</span>
         <strong>${esc(label)}</strong>
         <span class="your-quote-cover-value">${value}${note ? `<small>${esc(note)}</small>` : ''}</span>
       </div>`;
@@ -2097,13 +2098,14 @@ $('additionalBoatsList')
       coverRowHtml('Pollution', '$1,000,000 for any one Accident or series of Accidents caused by the one event'),
       coverRowHtml('Geographical Limits', '250 Nautical Miles off the Australian Mainland including Tasmania.',
         anyReferredPostcode ? '' : 'Subject to the vessel being south of 23.5° South between 1 December - 1 April.'),
-      coverRowHtml('Water skiing and/or aquaplaning liability', vessels.some(d => d.waterSkiing === 'Yes') ? 'Yes' : 'No'),
-      coverRowHtml('Yacht Racing', esc(racingAnswer || 'No')),
+      coverRowHtml('Water skiing and/or aquaplaning liability', vessels.some(d => d.waterSkiing === 'Yes') ? 'Yes' : 'No', '',
+        vessels.some(d => d.waterSkiing === 'Yes')),
+      coverRowHtml('Yacht Racing', esc(racingAnswer || 'No'), '', Boolean(racingAnswer)),
       coverRowHtml('Recovery or removal of wreck', `
         <select id="wreckSelect" class="your-quote-cover-select">
           <option value="not-insured" ${wreck === 'not-insured' ? 'selected' : ''}>Not Insured</option>
           <option value="1000000" ${wreck === '1000000' ? 'selected' : ''}>$1,000,000</option>
-        </select>`, 'Availability subject to approval. Additional documentation may be required.')
+        </select>`, 'Availability subject to approval. Additional documentation may be required.', wreck === '1000000')
     ].join('');
 
     $('wreckSelect').addEventListener('change', event => {
