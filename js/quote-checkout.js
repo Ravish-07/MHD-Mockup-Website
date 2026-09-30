@@ -589,8 +589,8 @@ function setupPayment({ quoteState, bypassValidation, policyName, getAmountDue, 
   function populatePaymentConfirmation() {
     const info = quoteState.additionalInformation;
 
-    byId('confirmationEmailNote').textContent =
-      'Your cover is now in place, and your confirmation and policy documents have been emailed to jackb@coastins.com.au.';
+    byId('confirmationEmailNote').innerHTML =
+      'Your cover is now in place, and your confirmation and policy documents have been emailed to <strong>jackb@coastins.com.au</strong>.';
 
     const startDate = formatQuoteDate(byId('policyStartDate').value);
     const endDate = formatQuoteDate(byId('policyEndDate').value);
