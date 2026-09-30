@@ -288,7 +288,7 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
   return { showYourDetails, showPaymentPage };
 }
 
-// Your Details: Vessel Identification (one card per policy vessel, motor model and year pre-filled from the
+// Your Details: Vessel Identification (one card per policy vessel, motor year pre-filled from the
 // vessel) and the trailer question with trailer rows. extraSections(vessel) can add rows of fields to a card.
 function setupVesselAndTrailerDetails({ info, getPolicyVessels, onTrailerAnswer, extraSections = () => [] }) {
   const byId = id => document.getElementById(id);
@@ -336,7 +336,7 @@ function setupVesselAndTrailerDetails({ info, getPolicyVessels, onTrailerAnswer,
         ${extraSections(vessel).map(section => sectionHtml(section.heading, section.fields)).join('')}
 
         ${sectionHtml('Motor Details', [
-          ['Motor Model', 'motorModel', `type="text" value="${vessel.motorMake || ''}"`],
+          ['Motor Model', 'motorModel'],
           ['Motor Year Built', 'motorYear', `type="number" min="1900" max="9999" placeholder="YYYY" value="${vessel.motorYear || ''}"`],
           ['Motor Horsepower', 'motorHorsepower', 'type="number" min="0"'],
           ['Motor Serial Number', 'motorSerialNumber']
