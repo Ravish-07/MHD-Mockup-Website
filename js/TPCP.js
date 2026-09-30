@@ -2100,7 +2100,7 @@ $('additionalBoatsList')
         anyReferredPostcode ? '' : 'Subject to the vessel being south of 23.5° South between 1 December - 1 April.'),
       coverRowHtml('Water skiing and/or aquaplaning liability', vessels.some(d => d.waterSkiing === 'Yes') ? 'Yes' : 'No', '',
         vessels.some(d => d.waterSkiing === 'Yes')),
-      coverRowHtml('Yacht Racing', esc(racingAnswer || 'No'), '', Boolean(racingAnswer)),
+      coverRowHtml('Yacht Racing', esc(racingAnswer || 'Not Insured'), '', Boolean(racingAnswer)),
       coverRowHtml('Recovery or removal of wreck', `
         <select id="wreckSelect" class="your-quote-cover-select">
           <option value="not-insured" ${wreck === 'not-insured' ? 'selected' : ''}>Not Insured</option>
