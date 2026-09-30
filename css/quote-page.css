@@ -250,13 +250,13 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: #e6f7fb;
-  color: #079cc0;
+  background: #dcfce7;
+  color: #16a34a;
   font-size: 11px;
   font-weight: 700;
 }
 
-/* Option not included in this quote: pastel red circle (matches the pastel blue tick), solid red cross.
+/* Option not included in this quote: pastel red circle (matches the pastel green tick), solid red cross.
    The cross is drawn with two bars so it sits exactly in the middle (the ✕ glyph sits low and left).
    Previous looks, if needed: add class="solid-cross" to <body> (solid red circle, white cross)
    or class="soft-cross" (pastel blue circle, red cross). */
