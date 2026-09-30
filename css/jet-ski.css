@@ -1030,15 +1030,41 @@ body {
 }
 
 /* Option not included in this quote: solid red circle, white cross.
+   The cross is drawn with two bars so it sits exactly in the middle (the ✕ glyph sits low and left).
    To roll back to the previous look (pastel circle, red cross) add class="soft-cross" to <body>. */
 .cover-tick.excluded {
+  position: relative;
   background: #dc2626;
-  color: #fff;
+  font-size: 0; /* hides the ✕ character; the bars below draw the cross */
+}
+
+.cover-tick.excluded::before,
+.cover-tick.excluded::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9px;
+  height: 2px;
+  border-radius: 1px;
+  background: #fff;
+}
+
+.cover-tick.excluded::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.cover-tick.excluded::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 body.soft-cross .cover-tick.excluded {
   background: #e6f7fb;
-  color: #dc2626;
+}
+
+body.soft-cross .cover-tick.excluded::before,
+body.soft-cross .cover-tick.excluded::after {
+  background: #dc2626;
 }
 
 .quote-cover-row strong {
