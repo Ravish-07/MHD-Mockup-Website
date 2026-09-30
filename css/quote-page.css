@@ -256,8 +256,15 @@
   font-weight: 700;
 }
 
-/* Option not included in this quote: same pastel circle, solid red cross */
+/* Option not included in this quote: solid red circle, white cross.
+   To roll back to the previous look (pastel circle, red cross) add class="soft-cross" to <body>. */
 .your-quote-cover-tick.excluded {
+  background: #dc2626;
+  color: #fff;
+}
+
+body.soft-cross .your-quote-cover-tick.excluded {
+  background: #e6f7fb;
   color: #dc2626;
 }
 
