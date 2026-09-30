@@ -603,3 +603,34 @@ input[data-currency="true"]::placeholder {
 .address-manual select {
   background-color: #efefef;
 }
+
+/* ===== LAY-UP PERIOD (FROM / TO MONTH + YEAR) ===== */
+
+.layup-range {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.layup-box {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.layup-box-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.layup-selects {
+  display: flex;
+  gap: 6px;
+}
+
+.layup-selects select {
+  flex: 1;
+  min-width: 0;
+}

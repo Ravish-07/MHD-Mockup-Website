@@ -1504,10 +1504,9 @@ Other
     type: 'location'
     },
     {
-    id: 'layUpMonths',
+    id: 'layUp',
     label: 'Lay-Up Period',
-    type: 'number',
-    placeholder: '0 to 4 months',
+    type: 'layUp',
     infoText:
         'During this lay-up period Your Vessel must at all times be stored within the boundary of Your property behind locked gates, walls, or fences at Your nominated address and must not be used.<br><br>During the lay-up period We will limit the cover on Your Vessel to loss or Damage caused by fire and Theft only.<br><br>If, at any stage, You wish to amend this cover please contact Us so We may arrange this. The Premium charged is reflective of this lay-up period however adjustments to Your Premium may be required to reflect any amendments to this cover.'
     },
@@ -1563,6 +1562,108 @@ Other
     );
   }
 
+  const LAY_UP_MONTHS = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+
+  function layUpSelectHtml(id, placeholder, options) {
+    return `
+      <select
+        id="${id}"
+        data-vessel-field="${id}"
+        aria-label="${placeholder}"
+      >
+        <option value="" selected>${placeholder}</option>
+        ${options.map(([value, label]) =>
+          `<option value="${value}">${label}</option>`
+        ).join('')}
+      </select>
+    `;
+  }
+
+  function layUpRangeHtml() {
+    const monthOptions = LAY_UP_MONTHS.map(
+      (name, index) => [String(index + 1), name.slice(0, 3)]
+    );
+
+    const firstYear = new Date().getFullYear();
+
+    const yearOptions = [0, 1, 2].map(
+      offset => [String(firstYear + offset), String(firstYear + offset)]
+    );
+
+    const box = (prefix, caption) => `
+      <div class="layup-box">
+        <span class="layup-box-label">${caption}</span>
+        <div class="layup-selects">
+          ${layUpSelectHtml(`${prefix}Month`, 'Month', monthOptions)}
+          ${layUpSelectHtml(`${prefix}Year`, 'Year', yearOptions)}
+        </div>
+      </div>
+    `;
+
+    return `
+      <div class="layup-range">
+        ${box('layUpFrom', 'From')}
+        ${box('layUpTo', 'To')}
+      </div>
+    `;
+  }
+
+  function updateLayUpRange() {
+    const details = quoteState.vesselDetails;
+
+    const fromMonth = Number(details.layUpFromMonth) || 0;
+    const fromYear = Number(details.layUpFromYear) || 0;
+
+    const toMonthSelect = document.getElementById('layUpToMonth');
+    const toYearSelect = document.getElementById('layUpToYear');
+
+    // Clear a To value that now falls before From
+    if (fromYear && Number(details.layUpToYear) < fromYear) {
+      toYearSelect.value = '';
+      details.layUpToYear = '';
+    }
+
+    if (
+      fromMonth && fromYear &&
+      Number(details.layUpToYear) === fromYear &&
+      Number(details.layUpToMonth) < fromMonth
+    ) {
+      toMonthSelect.value = '';
+      details.layUpToMonth = '';
+    }
+
+    // Lock earlier years and months in To (same month is allowed)
+    Array.from(toYearSelect.options).forEach(option => {
+      option.disabled =
+        option.value !== '' &&
+        fromYear > 0 &&
+        Number(option.value) < fromYear;
+    });
+
+    const sameYear =
+      fromMonth > 0 &&
+      fromYear > 0 &&
+      Number(details.layUpToYear) === fromYear;
+
+    Array.from(toMonthSelect.options).forEach(option => {
+      option.disabled =
+        option.value !== '' &&
+        sameYear &&
+        Number(option.value) < fromMonth;
+    });
+
+    const toMonth = Number(details.layUpToMonth) || 0;
+    const toYear = Number(details.layUpToYear) || 0;
+
+    details.layUpMonths =
+      fromMonth && fromYear && toMonth && toYear
+        ? String((toYear - fromYear) * 12 + toMonth - fromMonth + 1)
+        : '';
+  }
+
   function createSelectOptions(options) {
     return `
       <option value="" disabled selected>Select</option>
@@ -1595,6 +1696,8 @@ Other
             ${createSelectOptions(field.options)}
           </select>
         `;
+      } else if (field.type === 'layUp') {
+        inputHtml = layUpRangeHtml();
       } else if (field.type === 'length') {
         inputHtml = `
           <div class="length-input-group">
@@ -1634,9 +1737,6 @@ Other
               : ''}
             ${field.id === 'hullYearBuilt'
               ? 'min="1900" max="9999" step="1"'
-              : ''}
-            ${field.id === 'layUpMonths'
-              ? 'min="0" max="4" step="1"'
               : ''}
             placeholder="${field.placeholder || ''}"
           >
@@ -1741,25 +1841,6 @@ Other
             formatCurrencyInput(element);
           }
 
-          if (fieldName === 'layUpMonths') {
-            const numberValue =
-              Number(element.value);
-
-            if (
-              element.value !== '' &&
-              numberValue > 4
-            ) {
-              element.value = '4';
-            }
-
-            if (
-              element.value !== '' &&
-              numberValue < 0
-            ) {
-              element.value = '0';
-            }
-          }
-
           quoteState.vesselDetails[fieldName] =
             element.value;
 
@@ -1825,6 +1906,10 @@ Other
           ] = '';
         }
       }
+    }
+
+    if (fieldName.startsWith('layUp')) {
+      updateLayUpRange();
     }
 
     if (fieldName === 'hullType') {
@@ -1937,7 +2022,6 @@ Other
       'totalSumInsured',
       'storageMethod',
       'locationAddress',
-      'layUpMonths',
       'liabilityLimit',
       'waterSkiing',
       'yachtRacing'
@@ -1989,6 +2073,20 @@ Other
         );
       });
 
+    const layUpKeys = [
+      'layUpFromMonth',
+      'layUpFromYear',
+      'layUpToMonth',
+      'layUpToYear'
+    ];
+
+    const layUpFilled = layUpKeys.filter(
+      key => quoteState.vesselDetails[key]
+    ).length;
+
+    const layUpComplete =
+      layUpFilled === 0 || layUpFilled === layUpKeys.length;
+
     const equipmentComplete =
         quoteState.vesselDetails
             .equipmentOver2000 !== 'Yes' ||
@@ -2002,6 +2100,7 @@ Other
         continueStep3Btn.disabled = !(
         baseFieldsComplete &&
         specifyFieldsComplete &&
+        layUpComplete &&
         equipmentComplete
         );
         }
@@ -3586,7 +3685,7 @@ function populateQuoteCover() {
     layUpMonths > 0
       ? `${layUpMonths} month${
           layUpMonths === 1 ? '' : 's'
-        }`
+        } (${LAY_UP_MONTHS[details.layUpFromMonth - 1]} ${details.layUpFromYear} – ${LAY_UP_MONTHS[details.layUpToMonth - 1]} ${details.layUpToYear})`
       : 'Not Applicable'
   );
 
