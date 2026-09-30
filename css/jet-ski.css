@@ -1029,6 +1029,11 @@ body {
   justify-content: center;
 }
 
+/* Option not included in this quote: same pastel circle, solid red cross */
+.cover-tick.excluded {
+  color: #dc2626;
+}
+
 .quote-cover-row strong {
   color: #1f2937;
   font-size: 13px;

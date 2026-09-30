@@ -3204,15 +3204,20 @@ function populateQuoteCover() {
     details.waterSkiing === 'Yes'
   );
 
+  const yachtRacingIncluded =
+    Boolean(details.yachtRacing) &&
+    details.yachtRacing !== 'No';
+
   setQuoteValue(
     'quoteYachtRacing',
-    details.yachtRacing || 'No'
+    yachtRacingIncluded
+      ? details.yachtRacing
+      : 'Not Insured'
   );
 
   setCoverIncluded(
     'quoteYachtRacing',
-    Boolean(details.yachtRacing) &&
-      details.yachtRacing !== 'No'
+    yachtRacingIncluded
   );
 }
 
