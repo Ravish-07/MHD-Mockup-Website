@@ -2076,7 +2076,14 @@ function applyReferralQuoteState() {
   const quoteSection = document.getElementById('step-6');
   const premiumPanel = quoteSection.querySelector('.premium-panel');
 
-  if (!referralRequired) {
+  // Roadside / Verge storage refers the quote, on the main vessel or on any additional jet ski
+  const additionalUnitReferral =
+    quoteState.additionalJetSkis.hasAdditional === 'yes' &&
+    quoteState.additionalJetSkis.units.some(
+      unit => unit.storageMethod === 'Roadside / Verge / Nature Strip'
+    );
+
+  if (!referralRequired && !additionalUnitReferral) {
     return;
   }
 

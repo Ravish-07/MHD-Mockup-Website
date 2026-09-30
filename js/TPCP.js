@@ -540,7 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const wrap = e.target.closest('[data-address]');
       if (!wrap) return;
       const key = wrap.dataset.address;
-      const store = getStore(key);
+      const store = getStore(key, wrap);
       if (!store) return;
 
       if (e.target.matches('[data-addr-lookup]')) {
@@ -565,7 +565,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!btn) return;
       const wrap = btn.closest('[data-address]');
       const key = wrap.dataset.address;
-      const store = getStore(key);
+      const store = getStore(key, wrap);
       const manual = !store[`${key}Manual`];
       store[`${key}Manual`] = manual;
 
@@ -686,15 +686,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function vesselRowHtml(f, d) {
+  // additional = true renders the same row for an Additional Boat card (own data attributes so the
+  // Vessel Details rows and the boat rows never collide).
+  function vesselRowHtml(f, d, additional = false) {
+    const rowAttr = additional ? 'data-additional-field-row' : 'data-field-row';
+    const specifyAttr = additional ? 'data-additional-specify' : 'data-specify-for';
+
     const specify = f.specifyOn
-      ? `<div class="conditional-field" data-specify-for="${f.id}" style="display:${needsSpecify(f, d) ? 'block' : 'none'};">
+      ? `<div class="conditional-field" ${specifyAttr}="${f.id}" style="display:${needsSpecify(f, d) ? 'block' : 'none'};">
            <input type="text" data-field="${f.id}Specify" placeholder="Please Specify" value="${esc(d[`${f.id}Specify`] || '')}">
          </div>`
       : '';
 
     return `
-      <div class="field-row ${f.type === 'address' ? 'align-top' : ''}" data-field-row="${f.id}"
+      <div class="field-row ${f.type === 'address' ? 'align-top' : ''}" ${rowAttr}="${f.id}"
            style="${fieldVisible(f, d) ? '' : 'display:none;'}">
         <p class="field-label">
           <span>${esc(f.label)}</span>
@@ -757,11 +762,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // Show / hide conditional rows and clear values that are no longer relevant
-  function syncVesselVisibility() {
-    const d = currentVessel().details;
-
+  function syncVesselVisibility(
+    root = $('vesselFieldList'),
+    d = currentVessel().details,
+    rowAttr = 'data-field-row',
+    specifyAttr = 'data-specify-for'
+  ) {
     vesselFields.forEach(f => {
-      const row = document.querySelector(`[data-field-row="${f.id}"]`);
+      const row = root.querySelector(`[${rowAttr}="${f.id}"]`);
       if (f.showIf && row) {
         const visible = f.showIf(d);
         row.style.display = visible ? '' : 'none';
@@ -774,7 +782,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (f.specifyOn) {
-        const wrap = document.querySelector(`[data-specify-for="${f.id}"]`);
+        const wrap = root.querySelector(`[${specifyAttr}="${f.id}"]`);
         if (wrap) {
           const show = needsSpecify(f, d) && fieldVisible(f, d);
           wrap.style.display = show ? 'block' : 'none';
@@ -796,7 +804,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.dataset.currency === 'true') formatCurrencyInput(el);
 
     currentVessel().details[key] = el.value;
-    syncVesselVisibility();
+    syncVesselVisibility($('vesselFieldList'), currentVessel().details);
     checkStep3Complete();
   }
 
@@ -1127,14 +1135,6 @@ function createAdditionalBoat() {
 }
 
 
-function renderAdditionalBoatInput(field, boat) {
-  return vesselInputHtml(
-    field,
-    boat.details
-  );
-}
-
-
 function addAdditionalBoat() {
   const boat =
     createAdditionalBoat();
@@ -1194,71 +1194,7 @@ function renderAdditionalBoats() {
 
           <div class="additional-boat-fields">
 
-            ${vesselFields.map(field => {
-
-              if (
-                field.showIf &&
-                !field.showIf(boat.details)
-              ) {
-                return '';
-              }
-
-              return `
-                <div
-                  class="field-row ${
-                    field.type === 'address'
-                      ? 'align-top'
-                      : ''
-                  }"
-                  data-additional-field-row="${field.id}"
-                >
-
-                  <p class="field-label">
-                    ${esc(field.label)}
-                  </p>
-
-                  <div class="field-input-wrap">
-
-                    ${renderAdditionalBoatInput(
-                      field,
-                      boat
-                    )}
-
-                    ${
-                      field.specifyOn
-                        ? `
-                          <div
-                            class="conditional-field"
-                            data-additional-specify="${field.id}"
-                            style="display:${
-                              needsSpecify(
-                                field,
-                                boat.details
-                              )
-                                ? 'block'
-                                : 'none'
-                            };"
-                          >
-                            <input
-                              type="text"
-                              data-field="${field.id}Specify"
-                              placeholder="Please Specify"
-                              value="${esc(
-                                boat.details[
-                                  `${field.id}Specify`
-                                ] || ''
-                              )}"
-                            >
-                          </div>
-                        `
-                        : ''
-                    }
-
-                  </div>
-
-                </div>
-              `;
-            }).join('')}
+            ${vesselFields.map(field => vesselRowHtml(field, boat.details, true)).join('')}
 
           </div>
 
@@ -1511,49 +1447,11 @@ function updateAdditionalBoatField(event) {
     boat.details[fieldName] =
       element.value;
 
-    const definition =
-      vesselFields.find(
-        field => field.id === fieldName
-      );
-
-    if (
-      definition &&
-      definition.specifyOn
-    ) {
-      const specifyWrap =
-        card.querySelector(
-          `[data-additional-specify="${fieldName}"]`
-        );
-
-      if (specifyWrap) {
-        const show =
-          definition.specifyOn.includes(
-            element.value
-          );
-
-        specifyWrap.style.display =
-          show ? 'block' : 'none';
-
-        if (!show) {
-          boat.details[
-            `${fieldName}Specify`
-          ] = '';
-
-          const input =
-            specifyWrap.querySelector(
-              'input'
-            );
-
-          if (input) {
-            input.value = '';
-          }
-        }
-      }
-    }
-
-    renderAdditionalBoatConditionalFields(
+    syncVesselVisibility(
       card,
-      boat
+      boat.details,
+      'data-additional-field-row',
+      'data-additional-specify'
     );
   }
 
@@ -1582,35 +1480,16 @@ function updateAdditionalBoatField(event) {
 }
 
 
-function renderAdditionalBoatConditionalFields(
-  card,
-  boat
-) {
-  vesselFields.forEach(field => {
-
-    if (!field.showIf) return;
-
-    const row =
-      card.querySelector(
-        `[data-additional-field-row="${field.id}"]`
-      );
-
-    if (!row) return;
-
-    const visible =
-      field.showIf(boat.details);
-
-    row.style.display =
-      visible ? '' : 'none';
-
-    if (!visible) {
-      boat.details[field.id] = '';
-      boat.details[
-        `${field.id}Specify`
-      ] = '';
-    }
-  });
-}
+// Additional boat address lookup / manual entry, stored on that boat.
+bindAddress(
+  $('additionalBoatsList'),
+  (key, wrap) => {
+    const card = wrap.closest('[data-additional-vessel]');
+    const boat = card && quoteState.vessels[Number(card.dataset.additionalVessel)];
+    return boat && boat.details;
+  },
+  () => checkAdditionalBoatsComplete()
+);
 
 
 // CLICK EVENTS INSIDE BOAT CARDS
