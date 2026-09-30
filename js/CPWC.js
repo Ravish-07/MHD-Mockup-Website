@@ -3190,6 +3190,8 @@ function populateQuoteCover() {
       : 'Not Applicable'
   );
 
+  setCoverIncluded('quoteLayUpCover', layUpMonths > 0);
+
   setQuoteValue(
     'quoteWaterSkiing',
     details.waterSkiing === 'Yes'
@@ -3197,10 +3199,33 @@ function populateQuoteCover() {
       : 'Not Insured'
   );
 
+  setCoverIncluded(
+    'quoteWaterSkiing',
+    details.waterSkiing === 'Yes'
+  );
+
   setQuoteValue(
     'quoteYachtRacing',
     details.yachtRacing || 'No'
   );
+
+  setCoverIncluded(
+    'quoteYachtRacing',
+    Boolean(details.yachtRacing) &&
+      details.yachtRacing !== 'No'
+  );
+}
+
+// Tick when the option is part of the quote, red cross when it is not.
+function setCoverIncluded(valueElementId, included) {
+  const tick =
+    document
+      .getElementById(valueElementId)
+      .closest('.your-quote-cover-row')
+      .querySelector('.your-quote-cover-tick');
+
+  tick.textContent = included ? '✓' : '✕';
+  tick.classList.toggle('excluded', !included);
 }
 
 function populateVesselSummary() {
