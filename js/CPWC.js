@@ -1556,10 +1556,12 @@ Other
     'yachtRacing'
   ];
 
-  function isSailingVessel() {
-    return SAILING_HULL_TYPES.includes(
-      quoteState.vesselDetails.hullType
-    );
+  function isSailingVessel(store) {
+    return SAILING_HULL_TYPES.includes(store.hullType);
+  }
+
+  function fieldEl(root, id) {
+    return root.querySelector(`[data-vessel-field="${id}"]`);
   }
 
   const LAY_UP_MONTHS = [
@@ -1570,7 +1572,6 @@ Other
   function layUpSelectHtml(id, placeholder, options) {
     return `
       <select
-        id="${id}"
         data-vessel-field="${id}"
         aria-label="${placeholder}"
       >
@@ -1597,7 +1598,7 @@ Other
       <div class="layup-box">
         <span class="layup-box-label">${caption}</span>
         <div class="layup-selects">
-          ${layUpSelectHtml(`${prefix}Month`, 'Month', monthOptions)}
+          ${layUpSelectHtml(`${prefix}Month`, 'Mth', monthOptions)}
           ${layUpSelectHtml(`${prefix}Year`, 'Year', yearOptions)}
         </div>
       </div>
@@ -1611,14 +1612,14 @@ Other
     `;
   }
 
-  function updateLayUpRange() {
-    const details = quoteState.vesselDetails;
+  function updateLayUpRange(root, store) {
+    const details = store;
 
     const fromMonth = Number(details.layUpFromMonth) || 0;
     const fromYear = Number(details.layUpFromYear) || 0;
 
-    const toMonthSelect = document.getElementById('layUpToMonth');
-    const toYearSelect = document.getElementById('layUpToYear');
+    const toMonthSelect = fieldEl(root, 'layUpToMonth');
+    const toYearSelect = fieldEl(root, 'layUpToYear');
 
     // Clear a To value that now falls before From
     if (fromYear && Number(details.layUpToYear) < fromYear) {
@@ -1675,160 +1676,144 @@ Other
     `;
   }
 
-  function renderVesselFields() {
-    const list =
-      document.getElementById('vesselFieldList');
+  function vesselFieldRowHtml(field, store) {
+    let inputHtml = '';
 
-    list.innerHTML = vesselFields.map(field => {
-      let inputHtml = '';
-
-      if (field.type === 'location') {
-        inputHtml = addressHtml(
-          'locationAddress',
-          quoteState.vesselDetails
-        );
-      } else if (field.type === 'select') {
-        inputHtml = `
-          <select
-            id="${field.id}"
-            data-vessel-field="${field.id}"
-          >
-            ${createSelectOptions(field.options)}
-          </select>
-        `;
-      } else if (field.type === 'layUp') {
-        inputHtml = layUpRangeHtml();
-      } else if (field.type === 'length') {
-        inputHtml = `
-          <div class="length-input-group">
-            <input
-              type="number"
-              id="hullLength"
-              data-vessel-field="hullLength"
-              min="0"
-              step="0.01"
-              inputmode="decimal"
-              placeholder="0"
-            >
-
-            <select
-              id="hullLengthUnit"
-              data-vessel-field="hullLengthUnit"
-              class="length-unit"
-            >
-              <option value="m" selected>m</option>
-              <option value="ft">ft</option>
-            </select>
-          </div>
-        `;
-      } else {
-        const inputType =
-          field.type === 'currency'
-            ? 'text'
-            : field.type;
-
-        inputHtml = `
+    if (field.type === 'location') {
+      inputHtml = addressHtml('locationAddress', store);
+    } else if (field.type === 'select') {
+      inputHtml = `
+        <select data-vessel-field="${field.id}">
+          ${createSelectOptions(field.options)}
+        </select>
+      `;
+    } else if (field.type === 'layUp') {
+      inputHtml = layUpRangeHtml();
+    } else if (field.type === 'length') {
+      inputHtml = `
+        <div class="length-input-group">
           <input
-            type="${inputType}"
-            id="${field.id}"
-            data-vessel-field="${field.id}"
-            ${field.type === 'currency'
-              ? 'data-currency="true" inputmode="numeric"'
-              : ''}
-            ${field.id === 'hullYearBuilt'
-              ? 'min="1900" max="9999" step="1"'
-              : ''}
-            placeholder="${field.placeholder || ''}"
+            type="number"
+            data-vessel-field="hullLength"
+            min="0"
+            step="0.01"
+            inputmode="decimal"
+            placeholder="0"
           >
-        `;
-      }
 
-      const specifyHtml =
-        field.specifyValues
-          ? `
-            <div
-              class="conditional-field"
-              id="${field.id}SpecifyWrap"
-              style="display:none;"
-            >
-              <input
-                type="text"
-                id="${field.id}Specify"
-                data-vessel-field="${field.id}Specify"
-                placeholder="Please Specify"
-              >
-            </div>
-          `
-          : '';
-
-      const equipmentHtml =
-        field.id === 'equipmentOver2000'
-            ? `
-            <div
-                class="conditional-field equipment-details"
-                id="equipmentDetails"
-                style="display:none;"
-            >
-                <input
-                type="text"
-                id="equipmentDescription"
-                data-vessel-field="equipmentDescription"
-                placeholder="Item Description"
-                >
-
-                <input
-                type="text"
-                id="equipmentValue"
-                data-vessel-field="equipmentValue"
-                data-currency="true"
-                inputmode="numeric"
-                placeholder="Value ($)"
-                >
-            </div>
-            `
-            : '';
-
-      return `
-        <div
-          class="field-row"
-          id="${field.id}Row"
-          data-field-row="${field.id}"
-          ${SAILING_ONLY_FIELDS.includes(field.id) && !isSailingVessel()
-            ? 'style="display:none;"'
-            : ''}
-        >
-          <p class="field-label">
-            <span>${field.label}</span>
-
-            ${field.infoText ? `
-                <span class="info-tooltip">
-                <span
-                    class="info-tooltip-icon"
-                    tabindex="0"
-                    aria-label="More information"
-                >
-                    i
-                </span>
-
-                <span class="info-tooltip-box">
-                    ${field.infoText}
-                </span>
-                </span>
-            ` : ''}
-            </p>
-
-          <div class="field-input-wrap">
-            ${inputHtml}
-            ${specifyHtml}
-            ${equipmentHtml}
-          </div>
+          <select
+            data-vessel-field="hullLengthUnit"
+            class="length-unit"
+          >
+            <option value="m" selected>m</option>
+            <option value="ft">ft</option>
+          </select>
         </div>
       `;
-    }).join('');
+    } else {
+      const inputType =
+        field.type === 'currency'
+          ? 'text'
+          : field.type;
 
-    quoteState.vesselDetails.hullLengthUnit = 'm';
+      inputHtml = `
+        <input
+          type="${inputType}"
+          data-vessel-field="${field.id}"
+          ${field.type === 'currency'
+            ? 'data-currency="true" inputmode="numeric"'
+            : ''}
+          ${field.id === 'hullYearBuilt'
+            ? 'min="1900" max="9999" step="1"'
+            : ''}
+          placeholder="${field.placeholder || ''}"
+        >
+      `;
+    }
 
-    list
+    const specifyHtml =
+      field.specifyValues
+        ? `
+          <div
+            class="conditional-field"
+            data-specify-wrap="${field.id}"
+            style="display:none;"
+          >
+            <input
+              type="text"
+              data-vessel-field="${field.id}Specify"
+              placeholder="Please Specify"
+            >
+          </div>
+        `
+        : '';
+
+    const equipmentHtml =
+      field.id === 'equipmentOver2000'
+        ? `
+          <div
+            class="conditional-field equipment-details"
+            data-equipment-details
+            style="display:none;"
+          >
+            <input
+              type="text"
+              data-vessel-field="equipmentDescription"
+              placeholder="Item Description"
+            >
+
+            <input
+              type="text"
+              data-vessel-field="equipmentValue"
+              data-currency="true"
+              inputmode="numeric"
+              placeholder="Value ($)"
+            >
+          </div>
+        `
+        : '';
+
+    return `
+      <div
+        class="field-row"
+        data-field-row="${field.id}"
+        ${SAILING_ONLY_FIELDS.includes(field.id) && !isSailingVessel(store)
+          ? 'style="display:none;"'
+          : ''}
+      >
+        <p class="field-label">
+          <span>${field.label}</span>
+
+          ${field.infoText ? `
+            <span class="info-tooltip">
+              <span
+                class="info-tooltip-icon"
+                tabindex="0"
+                aria-label="More information"
+              >
+                i
+              </span>
+
+              <span class="info-tooltip-box">
+                ${field.infoText}
+              </span>
+            </span>
+          ` : ''}
+        </p>
+
+        <div class="field-input-wrap">
+          ${inputHtml}
+          ${specifyHtml}
+          ${equipmentHtml}
+        </div>
+      </div>
+    `;
+  }
+
+  // Shared by Vessel Details and every Additional Boat card:
+  // `root` holds the rendered field rows, `store` holds their values.
+  function bindVesselFieldRows(root, store, onChange) {
+    root
       .querySelectorAll('input, select, textarea')
       .forEach(element => {
         const saveValue = () => {
@@ -1841,15 +1826,16 @@ Other
             formatCurrencyInput(element);
           }
 
-          quoteState.vesselDetails[fieldName] =
-            element.value;
+          store[fieldName] = element.value;
 
           updateConditionalVesselFields(
+            root,
+            store,
             fieldName,
             element.value
           );
 
-          checkStep3Complete();
+          onChange();
         };
 
         element.addEventListener('input', saveValue);
@@ -1857,12 +1843,27 @@ Other
       });
 
     bindAddress(
-      list,
-      quoteState.vesselDetails,
+      root,
+      store,
       'locationAddress',
-      checkStep3Complete
+      onChange
     );
-}
+  }
+
+  function renderVesselFields() {
+    const list =
+      document.getElementById('vesselFieldList');
+
+    const store = quoteState.vesselDetails;
+
+    store.hullLengthUnit = 'm';
+
+    list.innerHTML = vesselFields
+      .map(field => vesselFieldRowHtml(field, store))
+      .join('');
+
+    bindVesselFieldRows(list, store, checkStep3Complete);
+  }
 
   function formatCurrencyInput(input) {
     const digits =
@@ -1874,6 +1875,8 @@ Other
   }
 
   function updateConditionalVesselFields(
+    root,
+    store,
     fieldName,
     value
   ) {
@@ -1885,8 +1888,8 @@ Other
         field.specifyValues.includes(value);
 
       const specifyWrap =
-        document.getElementById(
-          `${fieldName}SpecifyWrap`
+        root.querySelector(
+          `[data-specify-wrap="${fieldName}"]`
         );
 
       if (specifyWrap) {
@@ -1894,38 +1897,31 @@ Other
           showSpecify ? 'block' : 'none';
 
         if (!showSpecify) {
-          const specifyInput =
-            specifyWrap.querySelector('input');
-
-          if (specifyInput) {
-            specifyInput.value = '';
-          }
-
-          quoteState.vesselDetails[
-            `${fieldName}Specify`
-          ] = '';
+          specifyWrap.querySelector('input').value = '';
+          store[`${fieldName}Specify`] = '';
         }
       }
     }
 
     if (fieldName.startsWith('layUp')) {
-      updateLayUpRange();
+      updateLayUpRange(root, store);
     }
 
     if (fieldName === 'hullType') {
-      const isSailing = isSailingVessel();
+      const isSailing = isSailingVessel(store);
 
       SAILING_ONLY_FIELDS.forEach(id => {
-        const row = document.getElementById(`${id}Row`);
+        const row =
+          root.querySelector(`[data-field-row="${id}"]`);
 
         if (row) {
           row.style.display = isSailing ? '' : 'none';
         }
 
         if (!isSailing) {
-          const select = document.getElementById(id);
+          const select = fieldEl(root, id);
           const specifyWrap =
-            document.getElementById(`${id}SpecifyWrap`);
+            root.querySelector(`[data-specify-wrap="${id}"]`);
 
           if (select) select.value = '';
 
@@ -1934,76 +1930,43 @@ Other
             specifyWrap.querySelector('input').value = '';
           }
 
-          delete quoteState.vesselDetails[id];
-          delete quoteState.vesselDetails[`${id}Specify`];
+          delete store[id];
+          delete store[`${id}Specify`];
         }
       });
     }
 
     if (fieldName === 'equipmentOver2000') {
       const equipmentDetails =
-        document.getElementById(
-          'equipmentDetails'
-        );
+        root.querySelector('[data-equipment-details]');
 
       if (equipmentDetails) {
         equipmentDetails.style.display =
-            value === 'Yes'
-                ? 'flex'
-                : 'none';
+          value === 'Yes' ? 'flex' : 'none';
       }
 
       if (value !== 'Yes') {
-        const equipmentDescription =
-            document.getElementById(
-            'equipmentDescription'
-            );
+        fieldEl(root, 'equipmentDescription').value = '';
+        fieldEl(root, 'equipmentValue').value = '';
 
-        const equipmentValue =
-            document.getElementById(
-            'equipmentValue'
-            );
-
-        if (equipmentDescription) {
-            equipmentDescription.value = '';
-        }
-
-        if (equipmentValue) {
-            equipmentValue.value = '';
-        }
-
-        quoteState.vesselDetails.equipmentDescription = '';
-        quoteState.vesselDetails.equipmentValue = '';
-        }
+        store.equipmentDescription = '';
+        store.equipmentValue = '';
+      }
     }
 
     if (
       fieldName === 'numberOfMotors' &&
       value === '0'
     ) {
-      const motorMake =
-        document.getElementById('motorMake');
+      fieldEl(root, 'motorMake').value = 'NO MOTOR';
+      fieldEl(root, 'motorType').value = 'NO MOTOR';
 
-      const motorType =
-        document.getElementById('motorType');
-
-      motorMake.value = 'NO MOTOR';
-      motorType.value = 'NO MOTOR';
-
-      quoteState.vesselDetails.motorMake =
-        'NO MOTOR';
-
-      quoteState.vesselDetails.motorType =
-        'NO MOTOR';
+      store.motorMake = 'NO MOTOR';
+      store.motorType = 'NO MOTOR';
     }
   }
 
-  function checkStep3Complete() {
-    if (DEV_BYPASS_VALIDATION) {
-      continueStep3Btn.disabled = false;
-      return;
-    }
-
+  function isVesselComplete(store) {
     const requiredFields = [
       'hullMake',
       'hullModel',
@@ -2031,13 +1994,12 @@ Other
       requiredFields.every(fieldName => {
         if (
           SAILING_ONLY_FIELDS.includes(fieldName) &&
-          !isSailingVessel()
+          !isSailingVessel(store)
         ) {
           return true;
         }
 
-        const value =
-          quoteState.vesselDetails[fieldName];
+        const value = store[fieldName];
 
         return (
           value !== undefined &&
@@ -2051,21 +2013,16 @@ Other
           return true;
         }
 
-        const selectedValue =
-          quoteState.vesselDetails[field.id];
-
         if (
           !field.specifyValues.includes(
-            selectedValue
+            store[field.id]
           )
         ) {
           return true;
         }
 
         const specifiedValue =
-          quoteState.vesselDetails[
-            `${field.id}Specify`
-          ];
+          store[`${field.id}Specify`];
 
         return (
           specifiedValue &&
@@ -2081,29 +2038,38 @@ Other
     ];
 
     const layUpFilled = layUpKeys.filter(
-      key => quoteState.vesselDetails[key]
+      key => store[key]
     ).length;
 
     const layUpComplete =
       layUpFilled === 0 || layUpFilled === layUpKeys.length;
 
     const equipmentComplete =
-        quoteState.vesselDetails
-            .equipmentOver2000 !== 'Yes' ||
-        (
-            quoteState.vesselDetails.equipmentDescription &&
-            quoteState.vesselDetails.equipmentDescription.trim() !== '' &&
-            quoteState.vesselDetails.equipmentValue &&
-            quoteState.vesselDetails.equipmentValue.trim() !== ''
-        );
+      store.equipmentOver2000 !== 'Yes' ||
+      (
+        store.equipmentDescription &&
+        store.equipmentDescription.trim() !== '' &&
+        store.equipmentValue &&
+        store.equipmentValue.trim() !== ''
+      );
 
-        continueStep3Btn.disabled = !(
-        baseFieldsComplete &&
-        specifyFieldsComplete &&
-        layUpComplete &&
-        equipmentComplete
-        );
-        }
+    return Boolean(
+      baseFieldsComplete &&
+      specifyFieldsComplete &&
+      layUpComplete &&
+      equipmentComplete
+    );
+  }
+
+  function checkStep3Complete() {
+    if (DEV_BYPASS_VALIDATION) {
+      continueStep3Btn.disabled = false;
+      return;
+    }
+
+    continueStep3Btn.disabled =
+      !isVesselComplete(quoteState.vesselDetails);
+  }
 
 // ==================================================
 // PAGE 3: EXPERIENCE AND HISTORY
@@ -2750,309 +2716,6 @@ function checkStep4Complete() {
 
 let additionalBoatCount = 0;
 
-const additionalBoatFields = [
-  {
-    id: 'hullMake',
-    label: 'Hull Make',
-    type: 'select',
-    options: hullMakeOptions
-  },
-  {
-    id: 'hullModel',
-    label: 'Hull Model',
-    type: 'text',
-    placeholder: 'Enter hull model'
-  },
-  {
-    id: 'hullYearBuilt',
-    label: 'Hull Year Built',
-    type: 'number',
-    placeholder: 'YYYY'
-  },
-  {
-    id: 'hullConstruction',
-    label: 'Hull Construction',
-    type: 'select',
-    options: [
-      'Aluminium',
-      'Carbon Fibre',
-      'Ferrocement',
-      'Fibreglass',
-      'Kevlar',
-      'Plastic',
-      'Plywood',
-      'Rubber',
-      'Steel',
-      'Timber',
-      'Other/Composite'
-    ]
-  },
-  {
-    id: 'hullLength',
-    label: 'Hull Length',
-    type: 'length'
-  },
-  {
-    id: 'hullType',
-    label: 'Hull Type',
-    type: 'select',
-    options: [
-      'Cabin Cruiser',
-      'Catamaran POWER',
-      'Catamaran SAILING',
-      'Centre Console',
-      'Ex Cray Fishing Boat',
-      'Flybridge Cruiser',
-      'Half Cabin Cruiser',
-      'Houseboat',
-      'Jet Boat',
-      'Monohull Motor Yacht',
-      'Monohull Sailing Yacht',
-      'Pontoon Boat',
-      'Rigid Inflatable',
-      'Runabout',
-      'Sailing Dinghy / Skiff',
-      'Ski Boat',
-      'Sports Cruiser',
-      'Trimaran',
-      'Other'
-    ]
-  },
-  {
-    id: 'numberOfMotors',
-    label: 'Number of Motors',
-    type: 'select',
-    options: [
-      '0',
-      '1',
-      '2',
-      '3',
-      '4',
-      '5+'
-    ]
-  },
-  {
-    id: 'motorMake',
-    label: 'Motor Make',
-    type: 'select',
-    options: [
-      'NO MOTOR',
-      'Beta',
-      'BMW',
-      'Caterpillar',
-      'Cummins',
-      'Evinrude',
-      'Honda',
-      'Johnson',
-      'MAN',
-      'Mariner',
-      'MerCruiser',
-      'Mercury',
-      'Suzuki',
-      'Tohatsu',
-      'Volvo Penta',
-      'Yamaha',
-      'Yanmar',
-      'Other'
-    ]
-  },
-  {
-    id: 'motorType',
-    label: 'Motor Type',
-    type: 'select',
-    options: [
-      'NO MOTOR',
-      'Outboard Electric',
-      'Outboard Petrol',
-      'Sterndrive Petrol',
-      'Inboard Petrol',
-      'Jet Drive Petrol',
-      'Sterndrive Diesel',
-      'Inboard Diesel',
-      'Jet Drive Diesel',
-      'Other'
-    ]
-  },
-  {
-    id: 'purchaseDate',
-    label: 'Purchase Date',
-    type: 'date'
-  },
-  {
-    id: 'purchasePrice',
-    label: 'Purchase Price',
-    type: 'currency',
-    placeholder: '$'
-  },
-  {
-    id: 'totalSumInsured',
-    label: 'Total Sum Insured',
-    type: 'currency',
-    placeholder: '$'
-  },
-  {
-    id: 'storageMethod',
-    label: 'Storage Method',
-    type: 'select',
-    options: [
-      'Trailer - Garage / Shed',
-      'Trailer - Behind Locked Gates',
-      'Trailer - Carport / Driveway / Front Lawn',
-      'Trailer - Roadside / Verge / Other',
-      'Hardstand / Rack',
-      'Private Jetty - Floating Dock',
-      'Private Jetty - In Water',
-      'Marina berth / Private jetty',
-      'Fore & Aft / Pile Mooring',
-      'Swing Mooring',
-      'Other'
-    ]
-  },
-  {
-    id: 'locationAddress',
-    label: 'Location Address',
-    type: 'text',
-    placeholder: 'Enter storage address'
-  }
-];
-
-
-function createAdditionalBoatInput(field) {
-
-  // LOCATION ADDRESS
-  if (field.id === 'locationAddress') {
-    return `
-      <div class="address-field" data-additional-address>
-
-        <div class="address-lookup-wrap">
-          <input
-            type="text"
-            data-additional-address-lookup
-            autocomplete="off"
-            placeholder="Start typing address..."
-          >
-        </div>
-
-        <div
-          class="address-manual"
-          data-additional-address-manual
-          style="display:none;"
-        >
-          <input
-            type="text"
-            data-additional-address-part="street"
-            placeholder="Street address"
-          >
-
-          <input
-            type="text"
-            data-additional-address-part="suburb"
-            placeholder="Suburb"
-          >
-
-          <select data-additional-address-part="state">
-            <option value="" disabled selected>
-              State
-            </option>
-
-            ${STATES.map(state => `
-              <option value="${state}">
-                ${state}
-              </option>
-            `).join('')}
-          </select>
-
-          <input
-            type="text"
-            data-additional-address-part="postcode"
-            inputmode="numeric"
-            maxlength="4"
-            placeholder="Postcode"
-          >
-        </div>
-
-        <button
-          type="button"
-          class="link-btn"
-          data-additional-address-toggle
-        >
-          Enter address manually
-        </button>
-
-      </div>
-    `;
-  }
-
-  // SELECT
-  if (field.type === 'select') {
-    return `
-      <select
-        data-additional-boat-field="${field.id}"
-      >
-        ${createSelectOptions(field.options)}
-      </select>
-    `;
-  }
-
-  // LENGTH
-  if (field.type === 'length') {
-    return `
-      <div class="length-input-group">
-
-        <input
-          type="number"
-          min="0"
-          step="0.01"
-          inputmode="decimal"
-          placeholder="0"
-          data-additional-boat-field="hullLength"
-        >
-
-        <select
-          class="length-unit"
-          data-additional-boat-field="hullLengthUnit"
-        >
-          <option value="m" selected>
-            m
-          </option>
-
-          <option value="ft">
-            ft
-          </option>
-        </select>
-
-      </div>
-    `;
-  }
-
-  // STANDARD / CURRENCY INPUT
-  const inputType =
-    field.type === 'currency'
-      ? 'text'
-      : field.type;
-
-  return `
-    <input
-      type="${inputType}"
-      placeholder="${field.placeholder || ''}"
-      data-additional-boat-field="${field.id}"
-
-      ${
-        field.type === 'currency'
-          ? 'data-currency="true" inputmode="numeric"'
-          : ''
-      }
-
-      ${
-        field.id === 'hullYearBuilt'
-          ? 'min="1900" max="9999" step="1"'
-          : ''
-      }
-    >
-  `;
-}
-
-
 function addAdditionalBoat() {
   additionalBoatCount++;
 
@@ -3067,6 +2730,8 @@ function addAdditionalBoat() {
 
   card.dataset.boatNumber =
     boatNumber;
+
+  card.boatStore = { hullLengthUnit: 'm' };
 
   card.innerHTML = `
     <div class="additional-boat-header">
@@ -3087,19 +2752,7 @@ function addAdditionalBoat() {
 
     <div class="additional-boat-fields">
 
-      ${additionalBoatFields.map(field => `
-        <div class="field-row">
-
-          <p class="field-label">
-            ${field.label}
-          </p>
-
-          <div class="field-input-wrap">
-            ${createAdditionalBoatInput(field)}
-          </div>
-
-        </div>
-      `).join('')}
+      ${vesselFields.map(field => vesselFieldRowHtml(field, card.boatStore)).join('')}
 
     </div>
 
@@ -3193,84 +2846,11 @@ function addAdditionalBoat() {
     .getElementById('additionalBoatsList')
     .appendChild(card);
 
-  card
-    .querySelectorAll(
-      'input, select, textarea'
-    )
-    .forEach(element => {
-
-      element.addEventListener(
-        'input',
-        () => {
-          if (
-            element.dataset.currency ===
-            'true'
-          ) {
-            formatCurrencyInput(element);
-          }
-
-          if (
-            element.dataset
-              .additionalBoatField ===
-              'numberOfMotors' &&
-            element.value === '0'
-          ) {
-            const motorMake =
-              card.querySelector(
-                '[data-additional-boat-field="motorMake"]'
-              );
-
-            const motorType =
-              card.querySelector(
-                '[data-additional-boat-field="motorType"]'
-              );
-
-            if (motorMake) {
-              motorMake.value = 'NO MOTOR';
-            }
-
-            if (motorType) {
-              motorType.value = 'NO MOTOR';
-            }
-          }
-
-          updateAdditionalBoatsState();
-        }
-      );
-
-      element.addEventListener(
-        'change',
-        () => {
-          if (
-            element.dataset
-              .additionalBoatField ===
-              'numberOfMotors' &&
-            element.value === '0'
-          ) {
-            const motorMake =
-              card.querySelector(
-                '[data-additional-boat-field="motorMake"]'
-              );
-
-            const motorType =
-              card.querySelector(
-                '[data-additional-boat-field="motorType"]'
-              );
-
-            if (motorMake) {
-              motorMake.value = 'NO MOTOR';
-            }
-
-            if (motorType) {
-              motorType.value = 'NO MOTOR';
-            }
-          }
-
-          updateAdditionalBoatsState();
-        }
-      );
-
-    });
+  bindVesselFieldRows(
+    card.querySelector('.additional-boat-fields'),
+    card.boatStore,
+    updateAdditionalBoatsState
+  );
 
   card
     .querySelectorAll(
@@ -3479,28 +3059,13 @@ function updateAdditionalBoatsState() {
   quoteState.additionalBoats =
     Array.from(cards).map(card => {
       const boat = {
+        ...card.boatStore,
+
         hasDifferentSkipper:
           card.dataset.differentSkipper || '',
 
-        locationAddress:
-          card.dataset.locationAddress || '',
-
-        locationAddressPostcode:
-          card.dataset.locationAddressPostcode || '',
-
         skippers: []
       };
-
-      card
-        .querySelectorAll(
-          '[data-additional-boat-field]'
-        )
-        .forEach(element => {
-          boat[
-            element.dataset
-              .additionalBoatField
-          ] = element.value;
-        });
 
       const skipperRows =
         card.querySelectorAll(
@@ -3571,36 +3136,12 @@ function checkAdditionalBoatsComplete() {
     return;
   }
 
-  const requiredFields = [
-    'hullMake',
-    'hullModel',
-    'hullYearBuilt',
-    'hullConstruction',
-    'hullLength',
-    'hullLengthUnit',
-    'hullType',
-    'numberOfMotors',
-    'motorMake',
-    'motorType',
-    'purchaseDate',
-    'purchasePrice',
-    'totalSumInsured',
-    'storageMethod',
-    'locationAddress'
-  ];
-
     const boatsComplete =
     quoteState.additionalBoats.length > 0 &&
     quoteState.additionalBoats.every(boat => {
 
         const vesselComplete =
-        requiredFields.every(
-            fieldName =>
-            boat[fieldName] !== undefined &&
-            String(
-                boat[fieldName]
-            ).trim() !== ''
-        );
+        isVesselComplete(boat);
 
         const skipperChoiceComplete =
         boat.hasDifferentSkipper === 'yes' ||
