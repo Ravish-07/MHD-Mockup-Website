@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     additionalBoats: []
     };
   // ==================================================
-  // PAGE 1: IMPORTANT INFORMATION
+  // PAGE 1: TARGET MARKET DETERMINATION
   // ==================================================
 
   const questions = [
