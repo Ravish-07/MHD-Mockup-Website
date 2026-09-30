@@ -425,7 +425,7 @@ input[data-currency="true"]::placeholder {
 }
 
 .additional-boat-card {
-  overflow: hidden;
+  overflow: visible; /* lets the lay-up calendar popup extend past the card */
   border: 1px solid #dfe5e8;
   border-radius: 8px;
   background: #ffffff;
@@ -438,6 +438,7 @@ input[data-currency="true"]::placeholder {
   padding: 11px 15px;
   background: #edf8fa;
   border-bottom: 1px solid #d7e9ec;
+  border-radius: 7px 7px 0 0;
 }
 
 .additional-boat-header h4 {
@@ -604,38 +605,152 @@ input[data-currency="true"]::placeholder {
   background-color: #efefef;
 }
 
-/* ===== LAY-UP PERIOD (FROM / TO MONTH + YEAR) ===== */
+/* ===== LAY-UP PERIOD (ONE BOX + CALENDAR POPUP) ===== */
 
-.layup-range {
-  display: flex;
-  gap: 12px;
+.layup-picker {
+  position: relative;
   width: 100%;
 }
 
-.layup-box {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.layup-field {
+  position: relative;
 }
 
-.layup-box-label {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.layup-box input[type="month"] {
+.layup-text {
   width: 100%;
-  min-width: 0;
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  padding: 8px 12px;
+  padding: 8px 40px 8px 12px;
   font-size: 13px;
   font-family: inherit;
   outline: none;
 }
 
-.layup-box input[type="month"]:focus {
+.layup-text:focus {
   border-color: #0f766e;
+}
+
+.layup-text.invalid {
+  border-color: #dc2626;
+}
+
+.layup-cal-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #0f766e;
+  cursor: pointer;
+}
+
+.layup-error {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #dc2626;
+}
+
+.layup-popup {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 4px);
+  right: 0;
+  width: 260px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.layup-popup[hidden],
+.layup-error[hidden] {
+  display: none;
+}
+
+.layup-year-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.layup-year-bar button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.layup-year-bar button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.layup-months {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.layup-month {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 6px 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #fff;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.layup-month strong {
+  font-size: 13px;
+}
+
+.layup-month small {
+  font-size: 10px;
+  color: #6b7280;
+}
+
+.layup-month:hover:not(:disabled) {
+  border-color: #0f766e;
+}
+
+.layup-month.in-range {
+  background: #ccfbf1;
+}
+
+.layup-month.selected {
+  background: #0f766e;
+  border-color: #0f766e;
+  color: #fff;
+}
+
+.layup-month.selected small {
+  color: #d1fae5;
+}
+
+.layup-month:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.layup-hint {
+  margin: 10px 0 0;
+  font-size: 11px;
+  color: #6b7280;
 }

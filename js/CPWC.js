@@ -1574,56 +1574,54 @@ Other
   function layUpMonthLabel(value) {
     const [year, month] = value.split('-');
 
-    return `${LAY_UP_MONTHS[Number(month) - 1]} ${year}`;
+    return `${month}/${year}`;
   }
 
-  // Two calendar-style month pickers. Left empty, the picker opens on the current month.
+  // One box with a calendar popup; behaviour lives in js/layup-picker.js.
   function layUpRangeHtml() {
-    const box = (id, caption) => `
-      <div class="layup-box">
-        <span class="layup-box-label">${caption}</span>
-        <input
-          type="month"
-          data-vessel-field="${id}"
-          aria-label="Lay-up ${caption.toLowerCase()}"
-        >
-      </div>
-    `;
-
     return `
-      <div class="layup-range">
-        ${box('layUpFrom', 'From')}
-        ${box('layUpTo', 'To')}
+      <div class="layup-picker">
+        <div class="layup-field">
+          <input
+            type="text"
+            class="layup-text"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="MM/YYYY – MM/YYYY"
+            aria-label="Lay-up period"
+          >
+
+          <button
+            type="button"
+            class="layup-cal-btn"
+            aria-label="Choose lay-up months"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </button>
+        </div>
+
+        <p class="layup-error" role="alert" hidden></p>
+
+        <div class="layup-popup" role="dialog" aria-label="Choose lay-up months" hidden>
+          <div class="layup-year-bar">
+            <button type="button" class="layup-year-prev" aria-label="Previous year">‹</button>
+            <span class="layup-year"></span>
+            <button type="button" class="layup-year-next" aria-label="Next year">›</button>
+          </div>
+
+          <div class="layup-months"></div>
+
+          <p class="layup-hint">Select two months. The earlier is the start and the later is the end.</p>
+        </div>
       </div>
     `;
-  }
-
-  function updateLayUpRange(root, store) {
-    const toInput = fieldEl(root, 'layUpTo');
-
-    const from = MONTH_VALUE.test(store.layUpFrom || '')
-      ? store.layUpFrom
-      : '';
-
-    // Earlier months are locked in To (same month is allowed)
-    toInput.min = from;
-
-    if (from && store.layUpTo && store.layUpTo < from) {
-      toInput.value = '';
-      store.layUpTo = '';
-    }
-
-    const to = MONTH_VALUE.test(store.layUpTo || '')
-      ? store.layUpTo
-      : '';
-
-    store.layUpMonths =
-      from && to
-        ? String(
-            (Number(to.slice(0, 4)) - Number(from.slice(0, 4))) * 12 +
-            Number(to.slice(5)) - Number(from.slice(5)) + 1
-          )
-        : '';
   }
 
   function createSelectOptions(options) {
@@ -1809,6 +1807,12 @@ Other
       'locationAddress',
       onChange
     );
+
+    root
+      .querySelectorAll('.layup-picker')
+      .forEach(picker =>
+        initLayUpPicker(picker, store, onChange)
+      );
   }
 
   function renderVesselFields() {
@@ -1862,10 +1866,6 @@ Other
           store[`${fieldName}Specify`] = '';
         }
       }
-    }
-
-    if (fieldName.startsWith('layUp')) {
-      updateLayUpRange(root, store);
     }
 
     if (fieldName === 'hullType') {
@@ -2001,7 +2001,8 @@ Other
     ).length;
 
     const layUpComplete =
-      layUpFilled === 0 || layUpFilled === layUpKeys.length;
+      !store.layUpInvalid &&
+      (layUpFilled === 0 || layUpFilled === layUpKeys.length);
 
     const equipmentComplete =
       store.equipmentOver2000 !== 'Yes' ||
