@@ -1545,6 +1545,24 @@ Other
     },
     ];
 
+  const SAILING_HULL_TYPES = [
+    'Catamaran SAILING',
+    'Monohull Sailing Yacht',
+    'Sailing Dinghy / Skiff',
+    'Other'
+  ];
+
+  const SAILING_ONLY_FIELDS = [
+    'mastConstruction',
+    'yachtRacing'
+  ];
+
+  function isSailingVessel() {
+    return SAILING_HULL_TYPES.includes(
+      quoteState.vesselDetails.hullType
+    );
+  }
+
   function createSelectOptions(options) {
     return `
       <option value="" disabled selected>Select</option>
@@ -1675,6 +1693,9 @@ Other
           class="field-row"
           id="${field.id}Row"
           data-field-row="${field.id}"
+          ${SAILING_ONLY_FIELDS.includes(field.id) && !isSailingVessel()
+            ? 'style="display:none;"'
+            : ''}
         >
           <p class="field-label">
             <span>${field.label}</span>
@@ -1806,6 +1827,34 @@ Other
       }
     }
 
+    if (fieldName === 'hullType') {
+      const isSailing = isSailingVessel();
+
+      SAILING_ONLY_FIELDS.forEach(id => {
+        const row = document.getElementById(`${id}Row`);
+
+        if (row) {
+          row.style.display = isSailing ? '' : 'none';
+        }
+
+        if (!isSailing) {
+          const select = document.getElementById(id);
+          const specifyWrap =
+            document.getElementById(`${id}SpecifyWrap`);
+
+          if (select) select.value = '';
+
+          if (specifyWrap) {
+            specifyWrap.style.display = 'none';
+            specifyWrap.querySelector('input').value = '';
+          }
+
+          delete quoteState.vesselDetails[id];
+          delete quoteState.vesselDetails[`${id}Specify`];
+        }
+      });
+    }
+
     if (fieldName === 'equipmentOver2000') {
       const equipmentDetails =
         document.getElementById(
@@ -1896,6 +1945,13 @@ Other
 
     const baseFieldsComplete =
       requiredFields.every(fieldName => {
+        if (
+          SAILING_ONLY_FIELDS.includes(fieldName) &&
+          !isSailingVessel()
+        ) {
+          return true;
+        }
+
         const value =
           quoteState.vesselDetails[fieldName];
 
