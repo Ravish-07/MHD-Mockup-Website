@@ -754,3 +754,12 @@ input[data-currency="true"]::placeholder {
   font-size: 11px;
   color: #6b7280;
 }
+
+/* ---------- Intro: policy class line under "Get Your Quote" ---------- */
+.intro-product-tag {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #08788b;
+  letter-spacing: 0.3px;
+}
