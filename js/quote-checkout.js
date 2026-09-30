@@ -589,9 +589,8 @@ function setupPayment({ quoteState, bypassValidation, policyName, getAmountDue, 
   function populatePaymentConfirmation() {
     const info = quoteState.additionalInformation;
 
-    byId('confirmationEmailNote').textContent = info.email
-      ? `Confirmation documents will be sent to ${info.email}.`
-      : 'Your confirmation documents are ready.';
+    byId('confirmationEmailNote').textContent =
+      `Your cover has been successfully arranged, and your policy documentation has been sent to ${info.email || 'your email address'}.`;
 
     const startDate = formatQuoteDate(byId('policyStartDate').value);
     const endDate = formatQuoteDate(byId('policyEndDate').value);
