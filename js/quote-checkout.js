@@ -467,16 +467,23 @@ function setupPayment({ quoteState, bypassValidation, policyName, getAmountDue, 
   const cardNumberInput = byId('paymentCardNumber');
   const ccvInput = byId('paymentCCV');
 
+  // The line under the page heading follows the stage: choosing a method, then entering details.
+  const paymentSubtitle = byId('paymentSubtitle');
+  const SUBTITLE_CHOOSE_METHOD = 'Please select how you would like to pay for your policy.';
+  const SUBTITLE_ENTER_DETAILS = 'Please enter your payment details below to complete your policy purchase.';
+
   function showPaymentPage() {
     showStep(8);
     updatePaymentTotals();
     paymentMethodSelection.style.display = 'block';
     paymentEntrySection.style.display = 'none';
+    paymentSubtitle.textContent = SUBTITLE_CHOOSE_METHOD;
   }
 
   function returnToPaymentMethods() {
     paymentEntrySection.style.display = 'none';
     paymentMethodSelection.style.display = 'block';
+    paymentSubtitle.textContent = SUBTITLE_CHOOSE_METHOD;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -494,6 +501,7 @@ function setupPayment({ quoteState, bypassValidation, policyName, getAmountDue, 
 
     paymentMethodSelection.style.display = 'none';
     paymentEntrySection.style.display = 'block';
+    paymentSubtitle.textContent = SUBTITLE_ENTER_DETAILS;
     paymentEntrySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
