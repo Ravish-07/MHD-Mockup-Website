@@ -754,3 +754,11 @@ input[data-currency="true"]::placeholder {
   font-size: 11px;
   color: #6b7280;
 }
+
+/* ===== YOUR COVER TICKS: GREEN (trial, CPWC only) ===== */
+/* To roll back to the teal ticks, delete this block. To roll out, move it to css/quote-page.css. */
+
+.your-quote-cover-tick:not(.excluded) {
+  background: #dcfce7;
+  color: #16a34a;
+}
