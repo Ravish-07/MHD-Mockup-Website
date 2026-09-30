@@ -625,12 +625,17 @@ input[data-currency="true"]::placeholder {
   color: #6b7280;
 }
 
-.layup-selects {
-  display: flex;
-  gap: 6px;
+.layup-box input[type="month"] {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
 }
 
-.layup-selects select {
-  flex: 1;
-  min-width: 0;
+.layup-box input[type="month"]:focus {
+  border-color: #0f766e;
 }
