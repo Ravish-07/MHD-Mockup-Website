@@ -1977,7 +1977,7 @@ $('additionalBoatsList')
       coverRowHtml('Pollution', '$1,000,000 for any one Accident or series of Accidents caused by the one event'),
       coverRowHtml('Geographical Limits', '250 Nautical Miles off the Australian Mainland including Tasmania.',
         anyReferredPostcode ? '' : 'Subject to the vessel being south of 23.5° South between 1 December - 1 April.'),
-      coverRowHtml('Water skiing and/or aquaplaning liability', vessels.some(d => d.waterSkiing === 'Yes') ? 'Yes' : 'No', '',
+      coverRowHtml('Water Skiing / Aquaplaning Extension', vessels.some(d => d.waterSkiing === 'Yes') ? 'Yes' : 'No', '',
         vessels.some(d => d.waterSkiing === 'Yes')),
       coverRowHtml('Yacht Racing', esc(racingAnswer || 'Not Insured'), '', Boolean(racingAnswer)),
       coverRowHtml('Recovery or removal of wreck', `
