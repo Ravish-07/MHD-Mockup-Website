@@ -596,7 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'hullModel', label: 'Hull Model', type: 'text' },
     { id: 'hullYearBuilt', label: 'Hull Year Built', type: 'year' },
     { id: 'hullConstruction', label: 'Hull Construction', type: 'select', options: HULL_CONSTRUCTION, specifyOn: ['Other/Composite'] },
-    { id: 'hullLength', label: 'Length', type: 'length' },
+    { id: 'hullLength', label: 'Hull Length', type: 'length' },
     { id: 'hullType', label: 'Hull Type', type: 'select', options: HULL_TYPES, specifyOn: ['Other'] },
     { id: 'mastConstruction', label: 'Mast Construction', type: 'select', options: MAST_CONSTRUCTION, specifyOn: ['Other'], showIf: isSailing },
     { id: 'numMotors', label: 'Number of Motors', type: 'select', options: NUMBER_OF_MOTORS },

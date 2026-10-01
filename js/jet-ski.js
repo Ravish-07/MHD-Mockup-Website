@@ -193,7 +193,7 @@ const vesselFields = [
   },
   {
     id: 'hullLength',
-    label: 'Length',
+    label: 'Hull Length',
     type: 'length'
   },
   {
