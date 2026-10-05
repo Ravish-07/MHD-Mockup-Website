@@ -222,26 +222,11 @@
   text-align: right;
 }
 
-/* Policy Endorsement bubble, directly after Your Cover. Value is Nil until set per product. */
-.policy-endorsement {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 14px 0 18px;
-  padding: 6px 14px;
-  border: 1px solid #d8dde3;
-  border-radius: 999px;
-  background: #f3f4f6;
+/* Policy Endorsements panel, directly after Your Cover. Shows Nil until set per product. */
+.policy-endorsement-body {
+  padding: 12px 18px;
+  color: #374151;
   font-size: 13px;
-}
-
-.policy-endorsement-label {
-  color: #6b7280;
-}
-
-.policy-endorsement-value {
-  color: #0f766e;
-  font-weight: 700;
 }
 
 .your-quote-cover-list {
