@@ -3,6 +3,8 @@
 // Writes layUpFrom / layUpTo ("YYYY-MM"), layUpMonths and layUpInvalid to the store it is given.
 
 const LAY_UP_MAX_MONTHS = 4; // spec: lay-up months 0 to 4
+const LAY_UP_MIN_YEAR = 2000; // any month is allowed; this only guards against typos
+const LAY_UP_MAX_YEAR = 2100;
 const LAY_UP_MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const layUpPad = number => String(number).padStart(2, '0');
@@ -17,7 +19,6 @@ function layUpCurrentMonth() {
 
 // Returns an error message, or '' when from..to is acceptable.
 function layUpRangeError(from, to) {
-  if (layUpIndex(from) < layUpIndex(layUpCurrentMonth())) return 'Lay-up cannot start before the current month.';
   if (layUpIndex(to) < layUpIndex(from)) return 'The end month cannot be before the start month.';
   if (layUpIndex(to) - layUpIndex(from) + 1 > LAY_UP_MAX_MONTHS) return `Lay-up can be at most ${LAY_UP_MAX_MONTHS} months.`;
   return '';
@@ -36,6 +37,8 @@ function parseLayUpText(text) {
 
   if (from.month < 1 || from.month > 12 || to.month < 1 || to.month > 12) return { error: 'Months must be between 01 and 12.' };
 
+  if (from.year < LAY_UP_MIN_YEAR || to.year > LAY_UP_MAX_YEAR) return { error: `Years must be between ${LAY_UP_MIN_YEAR} and ${LAY_UP_MAX_YEAR}.` };
+
   const error = layUpRangeError(from, to);
   return error ? { error } : { from, to };
 }
@@ -51,8 +54,8 @@ function initLayUpPicker(picker, store, onChange) {
   const message = picker.querySelector('.layup-error');
 
   const current = layUpCurrentMonth();
-  const minYear = current.year;
-  const maxYear = current.year + 2;
+  const minYear = LAY_UP_MIN_YEAR;
+  const maxYear = LAY_UP_MAX_YEAR;
 
   let viewYear = current.year;
   let firstPick = null; // first month clicked in the popup, waiting for the second
@@ -80,7 +83,6 @@ function initLayUpPicker(picker, store, onChange) {
 
   function monthDisabled(month) {
     const candidate = { year: viewYear, month };
-    if (layUpIndex(candidate) < layUpIndex(current)) return true;
     if (!firstPick) return false;
     return Math.abs(layUpIndex(candidate) - layUpIndex(firstPick)) + 1 > LAY_UP_MAX_MONTHS;
   }
