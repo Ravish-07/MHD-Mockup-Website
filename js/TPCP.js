@@ -611,6 +611,13 @@ document.addEventListener('DOMContentLoaded', () => {
       inputInfoText: TIP_LIABILITY
     },
     { id: 'storageMethod', label: 'Storage Method', type: 'select', options: STORAGE_METHODS, specifyOn: ['Other'] },
+    {
+      id: 'marinaName',
+      label: 'Marina / Club Name',
+      type: 'text',
+      placeholder: 'Enter marina or yacht club name',
+      showIf: d => d.storageMethod === 'Marina Berth'
+    },
     { id: 'locationAddress', label: 'Location Address', type: 'address' },
     {
       id: 'liabilityLimit',
@@ -682,7 +689,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return addressHtml('locationAddress', d);
 
       default:
-        return `<input type="text" data-field="${f.id}" value="${esc(val)}">`;
+        return `<input type="text" data-field="${f.id}" placeholder="${esc(f.placeholder || '')}" value="${esc(val)}">`;
     }
   }
 
@@ -776,7 +783,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!visible) {
           d[f.id] = '';
           d[`${f.id}Specify`] = '';
-          const el = row.querySelector('select');
+          const el = row.querySelector('select, input[type="text"]');
           if (el) el.value = '';
         }
       }

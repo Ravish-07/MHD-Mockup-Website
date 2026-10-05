@@ -246,12 +246,39 @@ const vesselFields = [
     specifyOnOther: true
   },
   {
+    id: 'marinaName',
+    label: 'Marina / Club Name',
+    type: 'text',
+    placeholder: 'Enter marina or yacht club name',
+    showIf: details => details.storageMethod === 'Marina Berth'
+  },
+  {
     id: 'locationAddress',
     label: 'Location Address',
     type: 'text',
     placeholder: 'Start typing address...'
   }
 ];
+
+// Questions that only appear for certain answers (rows carry rowAttr, inputs carry fieldAttr).
+// A hidden question is cleared.
+function syncConditionalRows(root, details, rowAttr, fieldAttr) {
+  vesselFields
+    .filter(f => f.showIf)
+    .forEach(f => {
+      const row = root.querySelector(`[${rowAttr}="${f.id}"]`);
+      if (!row) return;
+
+      const visible = f.showIf(details);
+      row.style.display = visible ? '' : 'none';
+
+      if (!visible) {
+        const input = row.querySelector(`[${fieldAttr}="${f.id}"]`);
+        if (input) input.value = '';
+        details[f.id] = '';
+      }
+    });
+}
 
 function renderVesselFields() {
   const list = document.getElementById('vesselFieldList');
@@ -361,7 +388,8 @@ function renderVesselFields() {
     }
 
     return `
-      <div class="field-row" data-field-row="${f.id}">
+      <div class="field-row" data-field-row="${f.id}"
+           ${f.showIf && !f.showIf(quoteState.vesselDetails) ? 'style="display:none;"' : ''}>
         <p class="field-label">
           ${f.label}
         </p>
@@ -392,6 +420,8 @@ function renderVesselFields() {
         referralRequired =
           el.value === 'Roadside / Verge / Nature Strip';
       }
+
+      syncConditionalRows(list, quoteState.vesselDetails, 'data-field-row', 'data-field');
 
       // Show "Please Specify" when Other is selected
       const fieldDefinition = vesselFields.find(
@@ -447,6 +477,8 @@ function checkStep3Complete() {
   }
 
   const requiredBaseFields = vesselFields.every(f => {
+    if (f.showIf && !f.showIf(quoteState.vesselDetails)) return true;
+
     const value = quoteState.vesselDetails[f.id];
     return value !== undefined && value !== '';
   });
@@ -1001,7 +1033,8 @@ function addJetSkiUnit() {
 
 
     return `
-      <div class="field-row">
+      <div class="field-row" data-unit-field-row="${f.id}"
+           ${f.showIf ? 'style="display:none;"' : ''}>
 
         <p class="field-label">
           ${f.label}
@@ -1233,6 +1266,19 @@ if (unitAddress) {
 
         const fieldName =
           el.dataset.unitField;
+
+
+        // ANSWER-DEPENDENT QUESTIONS (e.g. Marina / Club Name)
+
+        const unitDetails = {};
+
+        card
+          .querySelectorAll('[data-unit-field]')
+          .forEach(input => {
+            unitDetails[input.dataset.unitField] = input.value;
+          });
+
+        syncConditionalRows(card, unitDetails, 'data-unit-field-row', 'data-unit-field');
 
 
         // OTHER --> PLEASE SPECIFY
@@ -1692,6 +1738,10 @@ function checkStep5Complete() {
 
       const vesselFieldsComplete =
         vesselFields.every(field => {
+
+          if (field.showIf && !field.showIf(unit)) {
+            return true;
+          }
 
           const value =
             unit[field.id];
