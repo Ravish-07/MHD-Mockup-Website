@@ -2,8 +2,7 @@
 // Pick two months in the popup (the earlier becomes From, the later To) or type the range in.
 // Writes layUpFrom / layUpTo ("YYYY-MM"), layUpMonths and layUpInvalid to the store it is given.
 
-const LAY_UP_MAX_MONTHS = 4; // spec: lay-up months 0 to 4
-const LAY_UP_MIN_YEAR = 2000; // any month is allowed; this only guards against typos
+const LAY_UP_MIN_YEAR = 2000; // any month and any length is allowed; this only guards against typos
 const LAY_UP_MAX_YEAR = 2100;
 const LAY_UP_MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
@@ -20,7 +19,6 @@ function layUpCurrentMonth() {
 // Returns an error message, or '' when from..to is acceptable.
 function layUpRangeError(from, to) {
   if (layUpIndex(to) < layUpIndex(from)) return 'The end month cannot be before the start month.';
-  if (layUpIndex(to) - layUpIndex(from) + 1 > LAY_UP_MAX_MONTHS) return `Lay-up can be at most ${LAY_UP_MAX_MONTHS} months.`;
   return '';
 }
 
@@ -81,12 +79,6 @@ function initLayUpPicker(picker, store, onChange) {
       : null;
   }
 
-  function monthDisabled(month) {
-    const candidate = { year: viewYear, month };
-    if (!firstPick) return false;
-    return Math.abs(layUpIndex(candidate) - layUpIndex(firstPick)) + 1 > LAY_UP_MAX_MONTHS;
-  }
-
   function renderPopup() {
     yearLabel.textContent = viewYear;
     previousYear.disabled = viewYear <= minYear;
@@ -108,7 +100,6 @@ function initLayUpPicker(picker, store, onChange) {
           class="layup-month${selected ? ' selected' : ''}${inRange ? ' in-range' : ''}"
           data-month="${month}"
           aria-pressed="${selected ? 'true' : 'false'}"
-          ${monthDisabled(month) ? 'disabled' : ''}
         >
           <strong>${layUpPad(month)}</strong><small>${name}</small>
         </button>
