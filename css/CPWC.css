@@ -749,12 +749,6 @@ input[data-currency="true"]::placeholder {
   cursor: not-allowed;
 }
 
-.layup-hint {
-  margin: 10px 0 0;
-  font-size: 11px;
-  color: #6b7280;
-}
-
 /* ---------- Intro: policy class line under "Get Your Quote" ---------- */
 .intro-product-tag {
   margin: 0;

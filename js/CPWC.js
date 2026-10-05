@@ -1491,12 +1491,18 @@ Other
         'Hardstand / Rack',
         'Private Jetty - Floating Dock',
         'Private Jetty - In Water',
-        'Marina berth / Private jetty',
+        'Marina Berth',
         'Fore & Aft / Pile Mooring',
         'Swing Mooring',
         'Other'
     ],
     specifyValues: ['Other']
+    },
+    {
+    id: 'marinaName',
+    label: 'Marina / Club Name',
+    type: 'text',
+    placeholder: 'Enter marina or yacht club name'
     },
     {
     id: 'locationDetails',
@@ -1551,13 +1557,27 @@ Other
     'Other'
   ];
 
-  const SAILING_ONLY_FIELDS = [
-    'mastConstruction',
-    'yachtRacing'
+  const LAY_UP_STORAGE_METHODS = [
+    'Trailer - Garage / Shed',
+    'Trailer - Behind Locked Gates'
   ];
 
   function isSailingVessel(store) {
     return SAILING_HULL_TYPES.includes(store.hullType);
+  }
+
+  // Questions that only appear for certain answers.
+  const CONDITIONAL_FIELDS = {
+    mastConstruction: store => isSailingVessel(store),
+    yachtRacing: store => isSailingVessel(store),
+    marinaName: store => store.storageMethod === 'Marina Berth',
+    layUp: store => LAY_UP_STORAGE_METHODS.includes(store.storageMethod)
+  };
+
+  function isFieldVisible(fieldId, store) {
+    const rule = CONDITIONAL_FIELDS[fieldId];
+
+    return rule ? rule(store) : true;
   }
 
   function fieldEl(root, id) {
@@ -1617,8 +1637,6 @@ Other
           </div>
 
           <div class="layup-months"></div>
-
-          <p class="layup-hint">Select two months. The earlier is the start and the later is the end.</p>
         </div>
       </div>
     `;
@@ -1736,7 +1754,7 @@ Other
       <div
         class="field-row"
         data-field-row="${field.id}"
-        ${SAILING_ONLY_FIELDS.includes(field.id) && !isSailingVessel(store)
+        ${!isFieldVisible(field.id, store)
           ? 'style="display:none;"'
           : ''}
       >
@@ -1868,34 +1886,52 @@ Other
       }
     }
 
-    if (fieldName === 'hullType') {
-      const isSailing = isSailingVessel(store);
+    // Show or hide the answer-dependent questions; a hidden question is cleared.
+    Object.keys(CONDITIONAL_FIELDS).forEach(id => {
+      const visible = isFieldVisible(id, store);
 
-      SAILING_ONLY_FIELDS.forEach(id => {
-        const row =
-          root.querySelector(`[data-field-row="${id}"]`);
+      const row =
+        root.querySelector(`[data-field-row="${id}"]`);
 
-        if (row) {
-          row.style.display = isSailing ? '' : 'none';
+      if (row) {
+        row.style.display = visible ? '' : 'none';
+      }
+
+      if (visible) return;
+
+      if (id === 'layUp') {
+        const text = row && row.querySelector('.layup-text');
+        const error = row && row.querySelector('.layup-error');
+
+        if (text) text.value = '';
+
+        if (error) {
+          error.hidden = true;
+          text.classList.remove('invalid');
         }
 
-        if (!isSailing) {
-          const select = fieldEl(root, id);
-          const specifyWrap =
-            root.querySelector(`[data-specify-wrap="${id}"]`);
+        delete store.layUpFrom;
+        delete store.layUpTo;
+        delete store.layUpMonths;
+        delete store.layUpInvalid;
 
-          if (select) select.value = '';
+        return;
+      }
 
-          if (specifyWrap) {
-            specifyWrap.style.display = 'none';
-            specifyWrap.querySelector('input').value = '';
-          }
+      const input = fieldEl(root, id);
+      const specifyWrap =
+        root.querySelector(`[data-specify-wrap="${id}"]`);
 
-          delete store[id];
-          delete store[`${id}Specify`];
-        }
-      });
-    }
+      if (input) input.value = '';
+
+      if (specifyWrap) {
+        specifyWrap.style.display = 'none';
+        specifyWrap.querySelector('input').value = '';
+      }
+
+      delete store[id];
+      delete store[`${id}Specify`];
+    });
 
     if (fieldName === 'equipmentOver2000') {
       const equipmentDetails =
@@ -1945,6 +1981,7 @@ Other
       'purchasePrice',
       'totalSumInsured',
       'storageMethod',
+      'marinaName',
       'locationAddress',
       'liabilityLimit',
       'waterSkiing',
@@ -1953,10 +1990,7 @@ Other
 
     const baseFieldsComplete =
       requiredFields.every(fieldName => {
-        if (
-          SAILING_ONLY_FIELDS.includes(fieldName) &&
-          !isSailingVessel(store)
-        ) {
+        if (!isFieldVisible(fieldName, store)) {
           return true;
         }
 
