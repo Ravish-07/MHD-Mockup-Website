@@ -3538,7 +3538,7 @@ function showYourQuote() {
 const checkout = setupCheckout({
   quoteState,
   bypassValidation: DEV_BYPASS_VALIDATION,
-  policyName: 'Comprehensive Pleasure Craft',
+  policyName: 'Comprehensive PWC',
   paymentBaseAmount: 1570.34,
   getPolicyVessels: () => [quoteState.vesselDetails, ...quoteState.additionalBoats],
   getQuoteNumber: () =>
