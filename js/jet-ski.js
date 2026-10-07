@@ -2113,7 +2113,7 @@ document.getElementById('submitQuoteReviewBtn').addEventListener('click', () => 
 const checkout = setupCheckout({
   quoteState,
   bypassValidation: DEV_BYPASS_VALIDATION,
-  policyName: 'Jet Ski / Personal Watercraft',
+  policyName: 'Comprehensive PWC / Jet Ski',
   paymentBaseAmount: 2148.89,
   getPolicyVessels: () => [
     quoteState.vesselDetails,
