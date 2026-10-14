@@ -543,7 +543,7 @@ function mountPrimarySkippers() {
   SkipperSection.render(
     document.getElementById('primarySkipperMount'),
     quoteState.experienceHistory,
-    { getTargets: allSkipperTargets, onChange: checkStep3Complete }
+    { picker: false, getTargets: allSkipperTargets, onChange: checkStep3Complete }
   );
 }
 
