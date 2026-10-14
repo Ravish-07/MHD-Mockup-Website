@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     experienceHistory: {
     numOwners: '',
     numSkippers: '',
-    skippers: [],
+    skippers: [SkipperSection.blank()],
     past5Years: {},
     claims: [],
     ever: {}
@@ -2062,25 +2062,13 @@ Other
     }
 
     continueStep3Btn.disabled =
-      !isVesselComplete(quoteState.vesselDetails);
+      !(isVesselComplete(quoteState.vesselDetails) &&
+        SkipperSection.isComplete(quoteState.experienceHistory, true));
   }
 
 // ==================================================
 // PAGE 3: EXPERIENCE AND HISTORY
 // ==================================================
-
-const experienceFields = [
-  {
-    id: 'numOwners',
-    label: 'How many people own this vessel?',
-    options: ['1', '2', '3', '4', '5+']
-  },
-  {
-    id: 'numSkippers',
-    label: 'How many people skipper this vessel?',
-    options: ['1', '2', '3', '4', '5+']
-  }
-];
 
 const yearsOptions = [
   '0',
@@ -2121,166 +2109,33 @@ const everQuestions = [
   }
 ];
 
-function renderExperienceFields() {
-  const list =
-    document.getElementById('experienceFieldList');
+// ==================================================
+// OWNERS / SKIPPERS (bottom of Vessel Details and each additional boat)
+// ==================================================
 
-  list.innerHTML = experienceFields.map(field => `
-    <div class="field-row">
+function allSkipperTargets() {
+  const targets = [quoteState.experienceHistory];
+  document
+    .querySelectorAll('#additionalBoatsList .additional-boat-card')
+    .forEach(card => {
+      if (card.skipperTarget) targets.push(card.skipperTarget);
+    });
+  return targets;
+}
 
-      <p class="field-label">
-        ${field.label}
-        <span class="required">*</span>
-      </p>
-
-      <div class="field-input-wrap">
-
-        <select
-          data-experience-field="${field.id}"
-        >
-          ${createSelectOptions(field.options)}
-        </select>
-
-      </div>
-
-    </div>
-  `).join('');
-
-  list
-    .querySelectorAll('select')
-    .forEach(select => {
-
-      select.addEventListener('change', () => {
-
-        quoteState.experienceHistory[
-          select.dataset.experienceField
-        ] = select.value;
-
+function mountPrimarySkippers() {
+  SkipperSection.render(
+    document.getElementById('primarySkipperMount'),
+    quoteState.experienceHistory,
+    {
+      extra: true,
+      getTargets: allSkipperTargets,
+      onChange: () => {
         updateExperienceReferralState();
-        checkStep4Complete();
-
-      });
-
-    });
-}
-
-// ==================================================
-// SKIPPER DETAILS
-// ==================================================
-
-let skipperRowCount = 0;
-
-function addSkipperRow() {
-  skipperRowCount++;
-
-  const rows =
-    document.getElementById('skipperRows');
-
-  const row =
-    document.createElement('div');
-
-  row.className = 'cpwc-skipper-row';
-
-  row.innerHTML = `
-    <input
-      type="text"
-      placeholder="Full Name"
-      data-skipper-field="name"
-    >
-
-    <input
-      type="date"
-      data-skipper-field="dob"
-    >
-
-    <input
-      type="date"
-      data-skipper-field="licenceDate"
-    >
-
-    <select data-skipper-field="yearsOwning">
-      ${createSelectOptions(yearsOptions)}
-    </select>
-
-    <select data-skipper-field="yearsThisSize">
-      ${createSelectOptions(yearsOptions)}
-    </select>
-
-    <textarea
-      rows="2"
-      placeholder="Example: 6m Runabout, 2020-2024"
-      data-skipper-field="previousBoats"
-    ></textarea>
-
-    ${
-      skipperRowCount > 1
-        ? `
-          <button
-            type="button"
-            class="remove-row-btn"
-            data-remove-skipper
-          >
-            ×
-          </button>
-        `
-        : '<span></span>'
+        checkStep3Complete();
+      }
     }
-  `;
-
-  rows.appendChild(row);
-
-    row
-    .querySelectorAll('input, select, textarea')
-    .forEach(element => {
-      element.addEventListener(
-        'input',
-        updateSkippersState
-      );
-
-      element.addEventListener(
-        'change',
-        updateSkippersState
-      );
-    });
-
-  const removeButton =
-    row.querySelector('[data-remove-skipper]');
-
-  if (removeButton) {
-    removeButton.addEventListener('click', () => {
-      row.remove();
-      updateSkippersState();
-    });
-  }
-
-  updateSkippersState();
-}
-
-function updateSkippersState() {
-  const rows =
-    document.querySelectorAll(
-      '#skipperRows .cpwc-skipper-row'
-    );
-
-  quoteState.experienceHistory.skippers =
-    Array.from(rows).map(row => {
-      const getValue = fieldName =>
-        row.querySelector(
-          `[data-skipper-field="${fieldName}"]`
-        ).value;
-
-      return {
-        name: getValue('name'),
-        dob: getValue('dob'),
-        licenceDate: getValue('licenceDate'),
-        yearsOwning: getValue('yearsOwning'),
-        yearsThisSize: getValue('yearsThisSize'),
-        previousBoats: getValue('previousBoats')
-      };
-    });
-
-  updateExperienceReferralState();
-  checkStep4Complete();
+  );
 }
 
 function renderHistoryQuestions(
@@ -2578,7 +2433,7 @@ function updateExperienceReferralState() {
 
   if (
     history.skippers.some(
-      skipper => skipper.yearsThisSize === '0'
+      skipper => skipper.yearsSizeType === '0'
     )
   ) {
     experienceReasons.push(
@@ -2641,21 +2496,6 @@ function checkStep4Complete() {
   const history =
     quoteState.experienceHistory;
 
-  const topFieldsComplete =
-    experienceFields.every(field =>
-      history[field.id]
-    );
-
-  const skippersComplete =
-    history.skippers.length > 0 &&
-    history.skippers.every(skipper =>
-      skipper.name &&
-      skipper.dob &&
-      skipper.licenceDate &&
-      skipper.yearsOwning &&
-      skipper.yearsThisSize
-    );
-
   const pastQuestionsComplete =
     past5YearsQuestions.every(question =>
       history.past5Years[question.id]
@@ -2695,8 +2535,6 @@ function checkStep4Complete() {
     );
 
     continueButton.disabled = !(
-    topFieldsComplete &&
-    skippersComplete &&
     pastQuestionsComplete &&
     everQuestionsComplete &&
     detailsComplete &&
@@ -2750,162 +2588,34 @@ function addAdditionalBoat() {
 
     </div>
 
-    <div class="additional-skipper-question">
-
-      <span class="additional-skipper-question-text">
-        Will this boat have a different skipper?
-        <span class="required">*</span>
-      </span>
-
-      <div class="question-toggle">
-
-        <button
-          type="button"
-          class="toggle-btn"
-          data-different-boat-skipper="yes"
-        >
-          Yes
-        </button>
-
-        <button
-          type="button"
-          class="toggle-btn"
-          data-different-boat-skipper="no"
-        >
-          No
-        </button>
-
-      </div>
-
-    </div>
-
-    <div
-      class="additional-boat-skipper-section"
-      data-additional-boat-skipper-section
-      style="display:none;"
-    >
-
-      <p class="subsection-label">
-        Skipper Details
-      </p>
-
-      <div class="skipper-table">
-
-        <div class="cpwc-skipper-header-row">
-
-          <span>Skipper name</span>
-
-          <span>Date of birth</span>
-
-          <span>
-            Date boat licence obtained
-          </span>
-
-          <span>
-            Years owning a boat
-          </span>
-
-          <span>
-            Years owning a boat of this size and type
-          </span>
-
-          <span>
-            Previous boats owned, including length,
-            type and ownership period
-          </span>
-
-          <span></span>
-
-        </div>
-
-        <div
-          class="additional-boat-skipper-rows"
-          data-additional-boat-skipper-rows
-        ></div>
-
-        <button
-          type="button"
-          class="add-row-btn"
-          data-add-additional-boat-skipper
-        >
-          +
-        </button>
-
-      </div>
-
-    </div>
+    <div data-boat-skipper-mount></div>
   `;
 
   document
     .getElementById('additionalBoatsList')
     .appendChild(card);
 
+  card.skipperTarget = {
+    numOwners: '',
+    numSkippers: '',
+    skippers: [SkipperSection.blank()]
+  };
+
+  SkipperSection.render(
+    card.querySelector('[data-boat-skipper-mount]'),
+    card.skipperTarget,
+    {
+      extra: true,
+      getTargets: allSkipperTargets,
+      onChange: updateAdditionalBoatsState
+    }
+  );
+
   bindVesselFieldRows(
     card.querySelector('.additional-boat-fields'),
     card.boatStore,
     updateAdditionalBoatsState
   );
-
-  card
-    .querySelectorAll(
-      '[data-different-boat-skipper]'
-    )
-    .forEach(button => {
-      button.addEventListener('click', () => {
-
-        card
-          .querySelectorAll(
-            '[data-different-boat-skipper]'
-          )
-          .forEach(toggle => {
-            toggle.classList.remove('selected');
-          });
-
-        button.classList.add('selected');
-
-        const value =
-          button.dataset.differentBoatSkipper;
-
-        card.dataset.differentSkipper =
-          value;
-
-        const skipperSection =
-          card.querySelector(
-            '[data-additional-boat-skipper-section]'
-          );
-
-        const skipperRows =
-          card.querySelector(
-            '[data-additional-boat-skipper-rows]'
-          );
-
-        if (value === 'yes') {
-          skipperSection.style.display =
-            'block';
-
-          if (
-            skipperRows.children.length === 0
-          ) {
-            addAdditionalBoatSkipperRow(card);
-          }
-        } else {
-          skipperSection.style.display =
-            'none';
-
-          skipperRows.innerHTML = '';
-        }
-
-        updateAdditionalBoatsState();
-      });
-    });
-
-  card
-    .querySelector(
-      '[data-add-additional-boat-skipper]'
-    )
-    .addEventListener('click', () => {
-      addAdditionalBoatSkipperRow(card);
-    });
 
   card
     .querySelector(
@@ -2917,109 +2627,6 @@ function addAdditionalBoat() {
       renumberAdditionalBoats();
       updateAdditionalBoatsState();
     });
-
-  updateAdditionalBoatsState();
-}
-
-function addAdditionalBoatSkipperRow(card) {
-  const rowsContainer =
-    card.querySelector(
-      '[data-additional-boat-skipper-rows]'
-    );
-
-  const existingRows =
-    rowsContainer.querySelectorAll(
-      '.additional-boat-skipper-row'
-    );
-
-  const row =
-    document.createElement('div');
-
-  row.className =
-    'cpwc-skipper-row additional-boat-skipper-row';
-
-  row.innerHTML = `
-    <input
-      type="text"
-      placeholder="Full Name"
-      data-additional-skipper-field="name"
-    >
-
-    <input
-      type="date"
-      data-additional-skipper-field="dob"
-    >
-
-    <input
-      type="date"
-      data-additional-skipper-field="licenceDate"
-    >
-
-    <select
-      data-additional-skipper-field="yearsOwning"
-    >
-      ${createSelectOptions(yearsOptions)}
-    </select>
-
-    <select
-      data-additional-skipper-field="yearsThisSize"
-    >
-      ${createSelectOptions(yearsOptions)}
-    </select>
-
-    <textarea
-      rows="2"
-      placeholder="Example: 6m Runabout, 2020-2024"
-      data-additional-skipper-field="previousBoats"
-    ></textarea>
-
-    ${
-      existingRows.length > 0
-        ? `
-          <button
-            type="button"
-            class="remove-row-btn"
-            data-remove-additional-skipper
-          >
-            ×
-          </button>
-        `
-        : '<span></span>'
-    }
-  `;
-
-  rowsContainer.appendChild(row);
-
-  row
-    .querySelectorAll(
-      'input, select, textarea'
-    )
-    .forEach(element => {
-      element.addEventListener(
-        'input',
-        updateAdditionalBoatsState
-      );
-
-      element.addEventListener(
-        'change',
-        updateAdditionalBoatsState
-      );
-    });
-
-  const removeButton =
-    row.querySelector(
-      '[data-remove-additional-skipper]'
-    );
-
-  if (removeButton) {
-    removeButton.addEventListener(
-      'click',
-      () => {
-        row.remove();
-        updateAdditionalBoatsState();
-      }
-    );
-  }
 
   updateAdditionalBoatsState();
 }
@@ -3055,49 +2662,11 @@ function updateAdditionalBoatsState() {
       const boat = {
         ...card.boatStore,
 
-        hasDifferentSkipper:
-          card.dataset.differentSkipper || '',
-
-        skippers: []
+        hasDifferentSkipper: 'yes',
+        numOwners: card.skipperTarget.numOwners,
+        numSkippers: card.skipperTarget.numSkippers,
+        skippers: card.skipperTarget.skippers
       };
-
-      const skipperRows =
-        card.querySelectorAll(
-          '.additional-boat-skipper-row'
-        );
-
-      boat.skippers =
-        Array.from(skipperRows).map(row => ({
-          name:
-            row.querySelector(
-              '[data-additional-skipper-field="name"]'
-            ).value,
-
-          dob:
-            row.querySelector(
-              '[data-additional-skipper-field="dob"]'
-            ).value,
-
-          licenceDate:
-            row.querySelector(
-              '[data-additional-skipper-field="licenceDate"]'
-            ).value,
-
-          yearsOwning:
-            row.querySelector(
-              '[data-additional-skipper-field="yearsOwning"]'
-            ).value,
-
-          yearsThisSize:
-            row.querySelector(
-              '[data-additional-skipper-field="yearsThisSize"]'
-            ).value,
-
-          previousBoats:
-            row.querySelector(
-              '[data-additional-skipper-field="previousBoats"]'
-            ).value
-        }));
 
       return boat;
     });
@@ -3137,28 +2706,8 @@ function checkAdditionalBoatsComplete() {
         const vesselComplete =
         isVesselComplete(boat);
 
-        const skipperChoiceComplete =
-        boat.hasDifferentSkipper === 'yes' ||
-        boat.hasDifferentSkipper === 'no';
-
-        const skipperDetailsComplete =
-        boat.hasDifferentSkipper !== 'yes' ||
-        (
-            boat.skippers.length > 0 &&
-            boat.skippers.every(skipper =>
-            skipper.name &&
-            skipper.dob &&
-            skipper.licenceDate &&
-            skipper.yearsOwning &&
-            skipper.yearsThisSize
-            )
-        );
-
-        return (
-        vesselComplete &&
-        skipperChoiceComplete &&
-        skipperDetailsComplete
-        );
+        return vesselComplete &&
+          SkipperSection.isComplete(boat, true);
     });
 
   continueButton.disabled =
@@ -3166,7 +2715,7 @@ function checkAdditionalBoatsComplete() {
 }
 
 function showAdditionalBoats() {
-  showQuoteStep(5);
+  showQuoteStep(4);
 }
 
 // ==================================================
@@ -3355,21 +2904,17 @@ function populateVesselSummary() {
 }
 
 function getAllQuoteSkippers() {
-  const primarySkippers =
-    quoteState.experienceHistory.skippers || [];
-
-  const additionalSkippers =
-    quoteState.additionalBoats.flatMap(
-      boat =>
-        boat.hasDifferentSkipper === 'yes'
-          ? boat.skippers
-          : []
-    );
+  const seen = new Set();
 
   return [
-    ...primarySkippers,
-    ...additionalSkippers
-  ];
+    ...(quoteState.experienceHistory.skippers || []),
+    ...quoteState.additionalBoats.flatMap(boat => boat.skippers || [])
+  ].filter(skipper => {
+    const key = (skipper.name || '').trim().toLowerCase() + '|' + skipper.dob;
+    if (!skipper.name || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function populateSkipperSummary() {
@@ -3549,8 +3094,8 @@ const checkout = setupCheckout({
 const progressPageMap = {
   1: showImportantInformation,
   2: showVesselDetails,
-  3: showExperienceHistory,
-  4: showAdditionalBoats,
+  3: showAdditionalBoats,
+  4: showExperienceHistory,
   5: showYourQuote,
   6: checkout.showYourDetails,
   7: checkout.showPaymentPage
@@ -3571,7 +3116,7 @@ function showVesselDetails() {
 }
 
 function showExperienceHistory() {
-  showQuoteStep(4);
+  showQuoteStep(5);
 }
 
 function openDeclineModal() {
@@ -3626,21 +3171,21 @@ document
 
 continueStep3Btn.addEventListener(
   'click',
-  showExperienceHistory
+  showAdditionalBoats
 );
 
 document
   .getElementById('backBtn4')
   .addEventListener(
     'click',
-    showVesselDetails
+    showAdditionalBoats
   );
 
 document
   .getElementById('continueBtn4')
   .addEventListener(
     'click',
-    showAdditionalBoats
+    showYourQuote
   );
 
 document
@@ -3711,7 +3256,7 @@ document
   )
   .addEventListener(
     'click',
-    showExperienceHistory
+    showVesselDetails
   );
 
 document
@@ -3720,7 +3265,7 @@ document
   )
   .addEventListener(
     'click',
-    showYourQuote
+    showExperienceHistory
   );
 
 
@@ -3728,7 +3273,7 @@ document
   .getElementById('backBtn5')
   .addEventListener(
     'click',
-    showAdditionalBoats
+    showExperienceHistory
   );
 
 document
@@ -3860,8 +3405,7 @@ checkStep2Complete();
 renderVesselFields();
 checkStep3Complete();
 
-renderExperienceFields();
-addSkipperRow();
+mountPrimarySkippers();
 
 renderHistoryQuestions(
   'past5YearsList',
@@ -3874,13 +3418,6 @@ renderHistoryQuestions(
   everQuestions,
   'ever'
 );
-
-document
-  .getElementById('addSkipperBtn')
-  .addEventListener(
-    'click',
-    addSkipperRow
-  );
 
 document
   .getElementById('addClaimBtn')
