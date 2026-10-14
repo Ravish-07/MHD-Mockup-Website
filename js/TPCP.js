@@ -855,12 +855,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const past5YearsQuestions = [
     { id: 'cancelledRefused', text: 'Had any insurances cancelled, refused or had special conditions imposed?', details: true },
-    { id: 'madeClaims', text: 'Made any boat insurance claims?' }
+    { id: 'madeClaims', text: 'Made any boat / PWC insurance claims?' }
   ];
 
   const everQuestions = [
     { id: 'chargedConvicted', text: 'Been charged or convicted with any offence?', details: true },
-    { id: 'lostLicence', text: 'Lost your boat or motor vehicle licence?', details: true }
+    { id: 'lostLicence', text: 'Lost your boat / PWC or motor vehicle licence?', details: true }
   ];
 
   function renderExperienceStep() {
@@ -1714,9 +1714,9 @@ $('additionalBoatsList')
     });
 
     if (exp.past5Years.cancelledRefused === 'yes') reasons.push('Insurance cancelled, refused or special conditions imposed in past 5 years');
-    if (exp.past5Years.madeClaims === 'yes') reasons.push(`Boat insurance claim(s) made in past 5 years (${exp.claims.length})`);
+    if (exp.past5Years.madeClaims === 'yes') reasons.push(`Boat / PWC insurance claim(s) made in past 5 years (${exp.claims.length})`);
     if (exp.ever.chargedConvicted === 'yes') reasons.push('Charged or convicted of an offence');
-    if (exp.ever.lostLicence === 'yes') reasons.push('Lost boat or motor vehicle licence');
+    if (exp.ever.lostLicence === 'yes') reasons.push('Lost boat / PWC or motor vehicle licence');
 
     // Category-2-as-written experience rule, and the flat referral triggers below
     const cat = vesselCategory(v);

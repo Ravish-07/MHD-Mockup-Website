@@ -2101,7 +2101,7 @@ const past5YearsQuestions = [
   {
     id: 'madeClaims',
     text:
-      'Made any boat insurance claims?',
+      'Made any boat / PWC insurance claims?',
     claims: true
   }
 ];
@@ -2116,7 +2116,7 @@ const everQuestions = [
   {
     id: 'lostLicence',
     text:
-      'Lost your boat or motor vehicle licence?',
+      'Lost your boat / PWC or motor vehicle licence?',
     details: true
   }
 ];
@@ -2598,7 +2598,7 @@ function updateExperienceReferralState() {
     history.past5Years.madeClaims === 'yes'
   ) {
     experienceReasons.push(
-      'Experience: boat insurance claims'
+      'Experience: boat / PWC insurance claims'
     );
   }
 
