@@ -4,7 +4,8 @@
 
    SkipperSection.render(mount, target, {
      extra:        true -> also ask "years on this size and type" + previous boats
-     getTargets:   () => every target on the quote (builds the existing-skipper list)
+     picker:       false -> hide the previously-added skipper list (Vessel Details)
+   getTargets:   () => every target on the quote (builds the existing-skipper list)
      onChange:     () => host re-validates
    })
    SkipperSection.isComplete(target)  -> at least one fully completed skipper
@@ -124,7 +125,7 @@
         <div class="skipper-rows">${target.skippers.map(rowHtml).join('')}</div>
         <div class="sk-add-bar">
           <span class="sk-add-label">Add another skipper</span>
-          <select class="sk-picker" data-sk-pick>${pickerOptions()}</select>
+          ${opts.picker === false ? '' : `<select class="sk-picker" data-sk-pick>${pickerOptions()}</select>`}
           <button type="button" class="add-row-btn" data-sk-new ${target.skippers.length >= MAX_SKIPPERS ? 'disabled' : ''}
             aria-label="Add a new skipper" title="Add a new skipper">+</button>
         </div>

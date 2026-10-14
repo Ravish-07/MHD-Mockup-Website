@@ -2129,6 +2129,7 @@ function mountPrimarySkippers() {
     quoteState.experienceHistory,
     {
       extra: true,
+      picker: false,
       getTargets: allSkipperTargets,
       onChange: () => {
         updateExperienceReferralState();

@@ -754,6 +754,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function mountSkippers(el, vessel, onChange) {
     SkipperSection.render(el, vessel.experience, {
       extra: true,
+      picker: vessel === quoteState.vessels[0] ? false : true,
       getTargets: () => quoteState.vessels.map(v => v.experience),
       onChange
     });
