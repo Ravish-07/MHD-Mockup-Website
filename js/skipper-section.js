@@ -73,7 +73,7 @@
       const out = [];
       (opts.getTargets ? opts.getTargets() : []).forEach(t => (t.skippers || []).forEach(s => {
         const key = (s.name || '').trim().toLowerCase();
-        if (!key || mine.has(key) || seen.has(key) || !s.dob) return;
+        if (!key || mine.has(key) || seen.has(key)) return;
         seen.add(key);
         out.push(s);
       }));
