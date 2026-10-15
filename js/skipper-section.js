@@ -5,6 +5,7 @@
    SkipperSection.render(mount, target, {
      extra:        true -> also ask "years on this size and type" + previous boats
      picker:       false -> hide the previously-added skipper list (Vessel Details)
+   noun:         wording for the vessel in questions (default 'vessel')
    getTargets:   () => every target on the quote (builds the existing-skipper list)
      onChange:     () => host re-validates
    })
@@ -64,6 +65,7 @@
   function render(mount, target, opts) {
     opts = opts || {};
     const extra = !!opts.extra;
+    const noun = opts.noun || 'vessel';
     const notify = () => { if (opts.onChange) opts.onChange(); };
     syncRows(target);
 
@@ -121,8 +123,8 @@
 
     mount.classList.add('sk-block');
     mount.innerHTML = `
-      ${countRow('numOwners', 'How many people own this vessel?', target.numOwners)}
-      ${countRow('numSkippers', 'How many people skipper this vessel?', target.numSkippers)}
+      ${countRow('numOwners', `How many people own this ${noun}?`, target.numOwners)}
+      ${countRow('numSkippers', `How many people skipper this ${noun}?`, target.numSkippers)}
       <p class="subsection-label">Skipper Details</p>
       <div class="skipper-table">
         ${opts.picker === false ? '' : `<div class="sk-pick-bar">
@@ -146,7 +148,7 @@
       if (wanted > 0 && missing > 0) {
         const done = wanted - missing;
         el.textContent = `You selected ${wanted} skipper${wanted > 1 ? 's' : ''} but ${done > 0 ? `only ${done} ${done > 1 ? 'have' : 'has'} complete details` : 'no skipper details are complete'}. ` +
-          `Please complete the missing details, or continue if this vessel has fewer skippers.`;
+          `Please complete the missing details, or continue if this ${noun} has fewer skippers.`;
         el.style.display = '';
       } else {
         el.style.display = 'none';

@@ -160,7 +160,7 @@ function enableProgressBarNavigation(bypassValidation, showProgressStep) {
 
 // ---------- CHECKOUT STEPS ----------
 
-function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAmount, getPolicyVessels, getQuoteNumber }) {
+function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAmount, getPolicyVessels, getQuoteNumber, vesselNoun = 'Vessel' }) {
   const byId = id => document.getElementById(id);
 
   quoteState.additionalInformation = {
@@ -240,6 +240,7 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
   });
 
   const { renderVesselIdentification } = setupVesselAndTrailerDetails({
+    vesselNoun,
     info,
     getPolicyVessels,
     onTrailerAnswer: () => checkYourDetailsComplete()
@@ -290,7 +291,7 @@ function setupCheckout({ quoteState, bypassValidation, policyName, paymentBaseAm
 
 // Your Details: Vessel Identification (one card per policy vessel, motor year pre-filled from the
 // vessel) and the trailer question with trailer rows. extraSections(vessel) can add rows of fields to a card.
-function setupVesselAndTrailerDetails({ info, getPolicyVessels, onTrailerAnswer, extraSections = () => [] }) {
+function setupVesselAndTrailerDetails({ info, vesselNoun = 'Vessel', getPolicyVessels, onTrailerAnswer, extraSections = () => [] }) {
   const byId = id => document.getElementById(id);
 
   // ---------- VESSEL IDENTIFICATION ----------
@@ -325,7 +326,7 @@ function setupVesselAndTrailerDetails({ info, getPolicyVessels, onTrailerAnswer,
   function renderVesselIdentification() {
     vesselDetailsContainer.innerHTML = getPolicyVessels().map((vessel, index) => `
       <div class="additional-vessel-card" data-vessel-index="${index}">
-        <div class="additional-vessel-heading">Vessel ${index + 1}</div>
+        <div class="additional-vessel-heading">${vesselNoun} ${index + 1}</div>
 
         ${sectionHtml('Hull Details', [
           ['Hull Name', 'hullName'],
