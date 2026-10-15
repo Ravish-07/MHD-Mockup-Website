@@ -879,7 +879,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'History';
 
     $('experienceStepSub').textContent =
-      'Please provide information about your experience and history.';
+      'Please provide information about your history.';
 
     renderYesNoList('past5YearsList', past5YearsQuestions, 'past5Years');
     renderYesNoList('everList', everQuestions, 'ever');
@@ -1098,7 +1098,7 @@ function renderAdditionalBoats() {
           <div class="additional-boat-header">
 
             <h4>
-              Additional Boat #${arrayIndex + 1}
+              Additional Boat ${arrayIndex + 1}
             </h4>
 
             <button
