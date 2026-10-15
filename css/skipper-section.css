@@ -24,3 +24,7 @@
 .date-dmy > input.field-invalid { border-color: #dc2626; }
 .date-dmy-btn { position: absolute; right: 6px; border: none; background: transparent; cursor: pointer; font-size: 14px; padding: 2px; line-height: 1; }
 .date-dmy-native { position: absolute !important; right: 8px; bottom: 0; width: 1px !important; height: 1px !important; opacity: 0; pointer-events: none; border: 0 !important; padding: 0 !important; }
+
+/* Previous-skipper picker sits above the table; "+" sits below it */
+.sk-pick-bar { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; flex-wrap: wrap; }
+.sk-add-bar { margin-top: 8px; }

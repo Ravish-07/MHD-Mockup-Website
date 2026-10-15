@@ -82,7 +82,7 @@
 
     const pickerOptions = () => {
       const pool = poolFor();
-      return '<option value="" selected>Select a previously added skipper</option>' +
+      return `<option value="" selected>${pool.length ? 'Select a skipper' : 'No previous skippers yet'}</option>` +
         pool.map((s, i) => `<option value="${i}">${esc(s.name)}</option>`).join('');
     };
 
@@ -121,13 +121,16 @@
       ${countRow('numSkippers', 'How many people skipper this vessel?', target.numSkippers)}
       <p class="subsection-label">Skipper Details</p>
       <div class="skipper-table">
+        ${opts.picker === false ? '' : `<div class="sk-pick-bar">
+          <span class="sk-add-label">Choose a previously added skipper</span>
+          <select class="sk-picker" data-sk-pick>${pickerOptions()}</select>
+        </div>`}
         ${header}
         <div class="skipper-rows">${target.skippers.map(rowHtml).join('')}</div>
         <div class="sk-add-bar">
-          <span class="sk-add-label">Add another skipper</span>
-          ${opts.picker === false ? '' : `<select class="sk-picker" data-sk-pick>${pickerOptions()}</select>`}
           <button type="button" class="add-row-btn" data-sk-new ${target.skippers.length >= MAX_SKIPPERS ? 'disabled' : ''}
             aria-label="Add a new skipper" title="Add a new skipper">+</button>
+          <span class="sk-add-label">Add a new skipper</span>
         </div>
         <p class="sk-warning" data-sk-warning style="display:none;"></p>
       </div>`;
