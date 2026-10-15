@@ -511,8 +511,7 @@ function checkStep3Complete() {
   }
 
   document.getElementById('continueStep3Btn').disabled =
-    !(requiredBaseFields && conditionalFieldsComplete &&
-      SkipperSection.isComplete(quoteState.experienceHistory));
+    !(requiredBaseFields && conditionalFieldsComplete);
 }
 
 
@@ -520,32 +519,95 @@ function checkStep3Complete() {
 
 // ---------- STEP 4 (progress step 3): EXPERIENCE & HISTORY ----------
 
+const experienceFields = [
+  { id: 'numOwners', label: 'How many people own this vessel?', type: 'select', options: ['1', '2', '3', '4', '5+'] },
+  { id: 'numSkippers', label: 'How many people skipper this vessel?', type: 'select', options: ['1', '2', '3', '4', '5+'] }
+];
+
+const yearsOwningOptions = ['0', '1', '2', '3', '4', '5+'];
+
 quoteState.experienceHistory = {
   numOwners: '',
   numSkippers: '',
-  skippers: [SkipperSection.blank()],
+  skippers: [],
   past5Years: {},
   claims: [],
   ever: {}
 };
 
-// ---------- OWNERS / SKIPPERS (bottom of Vessel Details) ----------
+function renderExperienceFields() {
+  const list = document.getElementById('experienceFieldList');
+  list.innerHTML = experienceFields.map(f => `
+    <div class="field-row" data-field-row="${f.id}">
+      <p class="field-label">${f.label} <span class="required">*</span></p>
+      <div class="field-input-wrap">
+        <select id="${f.id}" data-field="${f.id}">
+          <option value="" disabled selected>Select</option>
+          ${f.options.map(o => `<option value="${o}">${o}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+  `).join('');
 
-function allSkipperTargets() {
-  const targets = [quoteState.experienceHistory];
-  document.querySelectorAll('#additionalJetSkisList .unit-card').forEach(card => {
-    if (card._skipperTarget) targets.push(card._skipperTarget);
+  list.querySelectorAll('select').forEach(el => {
+    el.addEventListener('change', () => {
+      quoteState.experienceHistory[el.dataset.field] = el.value;
+      checkStep4Complete();
+    });
   });
-  return targets;
 }
 
-function mountPrimarySkippers() {
-  SkipperSection.render(
-    document.getElementById('primarySkipperMount'),
-    quoteState.experienceHistory,
-    { picker: false, getTargets: allSkipperTargets, onChange: checkStep3Complete }
-  );
+let skipperRowCount = 0;
+
+function addSkipperRow() {
+  skipperRowCount++;
+  const idx = skipperRowCount;
+  const rows = document.getElementById('skipperRows');
+
+  const row = document.createElement('div');
+  row.className = 'skipper-row';
+  row.dataset.rowId = idx;
+  row.innerHTML = `
+    <input type="text" placeholder="Full Name" data-skipper-field="name">
+    <input type="date" data-skipper-field="dob">
+    <input type="date" data-skipper-field="licenceDate">
+    <select data-skipper-field="yearsOwning">
+      <option value="" disabled selected>Select</option>
+      ${yearsOwningOptions.map(o => `<option value="${o}">${o}</option>`).join('')}
+    </select>
+    ${skipperRowCount > 1 ? `<button type="button" class="remove-row-btn" data-remove-skipper="${idx}">×</button>` : `<span></span>`}
+  `;
+
+  rows.appendChild(row);
+
+  row.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('input', updateSkippersState);
+    el.addEventListener('change', updateSkippersState);
+  });
+
+  const removeBtn = row.querySelector('[data-remove-skipper]');
+  if (removeBtn) {
+    removeBtn.addEventListener('click', () => {
+      row.remove();
+      updateSkippersState();
+    });
+  }
+
+  updateSkippersState();
 }
+
+function updateSkippersState() {
+  const rows = document.querySelectorAll('#skipperRows .skipper-row');
+  quoteState.experienceHistory.skippers = Array.from(rows).map(row => ({
+    name: row.querySelector('[data-skipper-field="name"]').value,
+    dob: row.querySelector('[data-skipper-field="dob"]').value,
+    licenceDate: row.querySelector('[data-skipper-field="licenceDate"]').value,
+    yearsOwning: row.querySelector('[data-skipper-field="yearsOwning"]').value
+  }));
+  checkStep4Complete();
+}
+
+document.getElementById('addSkipperBtn').addEventListener('click', addSkipperRow);
 
 const past5YearsQuestions = [
   { id: 'cancelledRefused', text: 'Had any insurances cancelled, refused or had special conditions imposed?', details: true },
@@ -669,10 +731,16 @@ document.getElementById('addClaimBtn').addEventListener('click', addClaimRow);
 function checkStep4Complete() {
 
   if (DEV_BYPASS_VALIDATION) {
-  document.getElementById('continueBtn5').disabled = false;
+  document.getElementById('continueBtn4').disabled = false;
   return;
   }
   const eh = quoteState.experienceHistory;
+
+  const topFieldsFilled = experienceFields.every(f => eh[f.id] !== '' && eh[f.id] !== undefined);
+
+  const skippersFilled = eh.skippers.length > 0 && eh.skippers.every(s =>
+    s.name && s.dob && s.licenceDate && s.yearsOwning
+  );
 
   const past5YearsAnswered = past5YearsQuestions.every(q => eh.past5Years[q.id] !== undefined);
   const everAnswered = everQuestions.every(q => eh.ever[q.id] !== undefined);
@@ -690,10 +758,12 @@ function checkStep4Complete() {
     );
   }
 
-  const complete = past5YearsAnswered && everAnswered && detailsFilled && claimsValid;
-  document.getElementById('continueBtn5').disabled = !complete;
+  const complete = topFieldsFilled && skippersFilled && past5YearsAnswered && everAnswered && detailsFilled && claimsValid;
+  document.getElementById('continueBtn4').disabled = !complete;
 }
 
+renderExperienceFields();
+addSkipperRow();
 renderYesNoList('past5YearsList', past5YearsQuestions, 'past5Years');
 renderYesNoList('everList', everQuestions, 'ever');
 checkStep4Complete();
@@ -1006,29 +1076,92 @@ function addJetSkiUnit() {
     ${fieldsHtml}
 
 
-    <div data-unit-skipper-mount></div>
+    <!-- DIFFERENT SKIPPER -->
+
+    <div class="additional-skipper-question">
+
+      <span class="additional-skipper-question-text">
+        Will this Jet Ski have a different skipper?
+        <span class="required">*</span>
+      </span>
+
+      <div class="question-toggle">
+
+        <button
+          type="button"
+          class="toggle-btn"
+          data-different-skipper="yes"
+        >
+          Yes
+        </button>
+
+        <button
+          type="button"
+          class="toggle-btn"
+          data-different-skipper="no"
+        >
+          No
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ADDITIONAL SKIPPER DETAILS -->
+
+    <div
+      class="unit-skipper-section"
+      data-unit-skipper-section
+      style="display:none;"
+    >
+
+      <p class="subsection-label">
+        Skipper Details
+      </p>
+
+      <div class="skipper-table">
+
+        <div class="skipper-header-row">
+
+          <span>Skipper name</span>
+
+          <span>Date of birth</span>
+
+          <span>
+            Date boat / PWC licence obtained
+          </span>
+
+          <span>
+            Number of years owning a boat / PWC
+          </span>
+
+          <span></span>
+
+        </div>
+
+
+        <div
+          class="unit-skipper-rows"
+          data-unit-skipper-rows
+        ></div>
+
+
+        <button
+          type="button"
+          class="add-row-btn"
+          data-add-unit-skipper
+        >
+          +
+        </button>
+
+      </div>
+
+    </div>
   `;
 
 
   list.appendChild(card);
-
-  card._skipperTarget = {
-    numOwners: '',
-    numSkippers: '',
-    skippers: [SkipperSection.blank()]
-  };
-
-  SkipperSection.render(
-    card.querySelector('[data-unit-skipper-mount]'),
-    card._skipperTarget,
-    {
-      getTargets: allSkipperTargets,
-      onChange: () => {
-        updateAllUnitsState();
-        checkStep5Complete();
-      }
-    }
-  );
 
 const unitAddress = card.querySelector('[data-unit-address]');
 
@@ -1235,6 +1368,76 @@ if (unitAddress) {
     });
 
 
+  // ---------- DIFFERENT SKIPPER YES / NO ----------
+
+  card
+    .querySelectorAll('[data-different-skipper]')
+    .forEach(button => {
+
+      button.addEventListener('click', () => {
+
+        card
+          .querySelectorAll('[data-different-skipper]')
+          .forEach(b =>
+            b.classList.remove('selected')
+          );
+
+        button.classList.add('selected');
+
+        const value =
+          button.dataset.differentSkipper;
+
+        card.dataset.differentSkipper = value;
+
+        const skipperSection =
+          card.querySelector(
+            '[data-unit-skipper-section]'
+          );
+
+        const skipperRows =
+          card.querySelector(
+            '[data-unit-skipper-rows]'
+          );
+
+
+        if (value === 'yes') {
+
+          skipperSection.style.display = 'block';
+
+          if (
+            skipperRows.querySelectorAll(
+              '.unit-skipper-row'
+            ).length === 0
+          ) {
+            addUnitSkipperRow(card);
+          }
+
+        } else {
+
+          skipperSection.style.display = 'none';
+          skipperRows.innerHTML = '';
+
+        }
+
+        updateAllUnitsState();
+        checkStep5Complete();
+
+      });
+
+    });
+
+
+  // ---------- ADD SKIPPER ----------
+
+  card
+    .querySelector('[data-add-unit-skipper]')
+    .addEventListener('click', () => {
+
+      addUnitSkipperRow(card);
+
+    });
+
+
   // ---------- REMOVE JET SKI ----------
 
   card
@@ -1258,6 +1461,120 @@ if (unitAddress) {
 }
 
 
+// ---------- ADD SKIPPER TO SPECIFIC JET SKI ----------
+
+function addUnitSkipperRow(card) {
+
+  const rowsContainer =
+    card.querySelector(
+      '[data-unit-skipper-rows]'
+    );
+
+  const existingRows =
+    rowsContainer.querySelectorAll(
+      '.unit-skipper-row'
+    );
+
+  const row =
+    document.createElement('div');
+
+  row.className =
+    'skipper-row unit-skipper-row';
+
+
+  row.innerHTML = `
+
+    <input
+      type="text"
+      placeholder="Full Name"
+      data-unit-skipper-field="name"
+    >
+
+    <input
+      type="date"
+      data-unit-skipper-field="dob"
+    >
+
+    <input
+      type="date"
+      data-unit-skipper-field="licenceDate"
+    >
+
+    <select
+      data-unit-skipper-field="yearsOwning"
+    >
+
+      <option value="" disabled selected>
+        Select
+      </option>
+
+      ${yearsOwningOptions.map(option =>
+        `<option value="${option}">${option}</option>`
+      ).join('')}
+
+    </select>
+
+    ${
+      existingRows.length > 0
+        ? `
+          <button
+            type="button"
+            class="remove-row-btn"
+            data-remove-unit-skipper
+          >
+            ×
+          </button>
+        `
+        : '<span></span>'
+    }
+  `;
+
+
+  rowsContainer.appendChild(row);
+
+
+  row
+    .querySelectorAll('input, select')
+    .forEach(el => {
+
+      el.addEventListener('input', () => {
+        updateAllUnitsState();
+        checkStep5Complete();
+      });
+
+      el.addEventListener('change', () => {
+        updateAllUnitsState();
+        checkStep5Complete();
+      });
+
+    });
+
+
+  const removeButton =
+    row.querySelector(
+      '[data-remove-unit-skipper]'
+    );
+
+  if (removeButton) {
+
+    removeButton.addEventListener('click', () => {
+
+      row.remove();
+
+      updateAllUnitsState();
+      checkStep5Complete();
+
+    });
+
+  }
+
+
+  updateAllUnitsState();
+  checkStep5Complete();
+
+}
+
+
 // ---------- SAVE ALL ADDITIONAL JET SKIS ----------
 
 function updateAllUnitsState() {
@@ -1272,7 +1589,8 @@ function updateAllUnitsState() {
     Array.from(cards).map(card => {
 
       const data = {
-        hasDifferentSkipper: 'yes',
+        hasDifferentSkipper:
+          card.dataset.differentSkipper || '',
 
         locationAddress:
           card.dataset.locationAddress || '',
@@ -1296,11 +1614,39 @@ function updateAllUnitsState() {
         });
 
 
-      // Skipper fields (owners / skippers block)
-      const sk = card._skipperTarget;
-      data.numOwners = sk.numOwners;
-      data.numSkippers = sk.numSkippers;
-      data.skippers = sk.skippers;
+      // Skipper fields
+
+      const skipperRows =
+        card.querySelectorAll(
+          '.unit-skipper-row'
+        );
+
+
+      data.skippers =
+        Array.from(skipperRows).map(row => ({
+
+          name:
+            row.querySelector(
+              '[data-unit-skipper-field="name"]'
+            ).value,
+
+          dob:
+            row.querySelector(
+              '[data-unit-skipper-field="dob"]'
+            ).value,
+
+          licenceDate:
+            row.querySelector(
+              '[data-unit-skipper-field="licenceDate"]'
+            ).value,
+
+          yearsOwning:
+            row.querySelector(
+              '[data-unit-skipper-field="yearsOwning"]'
+            ).value
+
+        }));
+
 
       return data;
 
@@ -1343,7 +1689,7 @@ function checkStep5Complete() {
   if (DEV_BYPASS_VALIDATION) {
 
     document
-      .getElementById('continueBtn4')
+      .getElementById('continueBtn5')
       .disabled = false;
 
     return;
@@ -1362,7 +1708,7 @@ function checkStep5Complete() {
   ) {
 
     document
-      .getElementById('continueBtn4')
+      .getElementById('continueBtn5')
       .disabled = true;
 
     return;
@@ -1374,7 +1720,7 @@ function checkStep5Complete() {
   if (aj.hasAdditional === 'no') {
 
     document
-      .getElementById('continueBtn4')
+      .getElementById('continueBtn5')
       .disabled = false;
 
     return;
@@ -1454,11 +1800,45 @@ function checkStep5Complete() {
       }
 
 
-      // Owners / skippers: at least one complete skipper
-      if (!SkipperSection.isComplete(unit)) {
+      // Different skipper question is mandatory
+
+      if (
+        !unit.hasDifferentSkipper
+      ) {
         return false;
       }
 
+
+      // If different skipper = Yes,
+      // at least one complete skipper is required
+
+      if (
+        unit.hasDifferentSkipper === 'yes'
+      ) {
+
+        if (
+          unit.skippers.length === 0
+        ) {
+          return false;
+        }
+
+
+        const skippersComplete =
+          unit.skippers.every(skipper =>
+
+            skipper.name &&
+            skipper.dob &&
+            skipper.licenceDate &&
+            skipper.yearsOwning
+
+          );
+
+
+        if (!skippersComplete) {
+          return false;
+        }
+
+      }
 
 
       return true;
@@ -1467,7 +1847,7 @@ function checkStep5Complete() {
 
 
   document
-    .getElementById('continueBtn4')
+    .getElementById('continueBtn5')
     .disabled = !allUnitsValid;
 
 }
@@ -1577,16 +1957,10 @@ function renderQuoteSummary() {
         : []
     );
 
-  const seenSkippers = new Set();
   const allSkippers = [
     ...primarySkippers,
     ...additionalSkippers
-  ].filter(skipper => {
-    const key = (skipper.name || '').trim().toLowerCase() + '|' + skipper.dob;
-    if (!skipper.name || seenSkippers.has(key)) return false;
-    seenSkippers.add(key);
-    return true;
-  });
+  ];
 
   skipperSummaryList.innerHTML = allSkippers.map((skipper, index) => `
 
@@ -1667,7 +2041,7 @@ document
 
 document
   .getElementById('addJetSkiFromQuoteBtn')
-  .addEventListener('click', () => goToSection(4));
+  .addEventListener('click', () => goToSection(5));
 
 // ---------- EMAIL QUOTE MODAL ----------
 
@@ -1850,7 +2224,6 @@ enableProgressBarNavigation(DEV_BYPASS_VALIDATION, step => goToSection(step + 1)
   renderQuestions();
   checkStep2Complete();
   renderVesselFields();
-  mountPrimarySkippers();
   checkStep3Complete();
 
 const dutyAgreement = document.getElementById('dutyAgreement');

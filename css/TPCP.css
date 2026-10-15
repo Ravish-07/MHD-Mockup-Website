@@ -1812,8 +1812,8 @@ body.modal-open {
   background: none;
 }
 
-#tp-step-4 .add-row-btn,
-#tp-step-4 .remove-row-btn {
+#tp-step-5 .add-row-btn,
+#tp-step-5 .remove-row-btn {
   width: 36px;
   height: 36px;
   padding: 0;
@@ -1825,13 +1825,13 @@ body.modal-open {
   line-height: 1;
 }
 
-#tp-step-4 .add-row-btn {
+#tp-step-5 .add-row-btn {
   background: #0f766e;
   color: #ffffff;
   border: none;
 }
 
-#tp-step-4 .remove-row-btn {
+#tp-step-5 .remove-row-btn {
   background: #dc2626;
   color: #ffffff;
   border: none;
@@ -1839,11 +1839,11 @@ body.modal-open {
   font-size: 24px;
 }
 
-#tp-step-4 .remove-row-btn:hover {
+#tp-step-5 .remove-row-btn:hover {
   background: #b91c1c;
 }
 
-#tp-step-4 .add-unit-btn {
+#tp-step-5 .add-unit-btn {
   margin: 12px 0 4px;
 }
 
