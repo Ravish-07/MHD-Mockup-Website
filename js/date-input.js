@@ -38,6 +38,7 @@
     input.classList.add('date-dmy-native');
     input.tabIndex = -1;
     text.value = toDisplay(input.value);
+    if (input.disabled) { text.disabled = true; btn.disabled = true; }
 
     // Programmatic sets (prefill, example data) refresh the visible text.
     Object.defineProperty(input, 'value', {

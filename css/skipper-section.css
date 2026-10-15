@@ -45,4 +45,16 @@
 .progress-bar .progress-track { display: flex; width: 100%; justify-content: space-between; align-items: flex-start; margin-bottom: 36px; }
 .progress-bar .progress-step { flex: 0 0 30px; width: 30px; position: relative; align-self: flex-start; }
 .progress-bar .progress-label { position: absolute; top: 36px; left: 50%; transform: translateX(-50%); width: 108px; max-width: none; height: auto; white-space: normal; text-align: center; }
-.progress-bar .progress-line { flex: 1 1 0; min-width: 12px; height: 2px; margin: 14px 8px 0; align-self: flex-start; }
+
+/* Progress bar: slim rounded connectors that fill gaps of a sensible length, soft ring on the current step */
+.progress-bar { max-width: 640px; }
+.progress-bar .progress-line { flex: 1 1 0; min-width: 14px; height: 4px; border-radius: 999px; margin: 13px 6px 0; align-self: flex-start; background: #e5e7eb; transition: background 0.3s ease; }
+.progress-bar .progress-line.completed { background: #0f766e; }
+.progress-bar .progress-step.active .progress-circle { box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.18); }
+.progress-bar .progress-step.completed .progress-circle { background: #0f766e; }
+
+/* Skipper copied from a previous vessel: locked fields look read-only */
+.sk-block .skipper-row.sk-locked input:disabled,
+.sk-block .skipper-row.sk-locked textarea:disabled,
+.sk-block .skipper-row.sk-locked select:disabled { background: #f3f4f6; color: #4b5563; cursor: not-allowed; }
+.sk-block .skipper-row.sk-locked .date-dmy-btn:disabled { cursor: not-allowed; opacity: 0.5; }

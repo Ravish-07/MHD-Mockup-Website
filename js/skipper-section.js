@@ -54,8 +54,8 @@
     return Math.max(wanted - done, 0);
   }
 
-  function selectHtml(field, value, opts) {
-    return `<select data-sk-field="${field}">
+  function selectHtml(field, value, opts, locked) {
+    return `<select data-sk-field="${field}" ${locked ? 'disabled title="Details copied from a previously added skipper"' : ''}>
       <option value="" disabled ${value ? '' : 'selected'}>Select</option>
       ${opts.map(o => `<option value="${o}" ${value === o ? 'selected' : ''}>${o}</option>`).join('')}
     </select>`;
@@ -93,16 +93,20 @@
         <span></span></div>`;
 
     const today = new Date().toISOString().slice(0, 10);
-    const rowHtml = (s, i) => `
-      <div class="skipper-row sk-cols-${extra ? 'extra' : 'basic'}" data-sk-index="${i}">
-        <input type="text" placeholder="Full Name" data-sk-field="name" value="${esc(s.name)}">
-        <input type="date" max="${today}" data-sk-field="dob" value="${esc(s.dob)}">
-        <input type="date" max="${today}" data-sk-field="licenceDate" value="${esc(s.licenceDate)}">
-        ${selectHtml('yearsOwning', s.yearsOwning, YEARS)}
+    // A skipper copied from a previous vessel is locked, except "years owning a boat of this size and type".
+    const rowHtml = (s, i) => {
+      const lk = s.locked ? 'disabled title="Details copied from a previously added skipper"' : '';
+      return `
+      <div class="skipper-row sk-cols-${extra ? 'extra' : 'basic'}${s.locked ? ' sk-locked' : ''}" data-sk-index="${i}">
+        <input type="text" placeholder="Full Name" data-sk-field="name" value="${esc(s.name)}" ${lk}>
+        <input type="date" max="${today}" data-sk-field="dob" value="${esc(s.dob)}" ${lk}>
+        <input type="date" max="${today}" data-sk-field="licenceDate" value="${esc(s.licenceDate)}" ${lk}>
+        ${selectHtml('yearsOwning', s.yearsOwning, YEARS, !!s.locked)}
         ${extra ? selectHtml('yearsSizeType', s.yearsSizeType, YEARS) +
-          `<textarea rows="2" placeholder="Example: 6m Runabout, 2020-2024" data-sk-field="previousBoats">${esc(s.previousBoats)}</textarea>` : ''}
+          `<textarea rows="2" placeholder="Example: 6m Runabout, 2020-2024" data-sk-field="previousBoats" ${lk}>${esc(s.previousBoats)}</textarea>` : ''}
         ${target.skippers.length > 1 ? `<button type="button" class="remove-row-btn" data-sk-remove="${i}" aria-label="Remove skipper">×</button>` : '<span></span>'}
       </div>`;
+    };
 
     const countRow = (id, label, value) => `
       <div class="field-row">
@@ -169,7 +173,8 @@
           ...blank(),
           name: chosen.name, dob: chosen.dob, licenceDate: chosen.licenceDate,
           yearsOwning: chosen.yearsOwning || '',
-          previousBoats: c.extra ? (chosen.previousBoats || '') : ''
+          previousBoats: c.extra ? (chosen.previousBoats || '') : '',
+          locked: true
           // yearsSizeType stays blank: it depends on the vessel chosen
         };
         const emptyIdx = t.skippers.findIndex(s => !Object.values(s).some(Boolean));
