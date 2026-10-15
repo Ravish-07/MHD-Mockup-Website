@@ -41,8 +41,8 @@
 }
 
 /* Uniform progress bar: circle-sized steps with labels centred beneath, connector lines fill every gap equally */
-.progress-bar { width: 100%; max-width: 960px; }
+.progress-bar { width: 100%; max-width: 730px; }
 .progress-bar .progress-track { display: flex; width: 100%; justify-content: space-between; align-items: flex-start; margin-bottom: 36px; }
 .progress-bar .progress-step { flex: 0 0 30px; width: 30px; position: relative; align-self: flex-start; }
-.progress-bar .progress-label { position: absolute; top: 36px; left: 50%; transform: translateX(-50%); width: 150px; max-width: none; height: auto; white-space: normal; text-align: center; }
+.progress-bar .progress-label { position: absolute; top: 36px; left: 50%; transform: translateX(-50%); width: 108px; max-width: none; height: auto; white-space: normal; text-align: center; }
 .progress-bar .progress-line { flex: 1 1 0; min-width: 12px; height: 2px; margin: 14px 8px 0; align-self: flex-start; }
