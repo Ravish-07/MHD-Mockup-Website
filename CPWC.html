@@ -7,11 +7,12 @@
   <title>COAST Insurance — Comprehensive PWC Quote</title>
 
   <link rel="stylesheet" href="css/styles.css?v=2">
-  <link rel="stylesheet" href="css/jet-ski.css?v=11">
+  <link rel="stylesheet" href="css/jet-ski.css?v=10">
   <link rel="stylesheet" href="css/quote-checkout.css?v=2">
   <link rel="stylesheet" href="css/quote-page.css?v=9">
   <link rel="stylesheet" href="css/searchable-select.css?v=2">
   <link rel="stylesheet" href="css/CPWC.css?v=9">
+  <link rel="stylesheet" href="css/skipper-section.css?v=3">
 </head>
 
 <body>
@@ -50,7 +51,7 @@
       <div class="progress-step" data-step="2">
         <div class="progress-circle">2</div>
         <span class="progress-label">
-          Vessel Details
+          Vessel and<br>Skipper Details
         </span>
       </div>
 
@@ -59,7 +60,7 @@
       <div class="progress-step" data-step="3">
         <div class="progress-circle">3</div>
         <span class="progress-label">
-          Experience &amp;<br>History
+          Additional<br>Boats
         </span>
       </div>
 
@@ -69,7 +70,7 @@
         <div class="progress-circle">4</div>
 
         <span class="progress-label">
-          Additional<br>Boats
+          History
         </span>
       </div>
 
@@ -286,7 +287,7 @@
         </div>
 
         <div>
-            <h3 class="vessel-title">Vessel Details</h3>
+            <h3 class="vessel-title">Vessel and Skipper Details</h3>
 
             <p class="form-card-sub">
             Please provide the details of the vessel you would like to insure.
@@ -298,6 +299,7 @@
         class="field-list"
         id="vesselFieldList"
         ></div>
+        <div id="primarySkipperMount"></div>
 
         <div class="form-actions vessel-actions">
         <button
@@ -321,160 +323,10 @@
     </div>
     </section>
 
-    <!-- PAGE 3: EXPERIENCE AND HISTORY -->
+    <!-- PAGE 3: ADDITIONAL BOATS -->
     <section
       class="quote-step form-step"
       id="step-4"
-      style="display:none;"
-    >
-      <div class="form-card experience-card">
-
-        <div class="form-card-header">
-          <div class="tmd-icon">
-            <span>👥</span>
-          </div>
-
-          <div>
-            <h3 class="tmd-title">
-              Experience &amp; History
-            </h3>
-
-            <p class="form-card-sub">
-              Please provide information about your experience and history.
-            </p>
-          </div>
-        </div>
-
-        <!-- OWNERS AND SKIPPERS -->
-        <div
-          class="field-list"
-          id="experienceFieldList"
-        ></div>
-
-        <!-- SKIPPER DETAILS -->
-        <p class="subsection-label">
-          Skipper Details
-        </p>
-
-        <div class="skipper-table">
-
-          <div class="cpwc-skipper-header-row">
-            <span>Skipper name</span>
-            <span>Date of birth</span>
-            <span>Date boat licence obtained</span>
-            <span>Years owning a boat</span>
-            <span>Years owning a boat of this size and type</span>
-            <span>
-              Previous boats owned, including length, type and ownership period
-            </span>
-            <span></span>
-          </div>
-
-          <div
-            class="skipper-rows"
-            id="skipperRows"
-          ></div>
-
-
-        <button
-        type="button"
-        class="add-row-btn"
-        id="addSkipperBtn"
-        >
-        +
-        </button>
-
-        </div>
-
-        <div class="section-divider">
-        <span class="section-divider-icon">🛈</span>
-
-        <span>
-            Have you, the proposed insured, or any named skipper(s)
-            in the past 5 years:
-        </span>
-        </div>
-
-        <div
-        class="question-list"
-        id="past5YearsList"
-        ></div>
-
-        <div
-        class="claims-wrap"
-        id="claimsWrap"
-        style="display:none;"
-        >
-        <p class="subsection-label">
-            Claim Details
-        </p>
-
-        <div class="claims-table">
-
-            <div class="claims-header-row">
-            <span>Date Of Loss *</span>
-            <span>Description Of Loss *</span>
-            <span>Settlement Amount *</span>
-            <span></span>
-            </div>
-
-            <div
-            class="claims-rows"
-            id="claimsRows"
-            ></div>
-
-            <button
-            type="button"
-            class="add-row-btn"
-            id="addClaimBtn"
-            >
-            +
-            </button>
-
-        </div>
-        </div>
-
-        <div class="section-divider">
-        <span class="section-divider-icon">🛈</span>
-
-        <span>
-            Have you, the proposed insured, or any named skipper(s) ever:
-        </span>
-        </div>
-
-        <div
-        class="question-list"
-        id="everList"
-        ></div>
-
-        <div class="form-actions vessel-actions">
-
-        <button
-            type="button"
-            class="back-btn"
-            id="backBtn4"
-        >
-            ← Back
-        </button>
-
-        <button
-            type="button"
-            class="continue-btn"
-            id="continueBtn4"
-            disabled
-        >
-            Continue →
-        </button>
-
-        </div>
-
-            </div>
-        </section>
-
-    <!-- PAGE 4: ADDITIONAL BOATS -->
-    <section
-      class="quote-step form-step"
-      id="step-5"
       style="display:none;"
     >
       <div class="form-card additional-boats-card">
@@ -562,6 +414,116 @@
 
       </div>
         </section>
+
+    <!-- PAGE 4: EXPERIENCE AND HISTORY -->
+    <section
+      class="quote-step form-step"
+      id="step-5"
+      style="display:none;"
+    >
+      <div class="form-card experience-card">
+
+        <div class="form-card-header">
+          <div class="tmd-icon">
+            <span>👥</span>
+          </div>
+
+          <div>
+            <h3 class="tmd-title">
+              History
+            </h3>
+
+            <p class="form-card-sub">
+              Please provide information about your experience and history.
+            </p>
+          </div>
+        </div>
+
+        <div class="section-divider">
+        <span class="section-divider-icon">🛈</span>
+
+        <span>
+            Have you, the proposed insured, or any named skipper(s)
+            in the past 5 years:
+        </span>
+        </div>
+
+        <div
+        class="question-list"
+        id="past5YearsList"
+        ></div>
+
+        <div
+        class="claims-wrap"
+        id="claimsWrap"
+        style="display:none;"
+        >
+        <p class="subsection-label">
+            Claim Details
+        </p>
+
+        <div class="claims-table">
+
+            <div class="claims-header-row">
+            <span>Date Of Loss *</span>
+            <span>Description Of Loss *</span>
+            <span>Settlement Amount *</span>
+            <span></span>
+            </div>
+
+            <div
+            class="claims-rows"
+            id="claimsRows"
+            ></div>
+
+            <button
+            type="button"
+            class="add-row-btn"
+            id="addClaimBtn"
+            >
+            +
+            </button>
+
+        </div>
+        </div>
+
+        <div class="section-divider">
+        <span class="section-divider-icon">🛈</span>
+
+        <span>
+            Have you, the proposed insured, or any named skipper(s) ever:
+        </span>
+        </div>
+
+        <div
+        class="question-list"
+        id="everList"
+        ></div>
+
+        <div class="form-actions vessel-actions">
+
+        <button
+            type="button"
+            class="back-btn"
+            id="backBtn4"
+        >
+            ← Back
+        </button>
+
+        <button
+            type="button"
+            class="continue-btn"
+            id="continueBtn4"
+            disabled
+        >
+            Continue →
+        </button>
+
+        </div>
+
+            </div>
+        </section>
+
 
     <!-- PAGE 5: YOUR QUOTE -->
     <section
@@ -2076,7 +2038,9 @@
   <script src="js/quote-checkout.js?v=6"></script>
   <script src="js/length-input.js?v=3"></script>
   <script src="js/layup-picker.js?v=4"></script>
-  <script src="js/CPWC.js?v=13"></script>
+  <script src="js/skipper-section.js?v=2"></script>
+  <script src="js/date-input.js?v=1"></script>
+  <script src="js/CPWC.js?v=11"></script>
 
 </body>
 </html>
