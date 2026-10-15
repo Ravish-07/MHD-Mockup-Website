@@ -84,8 +84,9 @@
 
     const pickerOptions = () => {
       const pool = poolFor();
-      return `<option value="" selected>${pool.length ? 'Select a skipper' : 'No previous skippers yet'}</option>` +
-        pool.map((s, i) => `<option value="${i}">${esc(s.name)}</option>`).join('');
+      return `<option value="" selected>Choose from previous skippers</option>` +
+        (pool.length ? pool.map((s, i) => `<option value="${i}">${esc(s.name)}</option>`).join('')
+                     : '<option value="" disabled>No matches</option>');
     };
 
     const header = `<div class="skipper-header-row sk-cols-${extra ? 'extra' : 'basic'}">
@@ -128,7 +129,7 @@
       <p class="subsection-label">Skipper Details</p>
       <div class="skipper-table">
         ${opts.picker === false ? '' : `<div class="sk-pick-bar">
-          <span class="sk-add-label">Choose a previously added skipper</span>
+          <span class="sk-add-label">Previous skipper</span>
           <select class="sk-picker" data-sk-pick>${pickerOptions()}</select>
         </div>`}
         ${header}

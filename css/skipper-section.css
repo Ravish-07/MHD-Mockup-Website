@@ -58,3 +58,17 @@
 .sk-block .skipper-row.sk-locked textarea:disabled,
 .sk-block .skipper-row.sk-locked select:disabled { background: #f3f4f6; color: #4b5563; cursor: not-allowed; }
 .sk-block .skipper-row.sk-locked .date-dmy-btn:disabled { cursor: not-allowed; opacity: 0.5; }
+
+/* Labelled "add another" button under the additional PWC / boat cards */
+button.add-unit-btn.add-unit-labelled { width: auto !important; height: 38px !important; padding: 0 18px 0 8px !important; border-radius: 999px !important; font-size: 13px !important; font-weight: 600; gap: 8px; align-items: center; justify-content: center; }
+.add-unit-labelled .add-unit-plus { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.22); font-size: 17px; line-height: 1; }
+
+/* Additional unit cards: light-blue header band, as on the Additional Boat cards */
+.unit-card { background: #fff; border: 1px solid #dfe5e8; border-radius: 8px; padding: 0 16px 14px; }
+.unit-card .unit-card-header { margin: 0 -16px 8px; padding: 11px 15px; background: #edf8fa; border-bottom: 1px solid #d7e9ec; border-radius: 7px 7px 0 0; }
+.unit-card .unit-card-title { color: #08788b; font-size: 14px; font-weight: 700; }
+#step-4 .unit-card .remove-row-btn { width: 28px; height: 28px; font-size: 18px; }
+
+/* Owner / skipper questions inside additional boat cards line up with the fields above them */
+[data-boat-skipper-mount] { padding: 0 16px 16px; }
+[data-boat-skipper-mount] .field-row { padding: 6px 0; }
