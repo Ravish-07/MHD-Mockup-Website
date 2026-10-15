@@ -1,0 +1,30 @@
+/* Owners / skippers block (js/skipper-section.js) */
+.sk-block { margin-top: 6px; }
+.sk-block .skipper-header-row.sk-cols-basic,
+.sk-block .skipper-row.sk-cols-basic { grid-template-columns: 1.4fr 1fr 1fr 1fr 32px; }
+.sk-block .skipper-header-row.sk-cols-extra,
+.sk-block .skipper-row.sk-cols-extra { grid-template-columns: 1.2fr 0.9fr 0.9fr 0.8fr 0.9fr 1.5fr 32px; }
+.sk-block .skipper-row textarea { width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 10px; font: inherit; font-size: 13px; resize: vertical; }
+.sk-add-bar { display: flex; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+.sk-add-label { font-size: 13px; font-weight: 600; color: #1f2937; }
+.sk-picker { min-width: 240px; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 10px; font: inherit; font-size: 13px; background: #fff; }
+.sk-add-bar .add-row-btn { margin-top: 0; }
+.sk-add-bar .add-row-btn:disabled { background: #d1d5db; cursor: not-allowed; }
+.sk-warning { margin: 10px 0 0; padding: 8px 12px; border-radius: 6px; background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; font-size: 12.5px; }
+.unit-card .sk-block .skipper-header-row span { font-size: 11.5px; }
+@media (max-width: 850px) {
+  .sk-block .skipper-header-row { display: none; }
+  .sk-block .skipper-row.sk-cols-basic, .sk-block .skipper-row.sk-cols-extra { grid-template-columns: 1fr 1fr; }
+}
+
+/* DD/MM/YYYY date entry (js/date-input.js) */
+.date-dmy { position: relative; display: flex; align-items: center; width: 100%; }
+.date-dmy > input[type="text"] { width: 100%; padding-right: 34px; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 34px 8px 10px; font: inherit; font-size: 13px; outline: none; }
+.date-dmy > input[type="text"]:focus { border-color: #0f766e; }
+.date-dmy > input.field-invalid { border-color: #dc2626; }
+.date-dmy-btn { position: absolute; right: 6px; border: none; background: transparent; cursor: pointer; font-size: 14px; padding: 2px; line-height: 1; }
+.date-dmy-native { position: absolute !important; right: 8px; bottom: 0; width: 1px !important; height: 1px !important; opacity: 0; pointer-events: none; border: 0 !important; padding: 0 !important; }
+
+/* Previous-skipper picker sits above the table; "+" sits below it */
+.sk-pick-bar { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; flex-wrap: wrap; }
+.sk-add-bar { margin-top: 8px; }
