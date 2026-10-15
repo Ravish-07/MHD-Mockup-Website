@@ -750,16 +750,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // Owners / skippers block shared by Vessel Details and each additional boat.
-  function mountSkippers(el, vessel, onChange) {
-    SkipperSection.render(el, vessel.experience, {
-      extra: true,
-      picker: vessel === quoteState.vessels[0] ? false : true,
-      getTargets: () => quoteState.vessels.map(v => v.experience),
-      onChange
-    });
-  }
-
   function renderVesselStep() {
     quoteState.activeVessel = 0;
 
@@ -774,7 +764,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .map(f => vesselRowHtml(f, d))
         .join('');
 
-    mountSkippers($('primarySkipperMount'), quoteState.vessels[0], checkStep3Complete);
     checkStep3Complete();
   }
 
@@ -846,7 +835,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return !!(d[`${f.id}Specify`] && d[`${f.id}Specify`].trim());
     });
 
-    return baseFilled && specifyFilled && SkipperSection.isComplete(v.experience, true);
+    return baseFilled && specifyFilled;
   }
 
   function checkStep3Complete() {
@@ -859,6 +848,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // ---------- STEP 4 (progress step 3): EXPERIENCE & HISTORY ----------
+  const experienceFields = [
+    { id: 'numOwners', label: 'How many people own this vessel?', options: OWNER_SKIPPER_OPTIONS },
+    { id: 'numSkippers', label: 'How many people skipper this vessel?', options: OWNER_SKIPPER_OPTIONS }
+  ];
+
   const past5YearsQuestions = [
     { id: 'cancelledRefused', text: 'Had any insurances cancelled, refused or had special conditions imposed?', details: true },
     { id: 'madeClaims', text: 'Made any boat / PWC insurance claims?' }
@@ -881,12 +875,101 @@ document.addEventListener('DOMContentLoaded', () => {
     $('experienceStepSub').textContent =
       'Please provide information about your experience and history.';
 
+    $('experienceFieldList').innerHTML = experienceFields.map(f => `
+      <div class="field-row" data-field-row="${f.id}">
+        <p class="field-label">${esc(f.label)} <span class="required">*</span></p>
+        <div class="field-input-wrap">
+          <select data-exp-field="${f.id}">
+            <option value="" disabled ${e[f.id] === '' ? 'selected' : ''}>Select</option>
+            ${f.options.map(o => `<option value="${o}" ${e[f.id] === o ? 'selected' : ''}>${o}</option>`).join('')}
+          </select>
+        </div>
+      </div>`).join('');
+
+    renderSkipperRows();
     renderYesNoList('past5YearsList', past5YearsQuestions, 'past5Years');
     renderYesNoList('everList', everQuestions, 'ever');
     syncClaimsWrap();
     renderClaimRows();
     checkStep4Complete();
   }
+
+  $('experienceFieldList').addEventListener('change', ev => {
+    const el = ev.target;
+    if (!el.dataset.expField) return;
+
+    const e = currentVessel().experience;
+    e[el.dataset.expField] = el.value;
+
+    checkStep4Complete();
+  });
+
+
+  // ----- Skippers -----
+  function skipperYearsSelect(field, value) {
+    return `
+      <select data-skipper-field="${field}">
+        <option value="" disabled ${value === '' ? 'selected' : ''}>Select</option>
+        ${YEARS_OPTIONS.map(o => `<option value="${o}" ${value === o ? 'selected' : ''}>${o}</option>`).join('')}
+      </select>`;
+  }
+
+  const SKIPPER_HEADER_ROW = `
+    <div class="skipper-header-row">
+      <span>Skipper name</span>
+      <span>Date of birth</span>
+      <span>Date boat licence obtained</span>
+      <span>Years owning a boat</span>
+      <span>Years owning a boat of this size and type</span>
+      <span>Previous boats owned, including length, type and ownership period</span>
+      <span></span>
+    </div>`;
+
+  function skipperRowHtml(s, i) {
+    const today = toInputDate(startOfToday());
+
+    return `
+      <div class="skipper-row" data-skipper-index="${i}">
+        <input type="text" placeholder="Full Name" data-skipper-field="name" value="${esc(s.name)}">
+        <input type="date" data-skipper-field="dob" max="${today}" value="${esc(s.dob)}">
+        <input type="date" data-skipper-field="licenceDate" max="${today}" value="${esc(s.licenceDate)}">
+        ${skipperYearsSelect('yearsOwning', s.yearsOwning)}
+        ${skipperYearsSelect('yearsSizeType', s.yearsSizeType)}
+        <textarea rows="2" placeholder="Example: 6m Runabout, 2020-2024" data-skipper-field="previousBoats">${esc(s.previousBoats)}</textarea>
+        ${i > 0 ? `<button type="button" class="remove-row-btn" data-remove-skipper="${i}" aria-label="Remove skipper">×</button>` : '<span></span>'}
+      </div>`;
+  }
+
+  function renderSkipperRows() {
+    $('skipperRows').innerHTML = currentVessel().experience.skippers.map(skipperRowHtml).join('');
+  }
+
+  function onSkipperInput(ev) {
+    const el = ev.target;
+    const field = el.dataset.skipperField;
+    if (!field) return;
+    const i = Number(el.closest('.skipper-row').dataset.skipperIndex);
+    currentVessel().experience.skippers[i][field] = el.value;
+    checkStep4Complete();
+  }
+
+  $('skipperRows').addEventListener('input', onSkipperInput);
+  $('skipperRows').addEventListener('change', onSkipperInput);
+
+  $('skipperRows').addEventListener('click', ev => {
+    const btn = ev.target.closest('[data-remove-skipper]');
+    if (!btn) return;
+    currentVessel().experience.skippers.splice(Number(btn.dataset.removeSkipper), 1);
+    renderSkipperRows();
+    checkStep4Complete();
+  });
+
+  $('addSkipperBtn').addEventListener('click', () => {
+    currentVessel().experience.skippers.push(blankSkipper());
+    renderSkipperRows();
+    checkStep4Complete();
+  });
+
 
   // ----- Yes / No questions -----
   function renderYesNoList(containerId, items, group) {
@@ -1004,6 +1087,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function isExperienceComplete(v) {
     const e = v.experience;
 
+    const topFieldsFilled = experienceFields.every(f => e[f.id] !== '' && e[f.id] !== undefined);
+
+    const skippersFilled = e.skippers.length > 0 && e.skippers.every(s =>
+      s.name && s.dob && s.licenceDate && s.yearsOwning && s.yearsSizeType
+    );
+
     const past5Answered = past5YearsQuestions.every(q => e.past5Years[q.id] !== undefined);
     const everAnswered = everQuestions.every(q => e.ever[q.id] !== undefined);
 
@@ -1016,15 +1105,15 @@ document.addEventListener('DOMContentLoaded', () => {
       claimsValid = e.claims.length > 0 && e.claims.every(c => c.dateOfLoss && c.description && c.settlement !== '');
     }
 
-    return past5Answered && everAnswered && detailsFilled && claimsValid;
+    return topFieldsFilled && skippersFilled && past5Answered && everAnswered && detailsFilled && claimsValid;
   }
 
   function checkStep4Complete() {
     if (DEV_BYPASS_VALIDATION) {
-      $('continueBtnEH').disabled = false;
+      $('continueBtn4').disabled = false;
       return;
     }
-    $('continueBtnEH').disabled = !isExperienceComplete(currentVessel());
+    $('continueBtn4').disabled = !isExperienceComplete(currentVessel());
   }
 // ==================================================
 // ADDITIONAL BOATS
@@ -1044,14 +1133,11 @@ function createAdditionalBoat() {
       hullLengthUnit: 'm'
     },
 
-    experience: {
-      ...clone(primary.experience),
-      numOwners: '',
-      numSkippers: '',
-      skippers: [blankSkipper()]
-    },
+    experience: clone(
+      primary.experience
+    ),
 
-    hasDifferentSkipper: 'yes'
+    hasDifferentSkipper: ''
   };
 }
 
@@ -1120,14 +1206,85 @@ function renderAdditionalBoats() {
           </div>
 
 
-          <div data-boat-skipper-mount="${vesselIndex}"></div>
+          <div class="additional-skipper-question">
+
+            <span class="additional-skipper-question-text">
+              Will this boat have a different skipper?
+              <span class="required">*</span>
+            </span>
+
+            <div class="question-toggle">
+
+              <button
+                type="button"
+                class="toggle-btn ${
+                  boat.hasDifferentSkipper === 'yes'
+                    ? 'selected'
+                    : ''
+                }"
+                data-different-skipper="yes"
+              >
+                Yes
+              </button>
+
+              <button
+                type="button"
+                class="toggle-btn ${
+                  boat.hasDifferentSkipper === 'no'
+                    ? 'selected'
+                    : ''
+                }"
+                data-different-skipper="no"
+              >
+                No
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="additional-boat-skipper-section"
+            style="display:${
+              boat.hasDifferentSkipper === 'yes'
+                ? 'block'
+                : 'none'
+            };"
+          >
+
+            <p class="subsection-label">
+              Skipper Details
+            </p>
+
+            <div class="skipper-table">
+              ${SKIPPER_HEADER_ROW}
+
+              <div class="skipper-rows">
+                ${
+                  boat.hasDifferentSkipper === 'yes'
+                    ? boat.experience.skippers
+                        .map(skipperRowHtml)
+                        .join('')
+                    : ''
+                }
+              </div>
+
+              <button
+                type="button"
+                class="add-row-btn"
+                data-add-additional-skipper
+                aria-label="Add another skipper"
+              >
+                +
+              </button>
+            </div>
+
+          </div>
+
         </div>
       `;
     }).join('');
-
-  host.querySelectorAll('[data-boat-skipper-mount]').forEach(mount => {
-    mountSkippers(mount, quoteState.vessels[Number(mount.dataset.boatSkipperMount)], checkAdditionalBoatsComplete);
-  });
 
   checkAdditionalBoatsComplete();
 }
@@ -1160,7 +1317,28 @@ function checkAdditionalBoatsComplete() {
       const vesselComplete =
         isVesselComplete(boat);
 
-      return vesselComplete;
+      const skipperChoiceComplete =
+        boat.hasDifferentSkipper === 'yes' ||
+        boat.hasDifferentSkipper === 'no';
+
+      const skipperComplete =
+        boat.hasDifferentSkipper !== 'yes' ||
+        (
+          boat.experience.skippers.length > 0 &&
+          boat.experience.skippers.every(skipper =>
+            skipper.name &&
+            skipper.dob &&
+            skipper.licenceDate &&
+            skipper.yearsOwning &&
+            skipper.yearsSizeType
+          )
+        );
+
+      return (
+        vesselComplete &&
+        skipperChoiceComplete &&
+        skipperComplete
+      );
     });
 
   continueButton.disabled = !complete;
@@ -1261,7 +1439,8 @@ function updateAdditionalBoatField(event) {
 
   // VESSEL FIELD
   if (
-    element.dataset.field
+    element.dataset.field &&
+    !element.dataset.skipperField
   ) {
     const fieldName =
       element.dataset.field;
@@ -1283,6 +1462,26 @@ function updateAdditionalBoatField(event) {
     );
   }
 
+
+  // SKIPPER FIELD
+  if (element.dataset.skipperField) {
+    const skipperCard =
+      element.closest(
+        '[data-skipper-index]'
+      );
+
+    if (!skipperCard) return;
+
+    const skipperIndex =
+      Number(
+        skipperCard.dataset.skipperIndex
+      );
+
+    boat.experience.skippers[
+      skipperIndex
+    ][element.dataset.skipperField] =
+      element.value;
+  }
 
   checkAdditionalBoatsComplete();
 }
@@ -1335,6 +1534,72 @@ $('additionalBoatsList')
       );
 
       return;
+    }
+
+
+    // DIFFERENT SKIPPER
+    const skipperChoice =
+      event.target.closest(
+        '[data-different-skipper]'
+      );
+
+    if (skipperChoice) {
+
+      boat.hasDifferentSkipper =
+        skipperChoice.dataset
+          .differentSkipper;
+
+      if (
+        boat.hasDifferentSkipper === 'yes'
+      ) {
+
+        boat.experience.skippers = [
+          blankSkipper()
+        ];
+
+      } else {
+
+        boat.experience =
+          clone(
+            quoteState.vessels[0]
+              .experience
+          );
+      }
+
+      renderAdditionalBoats();
+      return;
+    }
+
+
+    // REMOVE SKIPPER
+    const removeSkipper =
+      event.target.closest(
+        '[data-remove-skipper]'
+      );
+
+    if (removeSkipper) {
+      boat.experience.skippers.splice(
+        Number(removeSkipper.dataset.removeSkipper),
+        1
+      );
+
+      renderAdditionalBoats();
+      return;
+    }
+
+    // ADD SKIPPER
+    const addSkipper =
+      event.target.closest(
+        '[data-add-additional-skipper]'
+      );
+
+    if (addSkipper) {
+
+      boat.experience.skippers.push(
+        blankSkipper()
+      );
+
+      renderAdditionalBoats();
     }
   });
 
@@ -1618,6 +1883,7 @@ $('additionalBoatsList')
 
     quoteState.vessels.forEach((vessel, index) => {
       fillBlanks(vessel.details, EXAMPLE_VESSEL_DETAILS);
+      if (index > 0 && !vessel.hasDifferentSkipper) vessel.hasDifferentSkipper = 'no';
 
       const experience = vessel.experience;
       fillBlanks(experience, { numOwners: '1', numSkippers: String(Math.min(experience.skippers.length, 4)) });
@@ -1761,15 +2027,11 @@ $('additionalBoatsList')
     }).join('');
   }
 
-  // Skippers shared between vessels appear once.
+  // Additional boats reuse the first vessel's skippers unless they have a different skipper.
   function renderSkipperSummary() {
-    const seen = new Set();
-    const skippers = quoteState.vessels.flatMap(v => v.experience.skippers).filter(s => {
-      const key = (s.name || '').trim().toLowerCase() + '|' + s.dob;
-      if (!s.name || seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+    const skippers = quoteState.vessels.flatMap((v, i) =>
+      i === 0 || v.hasDifferentSkipper === 'yes' ? v.experience.skippers : []
+    );
 
     $('skipperSummaryList').innerHTML = skippers.map((s, i) =>
       summaryRowHtml(`Skipper ${i + 1}`, [['Name', s.name], ['DOB', formatDate(s.dob)]])
@@ -1828,7 +2090,7 @@ $('additionalBoatsList')
   // Add Boat takes the user back to Additional Boats with a new boat started, pre-filled with the first vessel's experience.
   $('addBoatBtn').addEventListener('click', () => {
     const yesToggle = document.querySelector('#hasAdditionalBoatToggle .toggle-btn[data-value="yes"]');
-    goToSection(4);
+    goToSection(5);
     if (hasAdditionalBoats === 'yes') addAdditionalBoat();
     else yesToggle.click();
   });
@@ -2052,11 +2314,11 @@ $('additionalBoatsList')
 
     if (n === 2) renderQuestions();
     if (n === 3) renderVesselStep();
-    if (n === 4) {
+    if (n === 4) renderExperienceStep();
+    if (n === 5) {
       renderAdditionalBoats();
       checkAdditionalBoatsComplete();
     }
-    if (n === 5) renderExperienceStep();
 
     if (n === 6) {
       fillExampleQuoteData();
@@ -2121,14 +2383,14 @@ progressBar
 
   // ----- Experience & History -----
 
-  $('backBtnEH').addEventListener(
+  $('backBtn4').addEventListener(
     'click',
-    () => goToSection(4)
+    () => goToSection(3)
   );
 
-  $('continueBtnEH').addEventListener(
+  $('continueBtn4').addEventListener(
     'click',
-    () => goToSection(6)
+    () => goToSection(5)
   );
 
 
@@ -2137,13 +2399,13 @@ progressBar
   $('backAdditionalBoatsBtn')
     .addEventListener(
       'click',
-      () => goToSection(3)
+      () => goToSection(4)
     );
 
   $('continueAdditionalBoatsBtn')
     .addEventListener(
       'click',
-      () => goToSection(5)
+      () => goToSection(6)
     );
 
 

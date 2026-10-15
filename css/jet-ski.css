@@ -747,8 +747,8 @@ body {
 
 /* Larger centred +/- controls on Additional Jet Ski */
 
-#step-4 .add-row-btn,
-#step-4 .remove-row-btn {
+#step-5 .add-row-btn,
+#step-5 .remove-row-btn {
   width: 36px;
   height: 36px;
   padding: 0;
@@ -763,14 +763,14 @@ body {
 }
 
 /* Add jet ski button */
-#step-4 .add-row-btn {
+#step-5 .add-row-btn {
   background: #0f766e;
   color: #fff;
   border: none;
 }
 
 /* Remove jet ski button */
-#step-4 .remove-row-btn {
+#step-5 .remove-row-btn {
   background: #dc2626;
   color: #fff;
   border: none;
@@ -778,12 +778,12 @@ body {
   font-size: 24px;
 }
 
-#step-4 .remove-row-btn:hover {
+#step-5 .remove-row-btn:hover {
   background: #b91c1c;
 }
 
 /* Centre add button relative to the unit-card area */
-#step-4 .add-unit-btn {
+#step-5 .add-unit-btn {
   margin: 8px auto;
 }
 
@@ -2470,12 +2470,12 @@ body.modal-open {
 }
 
 /* Keep full vessel fields consistent with primary Vessel Details */
-#step-4 .unit-card .field-row {
+#step-5 .unit-card .field-row {
   padding: 4px 0;
   gap: 20px;
 }
 
-#step-4 .unit-card .field-input-wrap {
+#step-5 .unit-card .field-input-wrap {
   flex: 1.2;
   max-width: 420px;
 }
@@ -2751,7 +2751,7 @@ body.modal-open {
 
 /* ===== EXPERIENCE SKIPPER ACCENT BOX ===== */
 
-.sk-block .skipper-table {
+#step-4 .skipper-table {
   margin-top: 10px;
   padding: 14px 16px 12px;
   border: 1px solid #e5e7eb;
