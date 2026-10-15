@@ -142,14 +142,15 @@
         <p class="sk-warning" data-sk-warning style="display:none;"></p>
       </div>`;
 
+    // Shown only after the user presses Continue with details missing (see guardContinue below).
     const warn = () => {
       const el = mount.querySelector('[data-sk-warning]');
       const wanted = targetCount(target);
       const missing = missingCount(target, extra);
-      if (wanted > 0 && missing > 0) {
+      if (mount._skWarn && wanted > 0 && missing > 0) {
         const done = wanted - missing;
         el.textContent = `You selected ${wanted} skipper${wanted > 1 ? 's' : ''} but ${done > 0 ? `only ${done} ${done > 1 ? 'have' : 'has'} complete details` : 'no skipper details are complete'}. ` +
-          `Please complete the missing details, or continue if this ${noun} has fewer skippers.`;
+          `Please complete the missing details.`;
         el.style.display = '';
       } else {
         el.style.display = 'none';
@@ -226,6 +227,29 @@
     mount.addEventListener('mousedown', refresh);
     mount.addEventListener('focusin', refresh);
   }
+
+  // First Continue press with skipper details missing shows the warning instead of moving on
+  // (even when validation is bypassed); pressing Continue again with nothing changed carries on.
+  const blocksIn = scope => Array.from(scope.querySelectorAll('.sk-block'))
+    .filter(m => m._sk && m.offsetParent !== null);
+  const incomplete = m => targetCount(m._sk.target) > 0 && missingCount(m._sk.target, m._sk.extra) > 0;
+  document.addEventListener('click', ev => {
+    const btn = ev.target.closest && ev.target.closest('.continue-btn');
+    if (!btn) return;
+    const scope = btn.closest('.quote-step, section');
+    if (!scope) return;
+    const blocks = blocksIn(scope);
+    const bad = blocks.filter(incomplete);
+    if (!bad.length) { btn._skAck = null; return; }
+    const sig = JSON.stringify(blocks.map(m => m._sk.target.skippers));
+    if (btn._skAck === sig) { btn._skAck = null; return; }
+    btn._skAck = sig;
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+    bad.forEach(m => { m._skWarn = true; m._sk.warn(); });
+    const first = bad[0].querySelector('[data-sk-warning]');
+    if (first && first.scrollIntoView) first.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }, true);
 
   window.SkipperSection = {
     render,

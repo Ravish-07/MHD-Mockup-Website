@@ -989,7 +989,7 @@ function addJetSkiUnit() {
     <div class="unit-card-header">
 
       <span class="unit-card-title">
-        Additional PWC / Jet Ski ${idx}
+        PWC / Jet Ski ${idx + 1}
       </span>
 
       <button
@@ -1323,7 +1323,7 @@ function renumberUnitCards() {
       card
         .querySelector('.unit-card-title')
         .textContent =
-          `Additional PWC / Jet Ski ${i + 1}`;
+          `PWC / Jet Ski ${i + 2}`;
 
     });
 

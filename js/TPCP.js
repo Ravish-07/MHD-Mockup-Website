@@ -1098,7 +1098,7 @@ function renderAdditionalBoats() {
           <div class="additional-boat-header">
 
             <h4>
-              Additional Boat ${arrayIndex + 1}
+              Boat ${arrayIndex + 2}
             </h4>
 
             <button

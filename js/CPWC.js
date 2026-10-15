@@ -2570,7 +2570,7 @@ function addAdditionalBoat() {
     <div class="additional-boat-header">
 
       <h4>
-        Additional Boat ${boatNumber}
+        Boat ${Number(boatNumber) + 1}
       </h4>
 
       <button
@@ -2645,7 +2645,7 @@ function renumberAdditionalBoats() {
     card
       .querySelector('h4')
       .textContent =
-        `Additional Boat ${index + 1}`;
+        `Boat ${index + 2}`;
   });
 
   additionalBoatCount =
