@@ -112,7 +112,7 @@
 
     const countRow = (id, label, value) => `
       <div class="field-row">
-        <p class="field-label">${label} <span class="required">*</span></p>
+        <p class="field-label">${label}</p>
         <div class="field-input-wrap">
           <select data-sk-count="${id}">
             <option value="" disabled ${value ? '' : 'selected'}>Select</option>
