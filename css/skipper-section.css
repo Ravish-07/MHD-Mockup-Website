@@ -40,9 +40,9 @@
   content: ""; width: 4px; height: 18px; border-radius: 2px; background: #0f766e;
 }
 
-/* Uniform progress bar: equal-width steps and equal connector lines */
-.progress-bar { max-width: 1000px; }
-.progress-bar .progress-track { justify-content: space-between; }
-.progress-bar .progress-step { flex: 0 0 104px; width: 104px; }
-.progress-bar .progress-label { white-space: normal; height: 28px; max-width: 104px; }
-.progress-bar .progress-line { flex: 1 1 0; min-width: 12px; margin: 0 0 18px; align-self: flex-start; margin-top: 14px; }
+/* Uniform progress bar: circle-sized steps with labels centred beneath, connector lines fill every gap equally */
+.progress-bar { width: 100%; max-width: 960px; }
+.progress-bar .progress-track { display: flex; width: 100%; justify-content: space-between; align-items: flex-start; margin-bottom: 36px; }
+.progress-bar .progress-step { flex: 0 0 30px; width: 30px; position: relative; align-self: flex-start; }
+.progress-bar .progress-label { position: absolute; top: 36px; left: 50%; transform: translateX(-50%); width: 150px; max-width: none; height: auto; white-space: normal; text-align: center; }
+.progress-bar .progress-line { flex: 1 1 0; min-width: 12px; height: 2px; margin: 14px 8px 0; align-self: flex-start; }
