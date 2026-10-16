@@ -49,52 +49,52 @@ document.addEventListener('DOMContentLoaded', () => {
   const questions = [
     {
       id: 'q1',
-      text: 'The Vessel(s) will be owned by the applicant/You for the duration of the policy.',
+      text: 'The PWC / Jet Ski will be owned by the applicant/You for the duration of the policy.',
       type: 'toggle'
     },
     {
       id: 'q2',
-      text: 'The Vessel(s) is not used for financial reward or registered as a commercial vessel.',
+      text: 'The PWC / Jet Ski is not used for financial reward or registered as a commercial vessel.',
       type: 'toggle'
     },
     {
       id: 'q3',
-      text: 'The Vessel(s) will not operate outside of Australian or New Zealand waters or the waters located between the two countries.',
+      text: 'The PWC / Jet Ski will not operate outside of Australian or New Zealand waters or the waters located between the two countries.',
       type: 'toggle'
     },
     {
       id: 'q4',
-      text: 'The Vessel(s) will not be under construction (other than being refitted) at any time during the insurance period and the Vessel(s) has been launched.',
+      text: 'The PWC / Jet Ski will not be under construction (other than being refitted) at any time during the insurance period and the PWC / Jet Ski has been launched.',
       type: 'toggle'
     },
     {
       id: 'q5',
-      text: 'The Vessel(s) to be insured under this insurance is not registered or zoned as a building (for example, a floating office).',
+      text: 'The PWC / Jet Ski to be insured under this insurance is not registered or zoned as a building (for example, a floating office).',
       type: 'toggle'
     },
     {
       id: 'q6',
-      text: 'The Vessel(s) is not used for permanent accommodation (agreement available upon request).',
+      text: 'The PWC / Jet Ski is not used for permanent accommodation (agreement available upon request).',
       type: 'toggle'
     },
     {
       id: 'q7',
-      text: 'The Vessel(s) is not used for Timeshare Arrangement / Syndicate / Equity Arrangement.',
+      text: 'The PWC / Jet Ski is not used for Timeshare Arrangement / Syndicate / Equity Arrangement.',
       type: 'toggle'
     },
     {
       id: 'q8',
-      text: 'The Vessel(s) is not used for Holiday Rental / Air B&B Holiday Rental / Air B&B.',
+      text: 'The PWC / Jet Ski is not used for Holiday Rental / Air B&B Holiday Rental / Air B&B.',
       type: 'toggle'
     },
     {
       id: 'q9',
-      text: 'The Vessel(s) is seaworthy.',
+      text: 'The PWC / Jet Ski is seaworthy.',
       type: 'toggle'
     },
     {
       id: 'q10',
-      text: 'What is the maximum capable speed of the Vessel(s)? Please answer in regards to the fastest Vessel if applying to insure more than one.',
+      text: 'What is the maximum capable speed of the PWC / Jet Ski? Please answer in regards to the fastest PWC / Jet Ski if applying to insure more than one.',
       type: 'select',
       options: [
         'Up to 40 Knots / 75 kph',
