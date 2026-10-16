@@ -73,3 +73,4 @@ button.add-unit-btn.add-unit-labelled { width: auto !important; height: 38px !im
 [data-boat-skipper-mount] { padding: 0 16px 16px; }
 [data-boat-skipper-mount] .field-row { padding: 6px 0; }
 .sk-pick-label, .sk-add-bar .sk-add-label { font-size: 13px !important; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
+.sk-add-bar .sk-add-label { font-weight: 400; }
