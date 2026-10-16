@@ -72,4 +72,4 @@ button.add-unit-btn.add-unit-labelled { width: auto !important; height: 38px !im
 /* Owner / skipper questions inside additional boat cards line up with the fields above them */
 [data-boat-skipper-mount] { padding: 0 16px 16px; }
 [data-boat-skipper-mount] .field-row { padding: 6px 0; }
-.sk-pick-label { font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.sk-pick-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
