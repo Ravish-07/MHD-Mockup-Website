@@ -148,7 +148,7 @@
 
   // ---------- Opening from any dropdown ----------
 
-  const isSearchable = element => element instanceof HTMLSelectElement && !element.disabled && !element.multiple;
+  const isSearchable = element => element instanceof HTMLSelectElement && !element.disabled && !element.multiple && !element.hasAttribute("data-no-search");
 
   document.addEventListener('mousedown', event => {
     if (activeSelect && !panel.contains(event.target)) close({ refocus: false });
