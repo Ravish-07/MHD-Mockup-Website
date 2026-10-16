@@ -415,18 +415,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---------- STEP 2 (progress step 1): TARGET MARKET DETERMINATION ----------
   // onFalse: 'decline' | 'refer'   (notes column on TPO PLEASURE CRAFT)
   const questions = [
-    { id: 'q1', type: 'toggle', onFalse: 'decline', text: 'The Vessel(s) will be owned by the applicant/You for the duration of the policy.' },
-    { id: 'q2', type: 'toggle', onFalse: 'decline', text: 'The Vessel(s) is not used for financial reward or registered as a commercial vessel.' },
-    { id: 'q3', type: 'toggle', onFalse: 'decline', text: 'The Vessel(s) will not operate outside of Australian or New Zealand waters or the waters located between the two countries.' },
-    { id: 'q4', type: 'toggle', onFalse: 'decline', text: 'The Vessel(s) will not be under construction (other than being refitted) at any time during the insurance period and the Vessel(s) has been launched.' },
-    { id: 'q5', type: 'toggle', onFalse: 'decline', text: 'The Vessel(s) to be insured under this insurance is not registered or zoned as a building (for example, a floating office).' },
-    { id: 'q6', type: 'toggle', onFalse: 'refer',   text: 'The Vessel(s) is not used for permanent accommodation (agreement available upon request).' },
-    { id: 'q7', type: 'toggle', onFalse: 'decline', text: 'The Vessel(s) is not used for Timeshare Arrangement / Syndicate / Equity Arrangement.' },
-    { id: 'q8', type: 'toggle', onFalse: 'decline', text: 'The Vessel(s) is not used for Holiday Rental / Air B&B Holiday Rental / Air B&B.' },
-    { id: 'q9', type: 'toggle', onFalse: 'decline', text: 'The Vessel(s) is seaworthy.' },
+    { id: 'q1', type: 'toggle', onFalse: 'decline', text: 'The Pleasure Craft will be owned by the applicant/You for the duration of the policy.' },
+    { id: 'q2', type: 'toggle', onFalse: 'decline', text: 'The Pleasure Craft is not used for financial reward or registered as a commercial vessel.' },
+    { id: 'q3', type: 'toggle', onFalse: 'decline', text: 'The Pleasure Craft will not operate outside of Australian or New Zealand waters or the waters located between the two countries.' },
+    { id: 'q4', type: 'toggle', onFalse: 'decline', text: 'The Pleasure Craft will not be under construction (other than being refitted) at any time during the insurance period and the Pleasure Craft has been launched.' },
+    { id: 'q5', type: 'toggle', onFalse: 'decline', text: 'The Pleasure Craft to be insured under this insurance is not registered or zoned as a building (for example, a floating office).' },
+    { id: 'q6', type: 'toggle', onFalse: 'refer',   text: 'The Pleasure Craft is not used for permanent accommodation (agreement available upon request).' },
+    { id: 'q7', type: 'toggle', onFalse: 'decline', text: 'The Pleasure Craft is not used for Timeshare Arrangement / Syndicate / Equity Arrangement.' },
+    { id: 'q8', type: 'toggle', onFalse: 'decline', text: 'The Pleasure Craft is not used for Holiday Rental / Air B&B Holiday Rental / Air B&B.' },
+    { id: 'q9', type: 'toggle', onFalse: 'decline', text: 'The Pleasure Craft is seaworthy.' },
     {
       id: 'q10', type: 'select', options: SPEED_OPTIONS, declineValue: 'Over 60 Knots / 110 kph',
-      text: 'What is the maximum capable speed of the Vessel(s)? Please answer in regards to the fastest Vessel if applying to insure more than one.'
+      text: 'What is the maximum capable speed of the Pleasure Craft? Please answer in regards to the fastest Pleasure Craft if applying to insure more than one.'
     }
   ];
 
