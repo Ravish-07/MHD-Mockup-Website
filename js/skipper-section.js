@@ -129,8 +129,8 @@
       <p class="subsection-label">Skipper Details</p>
       <div class="skipper-table">
         ${opts.picker === false ? '' : `<div class="sk-pick-bar">
-          <span class="sk-add-label">Previous skipper</span>
-          <select class="sk-picker" data-sk-pick>${pickerOptions()}</select>
+          <span class="sk-add-label sk-pick-label">Previous skipper</span>
+          <select class="sk-picker" data-sk-pick data-no-search>${pickerOptions()}</select>
         </div>`}
         ${header}
         <div class="skipper-rows">${target.skippers.map(rowHtml).join('')}</div>
