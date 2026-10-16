@@ -876,7 +876,7 @@ document.addEventListener('DOMContentLoaded', () => {
       quoteState.vessels[0].experience;
 
     $('experienceStepTitle').textContent =
-      'History';
+      'Your History';
 
     $('experienceStepSub').textContent =
       'Please provide information about your history.';
