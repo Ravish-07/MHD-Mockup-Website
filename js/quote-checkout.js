@@ -314,10 +314,15 @@ function setupVesselAndTrailerDetails({ info, vesselNoun = 'Vessel', getPolicyVe
     `;
   }
 
-  function sectionHtml(heading, fields) {
+  // Jet Ski only: these fields are not asked, so the section grids shrink to the fields that remain.
+  const isJetSki = document.body.classList.contains('jet-ski');
+  const JET_SKI_HIDDEN_FIELDS = ['hullName', 'motorModel'];
+
+  function sectionHtml(heading, allFields) {
+    const fields = isJetSki ? allFields.filter(([, field]) => !JET_SKI_HIDDEN_FIELDS.includes(field)) : allFields;
     return `
       <p class="subsection-label">${heading}</p>
-      <div class="additional-vessel-grid">
+      <div class="additional-vessel-grid" style="--field-count:${fields.length}">
         ${fields.map(vesselFieldHtml).join('')}
       </div>
     `;

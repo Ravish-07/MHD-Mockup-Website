@@ -3022,3 +3022,14 @@ body.jet-ski .sk-block .skipper-header-row span {
   text-transform: uppercase; letter-spacing: 0.04em; font-size: 11px; font-weight: 700; color: #374151;
 }
 body.jet-ski .unit-card .sk-block .skipper-header-row span { font-size: 10.5px; letter-spacing: 0.03em; }
+
+/* Jet Ski Your Details: sections size their boxes to the number of fields they hold */
+body.jet-ski #additionalVesselDetails .additional-vessel-card .additional-vessel-grid {
+  grid-template-columns: repeat(var(--field-count, 5), minmax(0, 1fr));
+}
+@media (max-width: 900px) {
+  body.jet-ski #additionalVesselDetails .additional-vessel-card .additional-vessel-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  body.jet-ski #additionalVesselDetails .additional-vessel-card .additional-vessel-grid { grid-template-columns: 1fr; }
+}
