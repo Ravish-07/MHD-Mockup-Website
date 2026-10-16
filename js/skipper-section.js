@@ -84,7 +84,7 @@
 
     const pickerOptions = () => {
       const pool = poolFor();
-      return `<option value="" selected>Choose from previous skippers</option>` +
+      return `<option value="" selected hidden>Choose from previous skippers</option>` +
         (pool.length ? pool.map((s, i) => `<option value="${i}">${esc(s.name)}</option>`).join('')
                      : '<option value="" disabled>No matches</option>');
     };
