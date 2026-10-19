@@ -75,9 +75,15 @@ button.add-unit-btn.add-unit-labelled { width: auto !important; height: 38px !im
 .sk-pick-label, .sk-add-bar .sk-add-label { font-size: 13px !important; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; }
 .sk-add-bar .sk-add-label { font-weight: 400; }
 
-/* Add another PWC / Jet Ski / boat / skipper buttons: outline, matches Back, + in a small circle */
-button.add-unit-btn.add-unit-labelled, button.add-row-btn.sk-add-btn { display: inline-flex !important; align-items: center; justify-content: center; width: auto !important; height: auto !important; border-radius: 8px !important; padding: 9px 22px 9px 14px !important; font-size: 13px !important; font-weight: 600 !important; gap: 10px !important; background: #fff !important; color: #0f766e !important; border: 1px solid #0f766e !important; cursor: pointer; }
+/* Add another PWC / Jet Ski / boat / skipper buttons: outline, matches Back, green + in a small circle */
+button.add-unit-btn.add-unit-labelled, button.add-row-btn.sk-add-btn { align-items: center; justify-content: center; width: auto !important; height: auto !important; border-radius: 8px !important; padding: 9px 22px 9px 14px !important; font-size: 13px !important; font-weight: 600 !important; gap: 10px !important; background: #fff !important; color: #0f766e !important; border: 1px solid #0f766e !important; cursor: pointer; }
+button.add-row-btn.sk-add-btn { display: inline-flex !important; text-transform: uppercase; letter-spacing: 0.02em; }
+button.add-unit-btn.add-unit-labelled:not([style*="display: none"]):not([style*="display:none"]) { display: inline-flex; }
 button.add-unit-btn.add-unit-labelled:hover, button.add-row-btn.sk-add-btn:hover:not(:disabled) { background: #e6f4f3 !important; }
 button.add-row-btn.sk-add-btn:disabled { background: #f3f4f6 !important; color: #9ca3af !important; border-color: #d1d5db !important; cursor: not-allowed; }
-.add-unit-labelled .add-unit-plus, .sk-add-btn .add-unit-plus { display: inline-flex !important; align-items: center; justify-content: center; box-sizing: border-box; width: 20px !important; height: 20px !important; border: 1.5px solid currentColor; border-radius: 50% !important; background: none !important; color: inherit !important; font-size: 15px !important; font-weight: 600; line-height: 1; padding-bottom: 1px; }
+.add-unit-labelled .add-unit-plus, .sk-add-btn .add-unit-plus { position: relative; display: inline-block !important; flex: none; box-sizing: border-box; width: 20px !important; height: 20px !important; border-radius: 50% !important; background: #0f766e !important; font-size: 0 !important; line-height: 0; padding: 0; color: transparent !important; }
+.add-unit-labelled .add-unit-plus::before, .add-unit-labelled .add-unit-plus::after, .sk-add-btn .add-unit-plus::before, .sk-add-btn .add-unit-plus::after { content: ""; position: absolute; left: 50%; top: 50%; background: #fff; border-radius: 1px; transform: translate(-50%, -50%); }
+.add-unit-labelled .add-unit-plus::before, .sk-add-btn .add-unit-plus::before { width: 10px; height: 2px; }
+.add-unit-labelled .add-unit-plus::after, .sk-add-btn .add-unit-plus::after { width: 2px; height: 10px; }
+.sk-add-btn:disabled .add-unit-plus { background: #9ca3af !important; }
 .sk-add-bar { margin-top: 12px !important; }
