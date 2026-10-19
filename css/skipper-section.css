@@ -94,5 +94,9 @@ button.add-row-btn.sk-add-btn { padding: 6px 16px 6px 10px !important; font-size
 .sk-add-btn .add-unit-plus::before { width: 8px; height: 2px; }
 .sk-add-btn .add-unit-plus::after { width: 2px; height: 8px; }
 
-/* Remove-skipper cross: smaller */
-.sk-block .skipper-row .remove-row-btn { width: 20px !important; height: 20px !important; min-width: 0 !important; padding: 0 !important; font-size: 14px !important; line-height: 1 !important; display: inline-flex !important; align-items: center; justify-content: center; }
+/* Remove-skipper cross: small red circle, white cross drawn centred */
+.sk-block .skipper-row .remove-row-btn { position: relative; box-sizing: border-box; width: 20px !important; height: 20px !important; min-width: 0 !important; padding: 0 !important; border: none !important; border-radius: 50% !important; background: #dc2626 !important; color: transparent !important; font-size: 0 !important; line-height: 0 !important; display: inline-block !important; cursor: pointer; }
+.sk-block .skipper-row .remove-row-btn:hover { background: #b91c1c !important; }
+.sk-block .skipper-row .remove-row-btn::before, .sk-block .skipper-row .remove-row-btn::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 2px; background: #fff; border-radius: 1px; }
+.sk-block .skipper-row .remove-row-btn::before { transform: translate(-50%, -50%) rotate(45deg); }
+.sk-block .skipper-row .remove-row-btn::after { transform: translate(-50%, -50%) rotate(-45deg); }
