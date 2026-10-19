@@ -1673,7 +1673,6 @@ $('additionalBoatsList')
     $('quoteFeeGst').textContent = showAmount(combined.feeGst);
     $('quoteTotalPremium').textContent = showAmount(combined.totalPremium);
     $('quoteInstalment').textContent = showAmount(combined.instalment);
-    $('quoteBrokerCommission').textContent = showAmount(combined.brokerCommission);
   }
 
   function excessRowHtml(label, amount) {
