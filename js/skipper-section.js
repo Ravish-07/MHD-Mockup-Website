@@ -20,6 +20,35 @@
   const esc = s => String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+  // Inline "are you sure" bar shown under the row or card being removed (Jet Ski). Dismisses on Keep, Esc,
+  // a click elsewhere, or after a few seconds, so it never blocks the page.
+  window.inlineConfirm = function (anchor, opts) {
+    document.querySelectorAll('.rm-confirm').forEach(b => b._cancel && b._cancel());
+    const bar = document.createElement('div');
+    bar.className = 'rm-confirm';
+    bar.setAttribute('role', 'alertdialog');
+    bar.innerHTML = `<span class="rm-confirm-text"><strong>${opts.title}</strong> ${opts.detail}</span>
+      <span class="rm-confirm-actions"><button type="button" class="rm-yes">Remove</button><button type="button" class="rm-no">Keep</button></span>`;
+    anchor.insertAdjacentElement('afterend', bar);
+    anchor.classList.add('rm-pending');
+    const timer = setTimeout(() => close(), 12000);
+    const outside = e => { if (!bar.contains(e.target)) close(); };
+    const esc = e => { if (e.key === 'Escape') close(); };
+    function close() {
+      clearTimeout(timer);
+      document.removeEventListener('mousedown', outside, true);
+      document.removeEventListener('keydown', esc, true);
+      bar.remove();
+      anchor.classList.remove('rm-pending');
+    }
+    bar._cancel = close;
+    bar.querySelector('.rm-yes').addEventListener('click', () => { close(); opts.onConfirm(); });
+    bar.querySelector('.rm-no').addEventListener('click', close);
+    document.addEventListener('mousedown', outside, true);
+    document.addEventListener('keydown', esc, true);
+    bar.querySelector('.rm-no').focus();
+  };
+
   const blank = () => ({ name: '', dob: '', licenceDate: '', yearsOwning: '', yearsSizeType: '', previousBoats: '' });
 
   const requiredKeys = extra =>
@@ -84,7 +113,7 @@
 
     const pickerOptions = () => {
       const pool = poolFor();
-      return `<option value="" selected hidden>Choose from previous skippers</option>` +
+      return `<option value="" selected hidden>${document.body.classList.contains('jet-ski') ? 'Select if applicable' : 'Choose from previous skippers'}</option>` +
         (pool.length ? pool.map((s, i) => `<option value="${i}">${esc(s.name)}</option>`).join('')
                      : '<option value="" disabled>No matches</option>');
     };
@@ -203,9 +232,17 @@
       const { target: t, rerender: re } = mount._sk;
       const rm = ev.target.closest('[data-sk-remove]');
       if (rm) {
-        t.skippers.splice(Number(rm.dataset.skRemove), 1);
-        t.numSkippers = t.skippers.length >= 5 ? '5+' : String(t.skippers.length);
-        re();
+        const doRemove = () => {
+          t.skippers.splice(Number(rm.dataset.skRemove), 1);
+          t.numSkippers = t.skippers.length >= 5 ? '5+' : String(t.skippers.length);
+          re();
+        };
+        // Jet Ski: ask first, but only when the row has details that would be lost.
+        const row = rm.closest('.skipper-row');
+        const entered = Object.values(t.skippers[Number(rm.dataset.skRemove)] || {}).some(v => typeof v === 'string' && v.trim() !== '');
+        if (document.body.classList.contains('jet-ski') && row && entered) {
+          window.inlineConfirm(row, { title: 'Remove this skipper?', detail: 'Their details will be deleted.', onConfirm: doRemove });
+        } else doRemove();
         return;
       }
       if (ev.target.closest('[data-sk-new]') && t.skippers.length < MAX_SKIPPERS) {
