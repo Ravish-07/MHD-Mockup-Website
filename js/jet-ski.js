@@ -1259,7 +1259,7 @@ if (unitAddress) {
       if (entered && window.inlineConfirm) {
         window.inlineConfirm(card.querySelector('.unit-card-header'), {
           title: `Remove ${card.querySelector('.unit-card-title').textContent.trim()}?`,
-          detail: 'All of its details, including its skippers, will be deleted.',
+          detail: 'All details, including skippers, will be deleted.',
           onConfirm: doRemove
         });
       } else doRemove();
