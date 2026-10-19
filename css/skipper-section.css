@@ -87,3 +87,9 @@ button.add-row-btn.sk-add-btn:disabled { background: #f3f4f6 !important; color: 
 .add-unit-labelled .add-unit-plus::after, .sk-add-btn .add-unit-plus::after { width: 2px; height: 10px; }
 .sk-add-btn:disabled .add-unit-plus { background: #9ca3af !important; }
 .sk-add-bar { margin-top: 12px !important; }
+
+/* Add another skipper: smaller than the Add another PWC / Jet Ski / boat button */
+button.add-row-btn.sk-add-btn { padding: 6px 16px 6px 10px !important; font-size: 11px !important; gap: 8px !important; }
+.sk-add-btn .add-unit-plus { width: 16px !important; height: 16px !important; }
+.sk-add-btn .add-unit-plus::before { width: 8px; height: 2px; }
+.sk-add-btn .add-unit-plus::after { width: 2px; height: 8px; }
