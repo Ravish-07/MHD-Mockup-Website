@@ -135,9 +135,8 @@
         ${header}
         <div class="skipper-rows">${target.skippers.map(rowHtml).join('')}</div>
         <div class="sk-add-bar">
-          <button type="button" class="add-row-btn" data-sk-new ${target.skippers.length >= MAX_SKIPPERS ? 'disabled' : ''}
-            aria-label="Add another skipper" title="Add another skipper">+</button>
-          <span class="sk-add-label">Add another skipper</span>
+          <button type="button" class="add-row-btn sk-add-btn" data-sk-new ${target.skippers.length >= MAX_SKIPPERS ? 'disabled' : ''}
+            aria-label="Add another skipper" title="Add another skipper"><span class="add-unit-plus">+</span> Add another skipper</button>
         </div>
         <p class="sk-warning" data-sk-warning style="display:none;"></p>
       </div>`;
