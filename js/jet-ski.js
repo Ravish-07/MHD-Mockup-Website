@@ -1244,11 +1244,25 @@ if (unitAddress) {
     )
     .addEventListener('click', () => {
 
-      card.remove();
+      const doRemove = () => {
+        card.remove();
 
-      updateAllUnitsState();
-      renumberUnitCards();
-      checkStep5Complete();
+        updateAllUnitsState();
+        renumberUnitCards();
+        checkStep5Complete();
+      };
+
+      // Ask first, but only when the card has details that would be lost.
+      const entered = Array.from(card.querySelectorAll('input, textarea, select'))
+        .some(el => !el.matches('[data-sk-count]') && !el.disabled && String(el.value || '').trim() !== '');
+
+      if (entered && window.inlineConfirm) {
+        window.inlineConfirm(card.querySelector('.unit-card-header'), {
+          title: `Remove ${card.querySelector('.unit-card-title').textContent.trim()}?`,
+          detail: 'All of its details, including its skippers, will be deleted.',
+          onConfirm: doRemove
+        });
+      } else doRemove();
 
     });
 
