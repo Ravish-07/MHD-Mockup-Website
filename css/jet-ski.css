@@ -30,7 +30,7 @@ body {
 }
 
 .back-btn:hover {
-  background: #f0fbfd;
+  background: #d3e9ef;
 }
 
 /* ===== PROGRESS BAR ===== */
@@ -313,7 +313,7 @@ body {
 }
 
 .intro-back-btn:hover {
-  background: #f0fbfd;
+  background: #d3e9ef;
   text-decoration: none;
 }
 
