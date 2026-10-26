@@ -1926,7 +1926,7 @@ $('additionalBoatsList')
     $('additionalInsuredName').value = a.insuredName;
 
     $('residentialAddressHost').innerHTML = `
-      <label>Residential Address <span class="required">*</span></label>
+      <label>Residential Address</label>
       ${addressHtml('residentialAddress', a)}`;
 
     $('postalAddressHost').innerHTML = `
