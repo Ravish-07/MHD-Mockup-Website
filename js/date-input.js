@@ -2,7 +2,7 @@
    skipper sections. The original <input type="date"> stays in the DOM, hidden, and keeps
    holding the ISO value, so existing code that reads or sets .value keeps working. */
 (function () {
-  const SCOPE = '#vesselFieldList, .sk-block, #additionalBoatsList, #additionalJetSkisList';
+  const SCOPE = '#vesselFieldList, .sk-block, .claims-wrap, #additionalBoatsList, #additionalJetSkisList';
   const pad = n => String(n).padStart(2, '0');
   const toDisplay = iso => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ''); return m ? `${m[3]}/${m[2]}/${m[1]}` : ''; };
   const toIso = text => {

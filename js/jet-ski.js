@@ -633,14 +633,17 @@ function addClaimRow() {
   row.innerHTML = `
     <input type="date" data-claim-field="dateOfLoss">
     <input type="text" placeholder="Description of Loss" data-claim-field="description">
-    <input type="number" min="0" placeholder="$" data-claim-field="settlement">
+    <input type="text" data-currency="true" inputmode="numeric" placeholder="$0" data-claim-field="settlement">
     ${claimRowCount > 1 ? `<button type="button" class="remove-row-btn" data-remove-claim="${idx}">×</button>` : `<span></span>`}
   `;
 
   rows.appendChild(row);
 
   row.querySelectorAll('input').forEach(el => {
-    el.addEventListener('input', updateClaimsState);
+    el.addEventListener('input', () => {
+      if (el.dataset.currency === 'true') formatCurrencyInput(el);
+      updateClaimsState();
+    });
   });
 
   const removeBtn = row.querySelector('[data-remove-claim]');

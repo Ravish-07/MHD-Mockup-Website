@@ -100,3 +100,32 @@ button.add-row-btn.sk-add-btn { padding: 6px 16px 6px 10px !important; font-size
 .sk-block .skipper-row .remove-row-btn::before, .sk-block .skipper-row .remove-row-btn::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 2px; background: #fff; border-radius: 1px; }
 .sk-block .skipper-row .remove-row-btn::before { transform: translate(-50%, -50%) rotate(45deg); }
 .sk-block .skipper-row .remove-row-btn::after { transform: translate(-50%, -50%) rotate(-45deg); }
+
+/* Claim Details matches Skipper Details: bar heading, grey accent box, capitals, red remove cross, outline add button */
+.claims-wrap > .subsection-label {
+  display: flex; align-items: center; gap: 10px;
+  margin: 22px 0 10px; padding-top: 16px;
+  border-top: 2px solid #e5e7eb;
+  font-size: 16px; font-weight: 700; color: #153b66;
+}
+.claims-wrap > .subsection-label::before {
+  content: ""; width: 4px; height: 18px; border-radius: 2px; background: #0f766e;
+}
+.claims-wrap .claims-table { margin-top: 10px; padding: 14px 16px 12px; border: 1px solid #e5e7eb; border-radius: 10px; background: #fafbfc; }
+.claims-wrap .claims-header-row, .claims-wrap .claims-row { grid-template-columns: 1fr 2fr 1fr 32px; gap: 8px; }
+.claims-wrap .claims-header-row span, .sk-block .skipper-header-row span {
+  text-transform: uppercase; letter-spacing: 0.04em; font-size: 11px; font-weight: 700; color: #374151; line-height: 1.25;
+}
+.claims-wrap .claims-row input { width: 100%; box-sizing: border-box; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 10px; font: inherit; font-size: 13px; outline: none; background: #fff; }
+.claims-wrap .claims-row .date-dmy > input[type="text"] { padding: 8px 34px 8px 10px; }
+.claims-wrap .claims-row input:focus { border-color: #0f766e; }
+.claims-wrap .claims-row input::placeholder { text-transform: uppercase; }
+.claims-wrap .claims-row .remove-row-btn { position: relative; box-sizing: border-box; width: 20px !important; height: 20px !important; min-width: 0 !important; padding: 0 !important; border: none !important; border-radius: 50% !important; background: #dc2626 !important; color: transparent !important; font-size: 0 !important; line-height: 0 !important; display: inline-block !important; cursor: pointer; }
+.claims-wrap .claims-row .remove-row-btn:hover { background: #b91c1c !important; }
+.claims-wrap .claims-row .remove-row-btn::before, .claims-wrap .claims-row .remove-row-btn::after { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 2px; background: #fff; border-radius: 1px; }
+.claims-wrap .claims-row .remove-row-btn::before { transform: translate(-50%, -50%) rotate(45deg); }
+.claims-wrap .claims-row .remove-row-btn::after { transform: translate(-50%, -50%) rotate(-45deg); }
+@media (max-width: 850px) {
+  .claims-wrap .claims-header-row { display: none; }
+  .claims-wrap .claims-row { grid-template-columns: 1fr 1fr; }
+}

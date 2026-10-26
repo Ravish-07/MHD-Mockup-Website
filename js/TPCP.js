@@ -972,7 +972,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="claims-row" data-claim-index="${i}">
         <input type="date" data-claim-field="dateOfLoss" max="${toInputDate(startOfToday())}" value="${esc(c.dateOfLoss)}">
         <input type="text" placeholder="Description of Loss" data-claim-field="description" value="${esc(c.description)}">
-        <input type="number" min="0" placeholder="$" data-claim-field="settlement" value="${esc(c.settlement)}">
+        <input type="text" data-currency="true" inputmode="numeric" placeholder="$0" data-claim-field="settlement" value="${esc(c.settlement)}">
         ${i > 0 ? `<button type="button" class="remove-row-btn" data-remove-claim="${i}" aria-label="Remove claim">×</button>` : '<span></span>'}
       </div>`).join('');
   }
@@ -980,6 +980,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $('claimsRows').addEventListener('input', ev => {
     const el = ev.target;
     if (!el.dataset.claimField) return;
+    if (el.dataset.currency === 'true') formatCurrencyInput(el);
     const i = Number(el.closest('.claims-row').dataset.claimIndex);
     currentVessel().experience.claims[i][el.dataset.claimField] = el.value;
     checkStep4Complete();
