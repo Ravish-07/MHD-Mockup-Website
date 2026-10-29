@@ -45,33 +45,24 @@
 .aq-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none;
   background: linear-gradient(180deg, #fbf9f4 0%, var(--sand) 38%, #e9f1f0 78%, #d9e9ea 100%);
 }
-.aq-aurora { position: absolute; inset: 0; transform: translate3d(var(--px, 0px), var(--py, 0px), 0); transition: transform 1.6s var(--ease); }
-.aq-aurora .blob { position: absolute; border-radius: 50%; will-change: transform; }
-.blob.b1 { width: 60vw; height: 60vw; right: -12%; top: -22%; filter: blur(70px);
-  background: radial-gradient(circle, rgba(255, 233, 196, .95) 0%, rgba(255, 233, 196, 0) 66%); animation: sun 28s var(--ease-soft) infinite alternate; }
-.blob.b2 { width: 50vw; height: 50vw; left: -14%; top: 38%; filter: blur(90px);
-  background: radial-gradient(circle, rgba(150, 205, 203, .45) 0%, rgba(150, 205, 203, 0) 68%); animation: sun 36s var(--ease-soft) infinite alternate-reverse; }
+.aq-aurora { position: absolute; inset: 0; }
+.aq-aurora .blob { position: absolute; border-radius: 50%; }
+.blob.b1 { width: 60vw; height: 60vw; right: -12%; top: -22%; background: radial-gradient(circle, rgba(255, 233, 196, .9) 0%, rgba(255, 233, 196, 0) 66%); }
+.blob.b2 { width: 50vw; height: 50vw; left: -14%; top: 38%; background: radial-gradient(circle, rgba(150, 205, 203, .4) 0%, rgba(150, 205, 203, 0) 68%); }
 .blob.b3, .blob.b4, .aq-grain { display: none; }
-@keyframes sun { to { transform: translate3d(-4vw, 5vh, 0) scale(1.08); } }
 
 .aq-waves { position: absolute; left: 0; bottom: 0; width: 100%; height: 34vh; min-height: 220px; }
-.aq-waves .wave { transform-box: fill-box; }
-.aq-waves .w1 { animation: wave 60s linear infinite; }
-.aq-waves .w2 { animation: wave 90s linear infinite reverse; }
-@keyframes wave { to { transform: translateX(-50%); } }
 
 /* ---------- Frosted glass primitive ---------- */
 .glass {
   position: relative;
   isolation: isolate;
-  background: linear-gradient(150deg, rgba(255, 255, 255, .78) 0%, rgba(255, 255, 255, .5) 100%);
-  -webkit-backdrop-filter: blur(28px) saturate(150%);
-  backdrop-filter: blur(28px) saturate(150%);
+  background: linear-gradient(150deg, rgba(255, 255, 255, .82) 0%, rgba(255, 255, 255, .58) 100%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .9),
     inset 0 0 0 1px rgba(255, 255, 255, .45),
     0 1px 2px rgba(11, 42, 58, .05),
-    0 28px 60px -24px rgba(11, 52, 71, .28);
+    0 20px 40px -24px rgba(11, 52, 71, .25);
 }
 .glass::before {
   content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; z-index: 2; pointer-events: none;
@@ -88,8 +79,10 @@
 .glass:hover::after { opacity: 1; }
 .glass > * { position: relative; z-index: 3; }
 
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .glass { background: rgba(255, 255, 255, .92); }
+/* Only the layers that float over moving content get a real backdrop blur */
+.aq-nav.glass, .aq-dock.glass {
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  backdrop-filter: blur(22px) saturate(150%);
 }
 
 /* ---------- Layout ---------- */
@@ -147,7 +140,7 @@
 /* Segmented control */
 .aq-seg { position: relative; margin-top: 34px; display: inline-grid; grid-template-columns: 1fr 1fr; padding: 4px; border-radius: 999px;
   background: rgba(255, 255, 255, .55); border: 1px solid rgba(255, 255, 255, .9); box-shadow: 0 8px 24px -12px rgba(11, 52, 71, .25);
-  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+  }
 .aq-seg-btn { position: relative; z-index: 2; border: 0; background: none; cursor: pointer; padding: 11px 24px; border-radius: 999px; font-size: 14px; font-weight: 500; color: var(--ink-2); transition: color .35s; white-space: nowrap; }
 .aq-seg-btn.active { color: var(--deep); }
 .aq-seg-thumb { position: absolute; z-index: 1; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 999px; background: #fff;
@@ -168,7 +161,7 @@
 .aq-btn.primary { color: #fff; background: var(--deep); box-shadow: 0 14px 34px -14px rgba(11, 52, 71, .7); }
 .aq-btn.primary:hover { transform: translateY(-2px); background: #0e4258; box-shadow: 0 20px 44px -14px rgba(11, 52, 71, .75); }
 .aq-btn.glass-btn { color: var(--deep); background: rgba(255, 255, 255, .6); border: 1px solid rgba(255, 255, 255, .95);
-  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); box-shadow: 0 10px 28px -14px rgba(11, 52, 71, .3); }
+  box-shadow: 0 10px 28px -14px rgba(11, 52, 71, .3); }
 .aq-btn.glass-btn:hover { background: #fff; transform: translateY(-2px); }
 .aq-btn.large { padding: 19px 38px; font-size: 17px; }
 .aq-btn.compact { padding: 12px 22px; font-size: 15px; }
@@ -286,7 +279,7 @@
 
 /* ---------- Modal sheet ---------- */
 .aq-overlay { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgba(214, 230, 231, .55);
-  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); opacity: 0; visibility: hidden; transition: opacity .5s, visibility .5s; overflow-y: auto; }
+  opacity: 0; visibility: hidden; transition: opacity .5s, visibility .5s; overflow-y: auto; }
 .aq-overlay.open { opacity: 1; visibility: visible; }
 .aq-sheet { width: min(560px, 100%); border-radius: 34px; padding: 40px; transform: translateY(40px) scale(.95); opacity: 0; transition: transform .8s var(--ease), opacity .5s; margin: auto;
   background: linear-gradient(150deg, rgba(255, 255, 255, .95), rgba(255, 255, 255, .8)); }
@@ -318,10 +311,9 @@
 .aq-toast.show { transform: translate(-50%, 0); opacity: 1; }
 
 /* ---------- Scroll reveal ---------- */
-.reveal { opacity: 0; transform: translateY(30px); filter: blur(8px);
-  transition: opacity 1s var(--ease), transform 1.1s var(--ease), filter 1s var(--ease); transition-delay: var(--d, 0ms); }
-.reveal.in { opacity: 1; transform: none; filter: none; }
-.aq-fact.reveal.in, .aq-tile.reveal.in { transition: opacity 1s var(--ease), transform .7s var(--ease), filter 1s var(--ease); }
+.reveal { opacity: 0; transform: translate3d(0, 24px, 0); transition: opacity .9s var(--ease), transform 1s var(--ease); transition-delay: var(--d, 0ms); }
+.reveal.in { opacity: 1; transform: none; }
+.aq-fact.reveal.in, .aq-tile.reveal.in { transition: opacity .9s var(--ease), transform .6s var(--ease); }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
@@ -347,5 +339,5 @@
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   .aq *, .aq *::before, .aq *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; transition-delay: 0ms !important; }
-  .reveal { opacity: 1; transform: none; filter: none; }
+  .reveal { opacity: 1; transform: none; }
 }

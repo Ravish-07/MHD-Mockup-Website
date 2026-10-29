@@ -159,13 +159,6 @@
         g.style.setProperty('--mx', (e.clientX - r.left) + 'px');
         g.style.setProperty('--my', (e.clientY - r.top) + 'px');
       }
-      // Whole-scene parallax: the aurora leans slightly away from the cursor
-      if (!reduceMotion && e.pointerType === 'mouse') {
-        const x = (e.clientX / innerWidth - .5) * -40;
-        const y = (e.clientY / innerHeight - .5) * -40;
-        document.documentElement.style.setProperty('--px', x + 'px');
-        document.documentElement.style.setProperty('--py', y + 'px');
-      }
     });
   }, { passive: true });
 
