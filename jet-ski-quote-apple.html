@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#04090e">
+  <title>COAST Insurance — Your Quote (Glass Test)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@200..700&display=swap">
+  <link rel="stylesheet" href="css/apple-quote.css?v=1">
+</head>
+<body class="aq">
+
+  <!-- Living background: aurora, waves, film grain -->
+  <div class="aq-bg" aria-hidden="true">
+    <div class="aq-aurora">
+      <span class="blob b1"></span>
+      <span class="blob b2"></span>
+      <span class="blob b3"></span>
+      <span class="blob b4"></span>
+    </div>
+    <div class="aq-grain"></div>
+  </div>
+
+  <!-- Floating glass header -->
+  <header class="aq-nav glass" id="nav">
+    <a class="aq-brand" href="products.html" aria-label="Return to products">
+      <span class="aq-logo-chip"><img src="assets/logo/coast-logo.png" alt="Coast Insurance"></span>
+      <span class="aq-brand-text">Coast <em>Insurance</em></span>
+    </a>
+    <div class="aq-nav-mid">
+      <span class="aq-dot"></span>
+      <span>Quote <strong>Q-PWC-260922-001</strong></span>
+    </div>
+    <a class="aq-nav-link" href="jet-ski.html">Original page</a>
+  </header>
+
+  <main class="aq-main">
+
+    <!-- ============ HERO ============ -->
+    <section class="aq-hero" id="hero">
+      <p class="aq-eyebrow reveal" style="--d:0ms">Private Vessels · Comprehensive PWC / Jet Ski</p>
+      <h1 class="aq-title reveal" style="--d:90ms">Your quote is ready.</h1>
+
+      <div class="aq-price reveal" style="--d:220ms" aria-live="polite">
+        <div class="aq-price-num" id="priceNum" data-value="2148.89" aria-label="$2,148.89"></div>
+      </div>
+      <p class="aq-price-note reveal" style="--d:320ms" id="priceNote">Annual premium · Total premium payable</p>
+
+      <div class="aq-seg reveal" style="--d:420ms" role="tablist" aria-label="Payment frequency">
+        <span class="aq-seg-thumb" aria-hidden="true"></span>
+        <button type="button" role="tab" aria-selected="true" class="aq-seg-btn active" data-mode="annual">Pay annually</button>
+        <button type="button" role="tab" aria-selected="false" class="aq-seg-btn" data-mode="monthly">10 instalments</button>
+      </div>
+
+      <div class="aq-cta-row reveal" style="--d:520ms" id="heroCtas">
+        <button type="button" class="aq-btn primary" data-action="buy">Buy Online
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" class="aq-btn glass-btn" data-action="email">Email Quote</button>
+      </div>
+
+      <div class="aq-scroll-cue reveal" style="--d:900ms" aria-hidden="true"><span></span></div>
+    </section>
+
+    <!-- ============ KEY FACTS ============ -->
+    <section class="aq-section">
+      <div class="aq-facts">
+        <article class="glass aq-fact reveal" style="--d:0ms">
+          <span class="aq-fact-label">Third party legal liability</span>
+          <strong class="aq-fact-num">$<span data-count="10000000" data-format="int">10,000,000</span></strong>
+          <span class="aq-fact-sub">Any one claim or all claims arising from one accident</span>
+        </article>
+        <article class="glass aq-fact reveal" style="--d:100ms">
+          <span class="aq-fact-label">Total sum insured</span>
+          <strong class="aq-fact-num">$<span data-count="10000" data-format="int">10,000</span></strong>
+          <span class="aq-fact-sub">Basis of settlement: Market Value</span>
+        </article>
+        <article class="glass aq-fact reveal" style="--d:200ms">
+          <span class="aq-fact-label">Personal accident cover</span>
+          <strong class="aq-fact-num">$<span data-count="50000" data-format="int">50,000</span></strong>
+          <span class="aq-fact-sub">Plus funeral expenses of $7,500</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ PREMIUM BREAKDOWN ============ -->
+    <section class="aq-section">
+      <header class="aq-sec-head reveal">
+        <p class="aq-kicker">Premium</p>
+        <h2>Every dollar, <span class="grad">accounted for.</span></h2>
+      </header>
+
+      <div class="glass aq-card aq-breakdown reveal">
+        <div class="aq-bar" id="bar" role="img" aria-label="Proportional breakdown of the premium">
+          <span class="seg s1" data-seg="1" style="--w:81.27"></span>
+          <span class="seg s2" data-seg="2" style="--w:8.13"></span>
+          <span class="seg s3" data-seg="3" style="--w:8.05"></span>
+          <span class="seg s4" data-seg="4" style="--w:2.33"></span>
+          <span class="seg s5" data-seg="5" style="--w:0.22"></span>
+        </div>
+
+        <ul class="aq-lines">
+          <li data-seg="1"><i class="sw s1"></i><span>Total Base Premium</span><strong>$1,746.36</strong></li>
+          <li data-seg="2"><i class="sw s2"></i><span>GST</span><strong>$174.64</strong></li>
+          <li data-seg="3"><i class="sw s3"></i><span>Stamp Duty</span><strong>$172.89</strong></li>
+          <li data-seg="4"><i class="sw s4"></i><span>Administration Fee</span><strong>$50.00</strong></li>
+          <li data-seg="5"><i class="sw s5"></i><span>Fee GST</span><strong>$5.00</strong></li>
+        </ul>
+
+        <div class="aq-total">
+          <span>Total Premium Payable</span>
+          <strong>$2,148.89</strong>
+        </div>
+        <div class="aq-total sub">
+          <span>Pay in 10 Instalments</span>
+          <strong>$232.12</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ COVER ============ -->
+    <section class="aq-section">
+      <header class="aq-sec-head reveal">
+        <p class="aq-kicker">Your cover</p>
+        <h2>Everything that <span class="grad">matters on the water.</span></h2>
+      </header>
+
+      <div class="aq-bento">
+
+        <article class="glass aq-tile reveal span2">
+          <span class="aq-tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <h3>Policy Type</h3>
+          <p class="big">Comprehensive PWC / Jet Ski</p>
+        </article>
+
+        <article class="glass aq-tile reveal">
+          <span class="aq-tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <h3>Basis of Settlement</h3>
+          <p class="big">Market Value</p>
+        </article>
+
+        <article class="glass aq-tile reveal">
+          <span class="aq-tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <h3>Total Sum Insured</h3>
+          <p class="big">$10,000</p>
+        </article>
+
+        <article class="glass aq-tile reveal span2">
+          <span class="aq-tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <h3>Personal Accident Cover</h3>
+          <p class="big">$50,000 <span class="soft">plus Funeral Expenses of $7,500 in the event of Your Death</span></p>
+          <p class="small">$300 per week, up to a maximum of 100 weeks in the event of Your Temporary Total Disablement</p>
+        </article>
+
+        <article class="glass aq-tile reveal">
+          <span class="aq-tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <h3>Third Party Legal Liability</h3>
+          <p class="big">$10,000,000</p>
+          <p class="small">Any one claim or all claims arising from one accident</p>
+        </article>
+
+        <article class="glass aq-tile reveal">
+          <span class="aq-tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <h3>Recovery or Removal of Wreck</h3>
+          <p class="big">$1,000,000</p>
+        </article>
+
+        <article class="glass aq-tile reveal">
+          <span class="aq-tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <h3>Pollution</h3>
+          <p class="big">$1,000,000</p>
+          <p class="small">For any one Accident or series of Accidents caused by the one event</p>
+        </article>
+
+        <article class="glass aq-tile reveal">
+          <span class="aq-tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <h3>Search Costs</h3>
+          <p class="big">$10,000</p>
+        </article>
+
+        <article class="glass aq-tile reveal">
+          <span class="aq-tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <h3>Sporting Equipment</h3>
+          <p class="big">$2,000 <span class="soft">on any one item</span></p>
+          <p class="small">With a limit of $20,000 in total</p>
+        </article>
+
+        <article class="glass aq-tile reveal">
+          <span class="aq-tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <h3>Water Skiing / Aquaplaning Extension</h3>
+          <p class="big">Insured</p>
+        </article>
+
+        <article class="glass aq-tile reveal span4">
+          <span class="aq-tick"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          <h3>Geographical Limits</h3>
+          <p class="big">50 Nautical Miles <span class="soft">off the Australian Mainland including Tasmania.</span></p>
+          <p class="small">Subject to the PWC / Jet Ski being south of 23.5° South between 1 December - 1 April.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ EXCESSES + ENDORSEMENTS ============ -->
+    <section class="aq-section">
+      <header class="aq-sec-head reveal">
+        <p class="aq-kicker">Excesses &amp; endorsements</p>
+        <h2>Clear before you commit.</h2>
+      </header>
+
+      <div class="aq-duo">
+        <article class="glass aq-card reveal">
+          <h3 class="aq-card-title">Excesses</h3>
+          <div class="aq-row"><span>All Other Claims</span><strong>$500.00</strong></div>
+          <div class="aq-row"><span>Theft</span><strong>$2,000.00</strong></div>
+        </article>
+
+        <article class="glass aq-card reveal" style="--d:100ms">
+          <h3 class="aq-card-title">Policy Endorsements</h3>
+          <p class="aq-nil" id="policyEndorsementValue">Nil</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ PERIOD ============ -->
+    <section class="aq-section">
+      <header class="aq-sec-head reveal">
+        <p class="aq-kicker">Period of insurance</p>
+        <h2>Choose when cover begins.</h2>
+      </header>
+
+      <div class="glass aq-card aq-period reveal">
+        <label class="aq-date">
+          <span>From</span>
+          <input type="date" id="policyStartDate">
+        </label>
+        <div class="aq-period-arc" aria-hidden="true">
+          <svg viewBox="0 0 120 24" preserveAspectRatio="none"><path d="M2 12 H118" /><circle cx="2" cy="12" r="3"/><circle cx="118" cy="12" r="3"/></svg>
+          <span id="periodLen">12 months</span>
+        </div>
+        <label class="aq-date">
+          <span>To</span>
+          <input type="date" id="policyEndDate">
+        </label>
+        <p class="aq-period-note">At 4pm Local Time</p>
+      </div>
+    </section>
+
+    <!-- ============ VESSEL + SKIPPER ============ -->
+    <section class="aq-section">
+      <header class="aq-sec-head reveal">
+        <p class="aq-kicker">The details</p>
+        <h2>Your PWC <span class="grad">&amp; skipper.</span></h2>
+      </header>
+
+      <div class="aq-duo">
+        <!-- Sample data for this test page; the live page fills these from the form -->
+        <article class="glass aq-card reveal">
+          <h3 class="aq-card-title">PWC / Jet Ski 1</h3>
+          <dl class="aq-dl">
+            <div><dt>Hull Year Built</dt><dd>2023</dd></div>
+            <div><dt>Hull Make</dt><dd>Yamaha</dd></div>
+            <div><dt>Hull Model</dt><dd>VX Cruiser HO</dd></div>
+            <div><dt>Location Address</dt><dd>12 Marina Way, Fremantle WA 6160</dd></div>
+            <div><dt>Total Sum Insured</dt><dd>$10,000</dd></div>
+            <div><dt>Base Premium</dt><dd>$1,746.36</dd></div>
+            <div><dt>GST</dt><dd>$174.64</dd></div>
+            <div><dt>Stamp Duty</dt><dd>$172.89</dd></div>
+          </dl>
+        </article>
+
+        <article class="glass aq-card reveal" style="--d:100ms">
+          <h3 class="aq-card-title">Skipper 1</h3>
+          <dl class="aq-dl">
+            <div><dt>Name</dt><dd>Alex Morgan</dd></div>
+            <div><dt>DOB</dt><dd>14/03/1985</dd></div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ IMPORTANT INFO ============ -->
+    <section class="aq-section narrow">
+      <div class="aq-legal reveal">
+        <p>
+          <strong>Product Disclosure Statement.</strong>
+          It is important that you read and understand the product features and details outlined in the
+          <a href="#" id="pdsLinkQuote" target="_blank" rel="noopener noreferrer">Product Disclosure Statement (PDS)</a>.
+        </p>
+        <p>
+          <strong>General Advice Warning.</strong>
+          This advice has been prepared and provided without taking into account your personal objectives,
+          financial situation or needs. Because of this, before acting on the advice, you should consider its
+          appropriateness (having regard to your objectives, needs and financial situation). To decide if this
+          insurance product is right for you, please carefully read the relevant Product Disclosure Statement (PDS)
+          and Target Market Determination (TMD) relating to the policy. Click here to view our latest
+          <a href="https://secure.ermonline.com.au/financialservices/gateway/intranet_gateway.cfm?eu=TU-5538AF79-C52E-67BF-1B0CF805C7125FDC-5538AF7A-E34D-4904-A87170AFF3B77ADC" target="_blank" rel="noopener noreferrer">Financial Services Guide (FSG)</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ FINAL ACTIONS ============ -->
+    <section class="aq-section aq-finale">
+      <h2 class="reveal">Ready when <span class="grad">you are.</span></h2>
+      <p class="aq-finale-sub reveal" style="--d:80ms">Secure your cover in minutes.</p>
+
+      <div class="aq-cta-row reveal" style="--d:160ms">
+        <button type="button" class="aq-btn primary large" data-action="buy">Buy Online
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" class="aq-btn glass-btn large" data-action="email">Email Quote</button>
+      </div>
+
+      <div class="aq-secondary reveal" style="--d:240ms">
+        <a class="aq-link" href="jet-ski.html">← Back</a>
+        <span class="aq-sep"></span>
+        <a class="aq-link" href="jet-ski.html">+ Add PWC / Jet Ski</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating dock: appears once the hero CTAs scroll away -->
+  <div class="aq-dock glass" id="dock" aria-hidden="true">
+    <div class="aq-dock-info">
+      <span class="aq-dock-label" id="dockLabel">Annual premium</span>
+      <strong id="dockPrice">$2,148.89</strong>
+    </div>
+    <button type="button" class="aq-btn primary compact" data-action="buy" tabindex="-1">Buy Online</button>
+  </div>
+
+  <!-- EMAIL QUOTE SHEET -->
+  <div class="aq-overlay" id="emailModal" aria-hidden="true">
+    <div class="aq-sheet glass" role="dialog" aria-modal="true" aria-labelledby="emailTitle">
+      <button type="button" class="aq-close" id="emailClose" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+
+      <div class="aq-sheet-body" id="emailForm">
+        <div class="aq-sheet-icon">
+          <svg viewBox="0 0 24 24" width="26" height="26"><path d="M3 7l9 6 9-6M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h2 id="emailTitle">Your quote is ready!</h2>
+        <p class="aq-sheet-copy">
+          A copy of your quote can be sent directly to your email address for easy reference.
+          You can review it at your convenience and return at any time to continue with your insurance purchase.
+        </p>
+
+        <label class="aq-field"><span>Full Name</span><input type="text" id="reviewInsuredName" placeholder="Enter full name" autocomplete="name"></label>
+        <div class="aq-field-grid">
+          <label class="aq-field"><span>Email Address</span><input type="email" id="reviewEmail" placeholder="Enter email address" autocomplete="email"></label>
+          <label class="aq-field"><span>Phone Number</span><input type="tel" id="reviewPhone" placeholder="Enter phone number" autocomplete="tel"></label>
+        </div>
+
+        <div class="aq-assist">
+          <strong>Need assistance?</strong>
+          <span>info@coastins.com.au · 08 6374 7000</span>
+        </div>
+
+        <button type="button" class="aq-btn primary full" id="emailSubmit">Email My Quote
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <div class="aq-sheet-body aq-sent" id="emailSent" hidden>
+        <svg class="aq-check" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24"/><path d="M15 27l8 8 14-16"/></svg>
+        <h2>On its way.</h2>
+        <p class="aq-sheet-copy">Thank you for considering Coast for your insurance needs. We look forward to assisting you.</p>
+        <button type="button" class="aq-btn glass-btn full" id="emailDone">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="aq-toast glass" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/apple-quote.js?v=1"></script>
+</body>
+</html>
