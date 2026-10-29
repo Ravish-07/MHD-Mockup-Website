@@ -34,10 +34,11 @@
       <span class="aq-logo-chip"><img src="assets/logo/coast-logo.png" alt="Coast Insurance"></span>
       <span class="aq-brand-text">Coast <em>Insurance</em></span>
     </a>
-    <div class="aq-nav-mid">
+    <button type="button" class="aq-nav-mid" id="navQuote" title="Copy quote number" aria-label="Copy quote number Q-PWC-260922-001">
       <span class="aq-dot"></span>
       <span>Quote <strong>Q-PWC-260922-001</strong></span>
-    </div>
+      <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M5 15V6.5A1.5 1.5 0 016.5 5H15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
     <a class="aq-nav-link" href="jet-ski.html">Original page</a>
     <span class="aq-progress" id="progress" aria-hidden="true"></span>
   </header>
@@ -64,6 +65,7 @@
             <span class="aq-seg-thumb" aria-hidden="true"></span>
             <button type="button" role="tab" aria-selected="true" class="aq-seg-btn active" data-mode="annual">Pay annually</button>
             <button type="button" role="tab" aria-selected="false" class="aq-seg-btn" data-mode="monthly">10 instalments</button>
+            <button type="button" role="tab" aria-selected="false" class="aq-seg-btn" data-mode="daily">Per day</button>
           </div>
 
           <div class="aq-cta-row reveal" style="--d:520ms" id="heroCtas">
@@ -100,7 +102,11 @@
           <p class="aq-beat-sub">Plus funeral expenses of $7,500</p>
         </article>
 
-        <div class="aq-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="aq-dots">
+          <button type="button" aria-label="Third party legal liability"></button>
+          <button type="button" aria-label="Total sum insured"></button>
+          <button type="button" aria-label="Personal accident cover"></button>
+        </div>
       </div>
     </section>
 
@@ -111,7 +117,11 @@
         <h2>Every dollar, <span class="grad">clearly shown.</span></h2>
       </header>
 
-      <div class="glass aq-card aq-breakdown reveal">
+      <div class="glass aq-card aq-breakdown">
+        <div class="aq-share" id="share" aria-live="polite">
+          <strong id="shareNum">$2,148.89</strong>
+          <span id="shareLabel">Total premium · hover or tap a line to see where it goes</span>
+        </div>
         <div class="aq-bar" id="bar" role="img" aria-label="Proportional breakdown of the premium">
           <span class="seg s1" data-seg="1" style="--w:81.27"></span>
           <span class="seg s2" data-seg="2" style="--w:8.13"></span>
@@ -121,11 +131,11 @@
         </div>
 
         <ul class="aq-lines">
-          <li data-seg="1"><i class="sw s1"></i><span>Total Base Premium</span><strong>$1,746.36</strong></li>
-          <li data-seg="2"><i class="sw s2"></i><span>GST</span><strong>$174.64</strong></li>
-          <li data-seg="3"><i class="sw s3"></i><span>Stamp Duty</span><strong>$172.89</strong></li>
-          <li data-seg="4"><i class="sw s4"></i><span>Administration Fee</span><strong>$50.00</strong></li>
-          <li data-seg="5"><i class="sw s5"></i><span>Fee GST</span><strong>$5.00</strong></li>
+          <li data-seg="1" tabindex="0"><i class="sw s1"></i><span>Total Base Premium</span><strong>$1,746.36</strong></li>
+          <li data-seg="2" tabindex="0"><i class="sw s2"></i><span>GST</span><strong>$174.64</strong></li>
+          <li data-seg="3" tabindex="0"><i class="sw s3"></i><span>Stamp Duty</span><strong>$172.89</strong></li>
+          <li data-seg="4" tabindex="0"><i class="sw s4"></i><span>Administration Fee</span><strong>$50.00</strong></li>
+          <li data-seg="5" tabindex="0"><i class="sw s5"></i><span>Fee GST</span><strong>$5.00</strong></li>
         </ul>
 
         <div class="aq-total">
@@ -262,6 +272,7 @@
           <span>To</span>
           <input type="date" id="policyEndDate">
         </label>
+        <p class="aq-period-live" id="periodLive"></p>
         <p class="aq-period-note">At 4pm Local Time</p>
       </div>
     </section>

@@ -18,8 +18,10 @@
 
   const PRICES = {
     annual:  { value: 2148.89, note: 'Annual premium · Total premium payable', dock: 'Annual premium' },
-    monthly: { value: 232.12,  note: 'Per month · 10 instalments',             dock: 'Per month · 10 instalments' }
+    monthly: { value: 232.12,  note: 'Per month · 10 instalments',             dock: 'Per month · 10 instalments' },
+    daily:   { value: 5.89,    note: 'Per day · annual premium ÷ 365',          dock: 'Per day · annual ÷ 365' }
   };
+  const MODES = ['annual', 'monthly', 'daily'];
   const fmt = (n) => n.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   // ---------- Odometer price ----------
@@ -88,6 +90,7 @@
     if (next === mode) return;
     mode = next;
     seg.dataset.mode = mode;
+    seg.style.setProperty('--i', MODES.indexOf(mode));
     $$('.aq-seg-btn', seg).forEach(b => {
       const on = b === btn;
       b.classList.toggle('active', on);
@@ -100,6 +103,44 @@
     dockPrice.textContent = '$' + fmt(p.value);
     dockLabel.textContent = p.dock;
   }));
+
+  // ---------- Cards develop with scroll (translucent -> solid), so they skip the one-shot reveal ----------
+  const cards = $$('.aq-tile, .aq-card, .aq-legal');
+  cards.forEach(c => { c.classList.remove('reveal'); c.style.removeProperty('--d'); });
+
+  // Wrap each $ amount in a span so it can count up when its card arrives
+  const countGroups = new Map(); // card -> [{el, target, dec}]
+  $$('.aq-tile .big, .aq-lines strong, .aq-total strong, .aq-row strong, .aq-dl dd').forEach(host => {
+    const card = host.closest('.aq-tile, .aq-card');
+    if (!card) return;
+    const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT);
+    const nodes = []; while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node => {
+      const re = /\$([\d,]+(?:\.\d+)?)/g;
+      if (!re.test(node.textContent)) return;
+      re.lastIndex = 0;
+      const frag = document.createDocumentFragment();
+      let last = 0, m;
+      while ((m = re.exec(node.textContent))) {
+        frag.appendChild(document.createTextNode(node.textContent.slice(last, m.index) + '$'));
+        const s = document.createElement('span');
+        s.className = 'aq-num';
+        const dec = (m[1].split('.')[1] || '').length;
+        s.dataset.final = m[1];
+        s.textContent = m[1];
+        if (!countGroups.has(card)) countGroups.set(card, []);
+        countGroups.get(card).push({ el: s, target: parseFloat(m[1].replace(/,/g, '')), dec, shown: -1 });
+        frag.appendChild(s);
+        last = m.index + m[0].length;
+      }
+      frag.appendChild(document.createTextNode(node.textContent.slice(last)));
+      node.parentNode.replaceChild(frag, node);
+    });
+  });
+
+  // Individual lines inside cards fade up one after another
+  const items = $$('.aq-row, .aq-lines li, .aq-dl > div, .aq-total, .aq-date, .aq-nil, .aq-share, .aq-period-live').map(el => ({ el, last: -1 }));
+  const cardState = cards.map(el => ({ el, last: -1 }));
 
   // ---------- One-shot reveals ----------
   const io = new IntersectionObserver((entries) => {
@@ -119,10 +160,38 @@
     if (entries[0].isIntersecting) { bar.classList.add('in'); obs.disconnect(); }
   }, { threshold: 0.6 }).observe(bar);
 
+  const shareNum = $('#shareNum'), shareLabel = $('#shareLabel');
+  const TOTAL = 2148.89;
+  const shareDefault = () => { shareNum.textContent = '$' + fmt(TOTAL); shareLabel.textContent = 'Total premium · hover or tap a line to see where it goes'; };
+  function selectLine(n) {
+    const li = $(`.aq-lines li[data-seg="${n}"]`);
+    const amt = parseFloat($('strong', li).dataset.amt || $('strong', li).textContent.replace(/[$,]/g, ''));
+    $$('.aq-lines li.sel').forEach(x => x.classList.remove('sel'));
+    li.classList.add('sel');
+    bar.classList.add('dim');
+    $$('.seg.on', bar).forEach(s => s.classList.remove('on'));
+    $(`.seg[data-seg="${n}"]`, bar).classList.add('on');
+    shareNum.textContent = (amt / TOTAL * 100).toFixed(1) + '%';
+    shareLabel.textContent = $('span', li).textContent + ' · $' + fmt(amt) + ' of your premium';
+  }
+  function clearLine() {
+    $$('.aq-lines li.sel').forEach(x => x.classList.remove('sel'));
+    bar.classList.remove('dim');
+    $$('.seg.on', bar).forEach(s => s.classList.remove('on'));
+    shareDefault();
+  }
   $$('.aq-lines li').forEach(li => {
     const n = li.dataset.seg;
-    li.addEventListener('mouseenter', () => { bar.classList.add('dim'); $(`.seg[data-seg="${n}"]`, bar).classList.add('on'); });
-    li.addEventListener('mouseleave', () => { bar.classList.remove('dim'); $$('.seg.on', bar).forEach(s => s.classList.remove('on')); });
+    $('strong', li).dataset.amt = $('strong', li).textContent.replace(/[$,]/g, '');
+    li.addEventListener('mouseenter', () => selectLine(n));
+    li.addEventListener('focus', () => selectLine(n));
+    li.addEventListener('click', () => selectLine(n));
+    li.addEventListener('mouseleave', clearLine);
+    li.addEventListener('blur', clearLine);
+  });
+  $$('.seg', bar).forEach(sg => {
+    sg.addEventListener('mouseenter', () => selectLine(sg.dataset.seg));
+    sg.addEventListener('mouseleave', clearLine);
   });
 
   // ---------- Split headlines into words (scroll-lit) ----------
@@ -160,7 +229,7 @@
   const beats = $$('.aq-beat', story).map(el => ({ el, num: $('[data-target]', el), target: +$('[data-target]', el).dataset.target, shown: -1 }));
   const storyStage = $('.aq-story-stage', story);
   const rings = $$('.aq-rings i', story);
-  const dots = $$('.aq-dots i', story);
+  const dots = $$('.aq-dots button', story);
   const tiles = $$('.aq-tile');
   const blob = $('.blob.b1');
   const waves = $('.aq-waves');
@@ -170,6 +239,12 @@
   const dock = $('#dock');
   const finaleCtas = $('.aq-finale .aq-cta-row');
   const TILE_SPEEDS = [-22, 0, 20, 8];
+
+  dots.forEach((d, i) => d.addEventListener('click', () => {
+    const r = story.getBoundingClientRect();
+    const top = scrollY + r.top + ((i + 0.55) / beats.length) * (r.height - innerHeight);
+    scrollTo({ top, behavior: reduceMotion ? 'auto' : 'smooth' });
+  }));
 
   let lastY = scrollY, ticking = false, heroPast = false, finaleVisible = false, dockOn = false;
 
@@ -183,6 +258,8 @@
     const storyR = story.getBoundingClientRect();
     const tileR = tiles.map(t => t.getBoundingClientRect());
     const headR = heads.map(h => h.el.getBoundingClientRect());
+    const cardR = cards.map(c => c.getBoundingClientRect());
+    const itemR = items.map(it => it.el.getBoundingClientRect());
     const finR = finaleCtas.getBoundingClientRect();
     const docH = document.documentElement.scrollHeight;
 
@@ -240,6 +317,36 @@
       });
     });
 
+    // cards develop: translucent and slightly small when they enter, solid and settled by ~45% up the screen
+    cardState.forEach((cs, i) => {
+      const r = cardR[i];
+      const d = clamp((vh * 0.98 - r.top) / (vh * 0.5));
+      if (Math.abs(d - cs.last) < 0.004) return;
+      cs.last = d;
+      const e = smooth(d);
+      cs.el.style.opacity = (0.16 + 0.84 * e).toFixed(3);
+      if (!reduceMotion) cs.el.style.scale = (0.955 + 0.045 * e).toFixed(4);
+      const grp = countGroups.get(cs.el);
+      if (grp) {
+        const k = easeOut(clamp((d - 0.12) / 0.62));
+        grp.forEach(g => {
+          const v = k >= 1 ? g.target : g.target * k;
+          const txt = g.dec ? v.toLocaleString('en-AU', { minimumFractionDigits: g.dec, maximumFractionDigits: g.dec })
+                            : Math.round(v).toLocaleString('en-AU');
+          if (txt !== g.shown) { g.shown = txt; g.el.textContent = txt; }
+        });
+      }
+    });
+    // lines inside cards follow, a beat later
+    items.forEach((it, i) => {
+      const r = itemR[i];
+      const t = clamp((vh * 0.92 - r.top) / (vh * 0.26));
+      if (Math.abs(t - it.last) < 0.004) return;
+      it.last = t;
+      it.el.style.opacity = smooth(t).toFixed(3);
+      if (!reduceMotion) it.el.style.translate = `0 ${((1 - smooth(t)) * 16).toFixed(1)}px`;
+    });
+
     // cover tiles drift at different speeds → depth
     if (!reduceMotion) tiles.forEach((t, i) => {
       const r = tileR[i];
@@ -281,6 +388,28 @@
     });
   }, { passive: true });
 
+  // ---------- Pointer tilt on cards ----------
+  if (!reduceMotion && matchMedia('(hover: hover)').matches) {
+    $$('.aq-tile, .aq-duo .aq-card').forEach(card => {
+      const lift = card.classList.contains('aq-tile') ? 5 : 3;
+      card.addEventListener('pointermove', (e) => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        card.classList.add('aq-tilting');
+        card.style.transform = `perspective(900px) translateY(${-lift}px) rotateX(${(-y * 7).toFixed(2)}deg) rotateY(${(x * 9).toFixed(2)}deg)`;
+      });
+      card.addEventListener('pointerleave', () => { card.classList.remove('aq-tilting'); card.style.transform = ''; });
+    });
+  }
+
+  // ---------- Copy quote number ----------
+  $('#navQuote').addEventListener('click', () => {
+    const q = 'Q-PWC-260922-001';
+    const done = () => showToast('Quote number copied · ' + q);
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(q).then(done, done); else done();
+  });
+
   // ---------- Magnetic buttons ----------
   if (!reduceMotion && matchMedia('(hover: hover)').matches) {
     $$('.aq-btn.primary, .aq-btn.glass-btn').forEach(btn => {
@@ -308,7 +437,18 @@
     end.value = iso(next);
   })();
 
+  const periodLive = $('#periodLive');
+  function updatePeriodLive() {
+    const a = new Date(start.value), b = new Date(end.value);
+    if (isNaN(a) || isNaN(b) || b <= a) { periodLive.textContent = ''; return; }
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const days = Math.round((a - today) / 864e5);
+    const f = (d) => d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+    const begins = days <= 0 ? 'Cover begins today' : days === 1 ? 'Cover begins tomorrow' : `Cover begins in ${days} days`;
+    periodLive.textContent = `${begins} · protected through ${f(b)}`;
+  }
   function updatePeriod() {
+    updatePeriodLive();
     const a = new Date(start.value), b = new Date(end.value);
     if (isNaN(a) || isNaN(b) || b <= a) { periodLen.textContent = '—'; return; }
     const days = Math.round((b - a) / 864e5);
