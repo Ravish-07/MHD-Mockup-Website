@@ -328,10 +328,10 @@
   .aq-hero-stage { padding-top: 90px; }
 }
 
-/* ---------- Reduced motion ---------- */
+/* ---------- Reduced motion: stop ambient/time-based motion; scroll-driven scenes stay (opacity only) ---------- */
 @media (prefers-reduced-motion: reduce) {
-  .aq *, .aq *::before, .aq *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; transition-delay: 0ms !important; }
-  .reveal { opacity: 1; transform: none; }
+  .aq:not(.aq-motion) *, .aq:not(.aq-motion) *::before, .aq:not(.aq-motion) *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; transition-delay: 0ms !important; }
+  .aq:not(.aq-motion) .reveal { opacity: 1; transform: none; }
 }
 
 /* =====================================================================
@@ -360,12 +360,3 @@
 
 /* Magnetic buttons */
 .aq-btn { transition: transform .5s var(--ease), translate .6s var(--ease), box-shadow .5s var(--ease), background .4s; }
-
-/* Static fallback: reduced motion */
-.aq-static .aq-hero, .aq-static .aq-story { height: auto; }
-.aq-static .aq-hero-stage { position: relative; height: auto; min-height: 100svh; }
-.aq-static .aq-story-stage { position: relative; height: auto; display: block; padding: 90px 0; }
-.aq-static .aq-story-kicker { position: static; margin-bottom: 40px; }
-.aq-static .aq-beat { position: relative; opacity: 1 !important; margin-bottom: 60px; transform: none !important; }
-.aq-static .aq-rings, .aq-static .aq-dots { display: none; }
-.aq-static .aq-w { opacity: 1 !important; transform: none !important; }

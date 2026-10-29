@@ -7,11 +7,14 @@
 
   const $  = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Reduced motion is honoured gently: the scroll-linked scenes still work (the user drives them) but
+  // without large movement. Add ?motion=full to the URL to see everything regardless of the OS setting.
+  const forceFull = /[?&]motion=full/.test(location.search);
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches && !forceFull;
+  if (forceFull) document.body.classList.add('aq-motion');
   const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const easeOut = (t) => 1 - Math.pow(1 - t, 4);
   const smooth = (t) => t * t * (3 - 2 * t);
-  if (reduceMotion) document.body.classList.add('aq-static');
 
   const PRICES = {
     annual:  { value: 2148.89, note: 'Annual premium · Total premium payable', dock: 'Annual premium' },
@@ -186,8 +189,10 @@
     // ---- write phase ----
     // global: sun sinks, sea rises, sky cools, hairline progress
     const sp = clamp(y / Math.max(1, docH - vh));
-    blob.style.transform = `translate3d(0, ${(sp * vh * 0.8).toFixed(1)}px, 0)`;
-    waves.style.transform = `translate3d(0, ${(-sp * vh * 0.07).toFixed(1)}px, 0)`;
+    if (!reduceMotion) {
+      blob.style.transform = `translate3d(0, ${(sp * vh * 0.8).toFixed(1)}px, 0)`;
+      waves.style.transform = `translate3d(0, ${(-sp * vh * 0.07).toFixed(1)}px, 0)`;
+    }
     dusk.style.opacity = (sp * 0.95).toFixed(3);
     progress.style.transform = `scaleX(${sp.toFixed(4)})`;
 
@@ -195,14 +200,14 @@
     const hp = clamp(-heroR.top / Math.max(1, heroR.height - vh));
     const fadeOut = clamp(hp / 0.32);
     heroTop.style.opacity = (1 - fadeOut).toFixed(3);
-    heroTop.style.transform = `translate3d(0, ${(-fadeOut * 70).toFixed(1)}px, 0)`;
+    if (!reduceMotion) heroTop.style.transform = `translate3d(0, ${(-fadeOut * 70).toFixed(1)}px, 0)`;
     heroBottom.style.opacity = (1 - clamp(hp / 0.26)).toFixed(3);
-    heroBottom.style.transform = `translate3d(0, ${(clamp(hp / 0.26) * 60).toFixed(1)}px, 0)`;
+    if (!reduceMotion) heroBottom.style.transform = `translate3d(0, ${(clamp(hp / 0.26) * 60).toFixed(1)}px, 0)`;
     heroCue.style.opacity = (1 - clamp(hp / 0.12)).toFixed(3);
     heroBottom.style.pointerEvents = hp > 0.2 ? 'none' : '';
     const pe = clamp((hp - 0.38) / 0.34);
     heroPrice.style.opacity = (1 - smooth(pe)).toFixed(3);
-    heroPrice.style.transform = `translate3d(0, ${(-hp * vh * 0.06).toFixed(1)}px, 0) scale(${(1 - easeOut(clamp(hp / 0.8)) * 0.42).toFixed(4)})`;
+    if (!reduceMotion) heroPrice.style.transform = `translate3d(0, ${(-hp * vh * 0.06).toFixed(1)}px, 0) scale(${(1 - easeOut(clamp(hp / 0.8)) * 0.42).toFixed(4)})`;
     heroPast = hp > 0.3;
 
     // story: three beats scrubbed by scroll, numbers count as they arrive
@@ -215,12 +220,12 @@
       const out = i === n - 1 ? 1 : smooth(clamp((1 - t) / 0.22));
       const vis = inn * out;
       b.el.style.opacity = vis.toFixed(3);
-      b.el.style.transform = `translate3d(0, ${((1 - inn) * 60 - (1 - out) * 60).toFixed(1)}px, 0) scale(${(1.12 - 0.12 * inn - 0.1 * (1 - out)).toFixed(4)})`;
+      if (!reduceMotion) b.el.style.transform = `translate3d(0, ${((1 - inn) * 60 - (1 - out) * 60).toFixed(1)}px, 0) scale(${(1.12 - 0.12 * inn - 0.1 * (1 - out)).toFixed(4)})`;
       const v = Math.round(b.target * easeOut(clamp(t / 0.5)));
       if (v !== b.shown) { b.shown = v; b.num.textContent = v.toLocaleString('en-AU'); }
       if (dots[i]) dots[i].classList.toggle('on', vis > 0.5);
     });
-    rings.forEach((r, i) => r.style.transform = `scale(${(0.5 + sp2 * (1.5 + i * 0.55) + i * 0.28).toFixed(4)})`);
+    if (!reduceMotion) rings.forEach((r, i) => r.style.transform = `scale(${(0.5 + sp2 * (1.5 + i * 0.55) + i * 0.28).toFixed(4)})`);
 
     // headlines: words light up as the line climbs the viewport
     heads.forEach((h, k) => {
@@ -231,12 +236,12 @@
       h.words.forEach((w, i) => {
         const wp = clamp(x - i);
         w.style.opacity = (0.14 + 0.86 * wp).toFixed(3);
-        w.style.transform = `translate3d(0, ${((1 - wp) * 14).toFixed(1)}px, 0)`;
+        if (!reduceMotion) w.style.transform = `translate3d(0, ${((1 - wp) * 14).toFixed(1)}px, 0)`;
       });
     });
 
     // cover tiles drift at different speeds → depth
-    tiles.forEach((t, i) => {
+    if (!reduceMotion) tiles.forEach((t, i) => {
       const r = tileR[i];
       if (r.bottom < -200 || r.top > vh + 200) return;
       const off = (r.top + r.height / 2 - vh / 2) / vh;
@@ -257,16 +262,9 @@
   }
 
   function request() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
-  if (!reduceMotion) {
-    addEventListener('scroll', request, { passive: true });
-    addEventListener('resize', request);
-    frame();
-  } else {
-    beats.forEach(b => { b.el.style.opacity = 1; });
-    heads.forEach(h => h.words.forEach(w => { w.style.opacity = 1; }));
-    const io2 = new IntersectionObserver(([e]) => { dock.classList.toggle('show', !e.isIntersecting && e.boundingClientRect.top < 0); }, {});
-    io2.observe($('#heroCtas'));
-  }
+  addEventListener('scroll', request, { passive: true });
+  addEventListener('resize', request);
+  frame();
 
   // ---------- Cursor-tracked specular light on glass ----------
   let raf = 0;
