@@ -15,6 +15,7 @@
 
   <!-- Living background: aurora, waves, film grain -->
   <div class="aq-bg" aria-hidden="true">
+    <div class="aq-dusk" id="dusk"></div>
     <div class="aq-aurora">
       <span class="blob b1"></span>
       <span class="blob b2"></span>
@@ -38,60 +39,74 @@
       <span>Quote <strong>Q-PWC-260922-001</strong></span>
     </div>
     <a class="aq-nav-link" href="jet-ski.html">Original page</a>
+    <span class="aq-progress" id="progress" aria-hidden="true"></span>
   </header>
 
   <main class="aq-main">
 
     <!-- ============ HERO ============ -->
     <section class="aq-hero" id="hero">
-      <p class="aq-eyebrow reveal" style="--d:0ms">Private Vessels · Comprehensive PWC / Jet Ski</p>
-      <h1 class="aq-title reveal" style="--d:90ms">Your quote is ready. Calm seas ahead.</h1>
+      <div class="aq-hero-stage">
+        <div class="aq-hero-top" id="heroTop">
+          <p class="aq-eyebrow reveal" style="--d:0ms">Private Vessels · Comprehensive PWC / Jet Ski</p>
+          <h1 class="aq-title reveal" style="--d:90ms">Your quote is ready. Calm seas ahead.</h1>
+        </div>
 
-      <div class="aq-price reveal" style="--d:220ms" aria-live="polite">
-        <div class="aq-price-num" id="priceNum" data-value="2148.89" aria-label="$2,148.89"></div>
+        <div class="aq-hero-price" id="heroPrice">
+          <div class="aq-price reveal" style="--d:220ms" aria-live="polite">
+            <div class="aq-price-num" id="priceNum" data-value="2148.89" aria-label="$2,148.89"></div>
+          </div>
+          <p class="aq-price-note reveal" style="--d:320ms" id="priceNote">Annual premium · Total premium payable</p>
+        </div>
+
+        <div class="aq-hero-bottom" id="heroBottom">
+          <div class="aq-seg reveal" style="--d:420ms" role="tablist" aria-label="Payment frequency">
+            <span class="aq-seg-thumb" aria-hidden="true"></span>
+            <button type="button" role="tab" aria-selected="true" class="aq-seg-btn active" data-mode="annual">Pay annually</button>
+            <button type="button" role="tab" aria-selected="false" class="aq-seg-btn" data-mode="monthly">10 instalments</button>
+          </div>
+
+          <div class="aq-cta-row reveal" style="--d:520ms" id="heroCtas">
+            <button type="button" class="aq-btn primary" data-action="buy">Buy Online
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button type="button" class="aq-btn glass-btn" data-action="email">Email Quote</button>
+          </div>
+        </div>
+
+        <div class="aq-scroll-cue reveal" style="--d:900ms" aria-hidden="true"><span></span></div>
       </div>
-      <p class="aq-price-note reveal" style="--d:320ms" id="priceNote">Annual premium · Total premium payable</p>
-
-      <div class="aq-seg reveal" style="--d:420ms" role="tablist" aria-label="Payment frequency">
-        <span class="aq-seg-thumb" aria-hidden="true"></span>
-        <button type="button" role="tab" aria-selected="true" class="aq-seg-btn active" data-mode="annual">Pay annually</button>
-        <button type="button" role="tab" aria-selected="false" class="aq-seg-btn" data-mode="monthly">10 instalments</button>
-      </div>
-
-      <div class="aq-cta-row reveal" style="--d:520ms" id="heroCtas">
-        <button type="button" class="aq-btn primary" data-action="buy">Buy Online
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button type="button" class="aq-btn glass-btn" data-action="email">Email Quote</button>
-      </div>
-
-      <div class="aq-scroll-cue reveal" style="--d:900ms" aria-hidden="true"><span></span></div>
     </section>
 
-    <!-- ============ KEY FACTS ============ -->
-    <section class="aq-section">
-      <div class="aq-facts">
-        <article class="glass aq-fact reveal" style="--d:0ms">
-          <span class="aq-fact-label">Third party legal liability</span>
-          <strong class="aq-fact-num">$<span data-count="10000000" data-format="int">10,000,000</span></strong>
-          <span class="aq-fact-sub">Any one claim or all claims arising from one accident</span>
+    <!-- ============ PINNED STORY: cover at a glance (scroll-scrubbed) ============ -->
+    <section class="aq-story" id="story" aria-label="Your cover at a glance">
+      <div class="aq-story-stage">
+        <div class="aq-rings" aria-hidden="true"><i></i><i></i><i></i></div>
+        <p class="aq-story-kicker">Your cover, at a glance</p>
+
+        <article class="aq-beat">
+          <span class="aq-beat-label">Third party legal liability</span>
+          <strong class="aq-beat-num">$<span data-target="10000000">10,000,000</span></strong>
+          <p class="aq-beat-sub">Any one claim or all claims arising from one accident</p>
         </article>
-        <article class="glass aq-fact reveal" style="--d:100ms">
-          <span class="aq-fact-label">Total sum insured</span>
-          <strong class="aq-fact-num">$<span data-count="10000" data-format="int">10,000</span></strong>
-          <span class="aq-fact-sub">Basis of settlement: Market Value</span>
+        <article class="aq-beat">
+          <span class="aq-beat-label">Total sum insured</span>
+          <strong class="aq-beat-num">$<span data-target="10000">10,000</span></strong>
+          <p class="aq-beat-sub">Basis of settlement: Market Value</p>
         </article>
-        <article class="glass aq-fact reveal" style="--d:200ms">
-          <span class="aq-fact-label">Personal accident cover</span>
-          <strong class="aq-fact-num">$<span data-count="50000" data-format="int">50,000</span></strong>
-          <span class="aq-fact-sub">Plus funeral expenses of $7,500</span>
+        <article class="aq-beat">
+          <span class="aq-beat-label">Personal accident cover</span>
+          <strong class="aq-beat-num">$<span data-target="50000">50,000</span></strong>
+          <p class="aq-beat-sub">Plus funeral expenses of $7,500</p>
         </article>
+
+        <div class="aq-dots" aria-hidden="true"><i></i><i></i><i></i></div>
       </div>
     </section>
 
     <!-- ============ PREMIUM BREAKDOWN ============ -->
     <section class="aq-section">
-      <header class="aq-sec-head reveal">
+      <header class="aq-sec-head">
         <p class="aq-kicker">Premium</p>
         <h2>Every dollar, <span class="grad">clearly shown.</span></h2>
       </header>
@@ -126,7 +141,7 @@
 
     <!-- ============ COVER ============ -->
     <section class="aq-section">
-      <header class="aq-sec-head reveal">
+      <header class="aq-sec-head">
         <p class="aq-kicker">Your cover</p>
         <h2>Cover for <span class="grad">everything on the water.</span></h2>
       </header>
@@ -208,7 +223,7 @@
 
     <!-- ============ EXCESSES + ENDORSEMENTS ============ -->
     <section class="aq-section">
-      <header class="aq-sec-head reveal">
+      <header class="aq-sec-head">
         <p class="aq-kicker">Excesses &amp; endorsements</p>
         <h2>Clear before you commit.</h2>
       </header>
@@ -229,7 +244,7 @@
 
     <!-- ============ PERIOD ============ -->
     <section class="aq-section">
-      <header class="aq-sec-head reveal">
+      <header class="aq-sec-head">
         <p class="aq-kicker">Period of insurance</p>
         <h2>Choose when cover begins.</h2>
       </header>
@@ -253,7 +268,7 @@
 
     <!-- ============ VESSEL + SKIPPER ============ -->
     <section class="aq-section">
-      <header class="aq-sec-head reveal">
+      <header class="aq-sec-head">
         <p class="aq-kicker">The details</p>
         <h2>Your PWC <span class="grad">&amp; skipper.</span></h2>
       </header>
@@ -306,7 +321,7 @@
 
     <!-- ============ FINAL ACTIONS ============ -->
     <section class="aq-section aq-finale">
-      <h2 class="reveal">Ready when <span class="grad">you are.</span></h2>
+      <h2>Ready when <span class="grad">you are.</span></h2>
       <p class="aq-finale-sub reveal" style="--d:80ms">Secure your cover in minutes.</p>
 
       <div class="aq-cta-row reveal" style="--d:160ms">
