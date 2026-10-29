@@ -167,3 +167,30 @@ body {
 /* Premium breakdown: keep only the grey divider above the total (drop the teal line from the row before it) */
 .premium-line:has(+ .premium-total),
 .your-quote-breakdown-row:has(+ .your-quote-breakdown-total) { border-bottom: none; }
+
+/* ===== Test Layout card (same 848:1264 proportion as the product photos) ===== */
+.test-card { position: relative; aspect-ratio: 848 / 1264; background: #0b3447; }
+.test-card-sky {
+  position: absolute; inset: 0 0 24% 0;
+  background:
+    radial-gradient(70% 45% at 78% 18%, rgba(255, 233, 196, .95), rgba(255, 233, 196, 0) 70%),
+    linear-gradient(180deg, #f7f4ee 0%, #e3eeee 55%, #b9d8da 100%);
+}
+.test-card-sky::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 34%;
+  background: linear-gradient(180deg, rgba(160, 205, 205, .0), rgba(120, 180, 184, .55));
+}
+.test-card-band {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 24%;
+  display: flex; align-items: center; gap: 18px; padding: 0 8%;
+  background: linear-gradient(135deg, #0b2a5c 0%, #0b4a63 55%, #12a3a0 100%);
+  color: #fff;
+}
+.test-card-icon {
+  flex: none; width: 52px; height: 52px; border-radius: 50%;
+  display: grid; place-items: center; border: 2px solid rgba(255, 255, 255, .45);
+}
+.test-card-label {
+  font-weight: 600; font-size: 22px; line-height: 1.15; letter-spacing: .01em;
+  padding-left: 18px; border-left: 1.5px solid rgba(255, 255, 255, .4);
+}
