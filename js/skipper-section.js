@@ -118,9 +118,10 @@
                      : '<option value="" disabled>No matches</option>');
     };
 
+    const pwc = /PWC/.test(noun) ? ' / PWC' : '';
     const header = `<div class="skipper-header-row sk-cols-${extra ? 'extra' : 'basic'}">
-        <span>Skipper name</span><span>Date of birth</span><span>Date boat / PWC licence obtained</span>
-        <span>Years owning a boat / PWC</span>
+        <span>Skipper name</span><span>Date of birth</span><span>Date boat${pwc} licence obtained</span>
+        <span>Years owning a boat${pwc}</span>
         ${extra ? '<span>Years owning a boat of this size and type</span><span>Previous boats owned, including length, type and ownership period</span>' : ''}
         <span></span></div>`;
 
