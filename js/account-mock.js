@@ -11,8 +11,10 @@
      reset()              clears all mock accounts and the demo session
 
    TPCP quote journey (only runs when #additionalEmail and #continueBtn6 exist):
-     - Your Details: a code box appears under the email; Payment stays locked until it is verified.
-     - After payment: a "Set up your login" popup (email locked, password + confirm).
+     - Your Details: a "Confirm Email" field; Payment stays locked until both entries match.
+     - After payment: the login is created and the customer is signed in automatically (no code, no password).
+       The account is "unverified" until its first emailed code in the portal, so a password cannot be used
+       before then. An email that already has a verified account is never auto-signed-in.
 */
 (function () {
   const DEMO_CODE = '123456';
@@ -162,80 +164,45 @@
     const paymentBtn = document.getElementById('continueBtn6');
     if (!emailInput || !paymentBtn) return;
 
-    // ---------- Your Details: verify email ----------
-    let verifiedEmail = '';       // the address that has been verified in this journey
-    let codeSentTo = '';          // the address the visible code box was sent to
-    let box = null;
+    // ---------- Your Details: type the email twice ----------
+    const emailField = emailInput.closest('.additional-field');
+    const confirmField = document.createElement('div');
+    confirmField.className = 'additional-field';
+    confirmField.innerHTML = `
+      <label for="additionalEmailConfirm">Confirm Email</label>
+      <input type="email" id="additionalEmailConfirm" placeholder="Re-enter your email" autocomplete="off">
+      <p class="acct-field-error" id="emailConfirmError" role="alert" style="display:none;">The email addresses don't match.</p>`;
+    emailField.insertAdjacentElement('afterend', confirmField);
+    const confirmInput = confirmField.querySelector('#additionalEmailConfirm');
+    const confirmError = confirmField.querySelector('#emailConfirmError');
 
-    const phoneField = document.getElementById('additionalPhone').closest('.additional-field');
-    const host = document.createElement('div');
-    host.className = 'additional-field additional-field-full acct-verify-host';
-    host.style.display = 'none';
-    phoneField.insertAdjacentElement('afterend', host);
+    const emailsMatch = () => validEmail(emailInput.value) && normEmail(emailInput.value) === normEmail(confirmInput.value);
 
-    const isVerified = () => !!verifiedEmail && normEmail(emailInput.value) === verifiedEmail;
-
-    function showVerified() {
-      host.style.display = '';
-      host.className = 'additional-field additional-field-full acct-verify-host verified';
-      host.innerHTML = `<div class="acct-verified"><span class="acct-tick">✓</span><span>Email verified: <strong>${esc(emailInput.value.trim())}</strong></span></div>`;
-      emailInput.classList.remove('field-invalid');
+    function paintMatch(showEmptyError) {
+      const typed = confirmInput.value.trim() !== '';
+      const bad = (typed || showEmptyError) && !emailsMatch();
+      confirmInput.classList.toggle('field-invalid', bad);
+      confirmError.style.display = bad ? '' : 'none';
+      confirmError.textContent = !validEmail(emailInput.value) && !typed
+        ? 'Please enter a valid email address.'
+        : "The email addresses don't match.";
     }
+    confirmInput.addEventListener('blur', () => paintMatch(false));
+    confirmInput.addEventListener('input', () => { if (emailsMatch()) paintMatch(false); });
+    emailInput.addEventListener('input', () => { if (confirmInput.value.trim() !== '') paintMatch(false); });
 
-    function startVerification() {
-      const email = emailInput.value.trim();
-      host.style.display = '';
-      host.className = 'additional-field additional-field-full acct-verify-host';
-      host.innerHTML = '<p class="acct-verify-title">Verify your email</p><div class="acct-verify-mount"></div><p class="acct-gate-msg" style="display:none;">Please verify your email to continue.</p>';
-      if (box) box.destroy();
-      codeSentTo = normEmail(email);
-      box = codeEntry({
-        mount: host.querySelector('.acct-verify-mount'),
-        email,
-        onVerified: () => { verifiedEmail = normEmail(email); showVerified(); },
-        onChangeEmail: () => { host.style.display = 'none'; emailInput.focus(); emailInput.select(); }
-      });
-    }
-
-    // Send the code when the customer finishes typing the address (leaves the field or presses Enter).
-    function syncVerification() {
-      if (!validEmail(emailInput.value)) { host.style.display = 'none'; verifiedEmail = ''; codeSentTo = ''; return; }
-      if (isVerified()) { if (!host.classList.contains('verified')) showVerified(); return; }
-      verifiedEmail = '';
-      if (codeSentTo !== normEmail(emailInput.value) || host.style.display === 'none') startVerification();
-    }
-    emailInput.addEventListener('change', syncVerification);
-    emailInput.addEventListener('blur', syncVerification);
-    emailInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); emailInput.blur(); } });
-    // Editing the address invalidates any earlier check or code.
-    emailInput.addEventListener('input', () => {
-      if (normEmail(emailInput.value) !== (verifiedEmail || codeSentTo)) {
-        verifiedEmail = '';
-        codeSentTo = '';
-        host.style.display = 'none';
-      }
-    });
-
-    // Payment stays locked until the email is verified (enforced even with validation bypassed).
+    // Payment stays locked until the two entries match (enforced even with validation bypassed).
     document.addEventListener('click', ev => {
       if (!ev.target.closest || !ev.target.closest('#continueBtn6')) return;
-      if (isVerified()) return;
+      if (emailsMatch()) return;
       ev.preventDefault();
       ev.stopImmediatePropagation();
-      if (!validEmail(emailInput.value)) {
-        emailInput.classList.add('field-invalid');
-        emailInput.focus();
-        return;
-      }
-      if (host.style.display === 'none') startVerification();
-      const msg = host.querySelector('.acct-gate-msg');
-      if (msg) msg.style.display = '';
-      host.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      const codeInput = host.querySelector('.acct-code-input');
-      if (codeInput) codeInput.focus();
+      paintMatch(true);
+      (validEmail(emailInput.value) ? confirmInput : emailInput).focus();
+      confirmField.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, true);
 
-    // ---------- After payment: policy record, login banner and popup ----------
+    // ---------- After payment: policy belongs to the email, login is ready ----------
     const payNow = document.getElementById('payNowBtn');
     const grid = document.querySelector('#tp-step-9 .confirmation-grid');
     const banner = document.createElement('div');
@@ -248,35 +215,27 @@
       return o;
     }, {});
 
-    function paintBanner(email) {
-      const acct = getAccount(email);
-      banner.style.display = '';
-      if (acct && acct.hasPassword) {
-        banner.innerHTML = `<div><strong>Your login is set up.</strong> View your policy and documents any time.</div>
-          <button type="button" class="acct-btn" id="acctGoPortal">Go to my policy</button>`;
-        banner.querySelector('#acctGoPortal').addEventListener('click', () => goPortal(email));
-      } else {
-        banner.innerHTML = `<div><strong>Set up your login</strong> to manage your policy and download your documents any time.</div>
-          <button type="button" class="acct-btn" id="acctSetup">Set up login</button>`;
-        banner.querySelector('#acctSetup').addEventListener('click', () => openPopup(email));
-      }
-    }
-
-    function goPortal(email) {
-      try { sessionStorage.setItem(SESSION_KEY, normEmail(email)); } catch (e) { /* ignore */ }
+    function goPortal(email, signIn) {
+      try {
+        if (signIn) sessionStorage.setItem(SESSION_KEY, normEmail(email));
+        else sessionStorage.removeItem(SESSION_KEY);
+      } catch (e) { /* ignore */ }
       window.location.href = 'portal.html';
     }
 
     payNow.addEventListener('click', () => {
-      const email = (verifiedEmail || emailInput.value || '').trim();
+      const email = emailInput.value.trim();
       if (!email) return;
       const note = document.getElementById('confirmationEmailNote');
       if (note) note.innerHTML = `Your policy is now in place, and your confirmation and policy documents have been emailed to <strong>${esc(email)}</strong>.`;
 
       const policy = rowsOf('policySummaryList');
       const pay = rowsOf('paymentSummaryList');
-      // The policy now belongs to this verified email, whether or not a password is ever set.
-      saveAccount(email, {});
+      // An address that already has a verified account must not be signed in (or reset) by a purchase:
+      // someone could type another person's email. That customer proves it's them with a code instead.
+      const existing = getAccount(email);
+      const alreadyVerified = !!(existing && existing.verified);
+      if (!existing) saveAccount(email, { verified: false });
       addPolicy(email, {
         name: policy['Policy'] || 'Third Party Only Pleasure Craft',
         quoteNumber: policy['Quote Number'] || '',
@@ -286,105 +245,16 @@
         totalPaid: pay['Total Paid'] || ''
       });
 
-      paintBanner(email);
-      setTimeout(() => { if (!(getAccount(email) || {}).hasPassword) openPopup(email); }, 700);
+      banner.style.display = '';
+      if (alreadyVerified) {
+        banner.innerHTML = `<div><strong>You already have a Coast login.</strong> Sign in with <strong>${esc(email)}</strong> to see this policy with your others.</div>
+          <button type="button" class="acct-btn" id="acctGoPortal">Sign in</button>`;
+        banner.querySelector('#acctGoPortal').addEventListener('click', () => goPortal(email, false));
+      } else {
+        banner.innerHTML = `<div><strong>Your login is ready.</strong> You're signed in as <strong>${esc(email)}</strong>. View your policy and documents any time.</div>
+          <button type="button" class="acct-btn" id="acctGoPortal">View my policy</button>`;
+        banner.querySelector('#acctGoPortal').addEventListener('click', () => goPortal(email, true));
+      }
     });
-
-    // ---------- Set-up popup ----------
-    let overlay = null;
-    function closePopup() {
-      if (!overlay) return;
-      overlay.classList.remove('active');
-      overlay.setAttribute('aria-hidden', 'true');
-      document.body.classList.remove('modal-open');
-    }
-
-    function openPopup(email) {
-      if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.className = 'acct-overlay';
-        overlay.setAttribute('aria-hidden', 'true');
-        document.body.appendChild(overlay);
-        overlay.addEventListener('click', e => { if (e.target === overlay) closePopup(); });
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(); });
-      }
-
-      overlay.innerHTML = `
-        <div class="acct-modal" role="dialog" aria-modal="true" aria-labelledby="acctModalTitle">
-          <button type="button" class="acct-modal-x" aria-label="Close">×</button>
-          <h2 id="acctModalTitle">Set up your login</h2>
-          <p class="acct-modal-sub">Your policy is in place. Create a password so you can view it and download your documents any time.</p>
-          <div class="acct-field">
-            <label for="acctEmail">Email</label>
-            <div class="acct-email-locked"><input id="acctEmail" type="email" value="${esc(email)}" readonly><span class="acct-chip">✓ Verified</span></div>
-          </div>
-          <div class="acct-field">
-            <label for="acctPw">Password</label>
-            <div class="acct-pw-wrap"><input id="acctPw" type="password" autocomplete="new-password"><button type="button" class="acct-show" data-target="acctPw">Show</button></div>
-          </div>
-          <div class="acct-field">
-            <label for="acctPw2">Confirm password</label>
-            <div class="acct-pw-wrap"><input id="acctPw2" type="password" autocomplete="new-password"><button type="button" class="acct-show" data-target="acctPw2">Show</button></div>
-          </div>
-          <ul class="acct-rules">
-            <li data-rule="len">At least ${MIN_PASSWORD} characters</li>
-            <li data-rule="match">Both passwords match</li>
-          </ul>
-          <div class="acct-modal-actions">
-            <button type="button" class="acct-btn" id="acctCreate" disabled>Create login</button>
-            <button type="button" class="acct-link" id="acctSkip">Not now</button>
-          </div>
-          <p class="acct-modal-foot">You can always sign in later with a code emailed to you, no password needed.</p>
-        </div>`;
-
-      const pw = overlay.querySelector('#acctPw');
-      const pw2 = overlay.querySelector('#acctPw2');
-      const create = overlay.querySelector('#acctCreate');
-      const ruleLen = overlay.querySelector('[data-rule="len"]');
-      const ruleMatch = overlay.querySelector('[data-rule="match"]');
-
-      function check() {
-        const lenOk = pw.value.length >= MIN_PASSWORD;
-        const matchOk = pw.value !== '' && pw.value === pw2.value;
-        ruleLen.classList.toggle('met', lenOk);
-        ruleMatch.classList.toggle('met', matchOk);
-        create.disabled = !(lenOk && matchOk);
-      }
-      pw.addEventListener('input', check);
-      pw2.addEventListener('input', check);
-      [pw, pw2].forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter' && !create.disabled) create.click(); }));
-
-      overlay.querySelectorAll('.acct-show').forEach(btn => btn.addEventListener('click', () => {
-        const target = overlay.querySelector('#' + btn.dataset.target);
-        const show = target.type === 'password';
-        target.type = show ? 'text' : 'password';
-        btn.textContent = show ? 'Hide' : 'Show';
-      }));
-
-      overlay.querySelector('.acct-modal-x').addEventListener('click', closePopup);
-      overlay.querySelector('#acctSkip').addEventListener('click', closePopup);
-
-      create.addEventListener('click', async () => {
-        const hash = await sha256(pw.value);
-        saveAccount(email, { hasPassword: true, passwordHash: hash });
-        overlay.querySelector('.acct-modal').innerHTML = `
-          <div class="acct-done">
-            <div class="acct-done-tick">✓</div>
-            <h2>Your login is ready</h2>
-            <p class="acct-modal-sub">Sign in any time with <strong>${esc(email)}</strong> to see your policy and download your documents.</p>
-            <div class="acct-modal-actions center">
-              <button type="button" class="acct-btn" id="acctOpenPortal">Go to my policy</button>
-              <button type="button" class="acct-link" id="acctStay">Stay on this page</button>
-            </div>
-          </div>`;
-        overlay.querySelector('#acctOpenPortal').addEventListener('click', () => goPortal(email));
-        overlay.querySelector('#acctStay').addEventListener('click', () => { closePopup(); paintBanner(email); });
-      });
-
-      overlay.classList.add('active');
-      overlay.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('modal-open');
-      pw.focus();
-    }
   });
 })();
