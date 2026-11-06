@@ -1,0 +1,210 @@
+/* Customer login mockup: code box, set-up popup, banner and portal page.
+   Colours follow the existing site: teal #0f766e / #08788b, navy #09285c. */
+
+.site-header.has-login {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-login-link {
+  color: #08788b;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 14px;
+  border: 1px solid #08788b;
+  border-radius: 8px;
+}
+.header-login-link:hover { background: #d3e9ef; }
+
+/* ----- buttons / links ----- */
+.acct-btn {
+  background: #0f766e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+.acct-btn:hover { background: #0c5c56; }
+.acct-btn:disabled { background: #d1d5db; cursor: not-allowed; }
+.acct-btn.secondary { background: #fff; color: #08788b; border: 1px solid #08788b; }
+.acct-btn.secondary:hover { background: #d3e9ef; }
+.acct-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #08788b;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+.acct-link:hover { color: #09285c; text-decoration: underline; }
+.acct-link:disabled { color: #6b7280; cursor: default; text-decoration: none; }
+
+/* ----- code box ----- */
+.acct-code {
+  border: 1px solid #cfe3e1;
+  background: #f1f8f7;
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.acct-verify-title { font-size: 13px; font-weight: 700; color: #09285c; margin-bottom: 6px; }
+.acct-code-msg { font-size: 13px; color: #1f2937; line-height: 1.45; margin-bottom: 10px; }
+.acct-code-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.acct-code-input {
+  width: 180px;
+  height: 42px;
+  border: 1px solid #9ca3af;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 20px;
+  letter-spacing: 0.35em;
+  font-family: inherit;
+  text-align: center;
+  background: #fff;
+  color: #1f2937;
+}
+.acct-code-input::placeholder { font-size: 13px; letter-spacing: 0; }
+.acct-code-input:focus { outline: none; border-color: #079cc0; }
+.acct-status { min-height: 18px; font-size: 13px; margin-top: 8px; color: #6b7280; }
+.acct-status.error { color: #b42318; }
+.acct-status.ok { color: #0f766e; font-weight: 600; }
+.acct-code-links { display: flex; gap: 18px; margin-top: 6px; flex-wrap: wrap; }
+.acct-demo { font-size: 11.5px; color: #6b7280; margin-top: 8px; }
+.acct-gate-msg { margin-top: 8px; font-size: 13px; font-weight: 600; color: #b42318; }
+
+.acct-verified {
+  display: flex; align-items: center; gap: 10px;
+  background: #ecf8f1; border: 1px solid #b7e2c8; border-radius: 10px;
+  padding: 10px 14px; font-size: 13px; color: #14532d;
+}
+.acct-tick {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #16a34a; color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex: none;
+}
+
+/* ----- confirmation banner ----- */
+.acct-banner {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  margin: 0 0 18px;
+  padding: 14px 18px;
+  background: #f1f8f7; border: 1px solid #cfe3e1; border-radius: 10px;
+  font-size: 14px; color: #1f2937; text-align: left;
+}
+
+/* ----- popup ----- */
+.acct-overlay {
+  position: fixed; inset: 0; z-index: 12000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 22px;
+  background: rgba(20, 35, 50, 0.38);
+  backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+.acct-overlay.active { opacity: 1; visibility: visible; }
+.acct-modal {
+  position: relative;
+  width: 100%; max-width: 440px; max-height: calc(100vh - 36px); overflow-y: auto;
+  background: #fff; border: 1px solid #e1e6eb; border-radius: 16px;
+  box-shadow: 0 25px 70px rgba(15, 35, 55, 0.25);
+  padding: 30px 30px 24px;
+  color: #09285c;
+}
+.acct-modal h2 { font-size: 21px; margin-bottom: 6px; }
+.acct-modal-x {
+  position: absolute; top: 12px; right: 16px;
+  background: none; border: none; font-size: 26px; line-height: 1; color: #6b7280; cursor: pointer;
+}
+.acct-modal-sub { font-size: 14px; color: #4b5563; line-height: 1.5; margin-bottom: 18px; }
+.acct-field { margin-bottom: 14px; }
+.acct-field label { display: block; font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 5px; }
+.acct-field input {
+  width: 100%; height: 42px;
+  border: 1px solid #d1d5db; border-radius: 8px; padding: 0 12px;
+  font-size: 15px; font-family: inherit; color: #1f2937; background: #fff;
+}
+.acct-field input:focus { outline: none; border-color: #079cc0; }
+.acct-field input[readonly] { background: #f3f4f6; color: #4b5563; }
+.acct-email-locked { position: relative; }
+.acct-email-locked input { padding-right: 92px; }
+.acct-chip {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  font-size: 12px; font-weight: 700; color: #14532d; background: #ecf8f1;
+  border: 1px solid #b7e2c8; border-radius: 999px; padding: 3px 9px;
+}
+.acct-pw-wrap { position: relative; }
+.acct-pw-wrap input { padding-right: 64px; }
+.acct-show {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: #08788b; font-size: 13px; font-weight: 600;
+  padding: 6px 8px; cursor: pointer; font-family: inherit;
+}
+.acct-rules { list-style: none; margin: 4px 0 18px; font-size: 13px; color: #6b7280; }
+.acct-rules li { padding: 2px 0 2px 22px; position: relative; }
+.acct-rules li::before { content: '○'; position: absolute; left: 0; color: #9ca3af; }
+.acct-rules li.met { color: #14532d; }
+.acct-rules li.met::before { content: '✓'; color: #16a34a; font-weight: 700; }
+.acct-modal-actions { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.acct-modal-actions.center { justify-content: center; }
+.acct-modal-foot { font-size: 12.5px; color: #6b7280; margin-top: 16px; line-height: 1.45; }
+.acct-done { text-align: center; padding: 6px 0 4px; }
+.acct-done-tick {
+  width: 56px; height: 56px; border-radius: 50%; margin: 0 auto 14px;
+  background: #16a34a; color: #fff; font-size: 28px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ----- portal page ----- */
+.portal-main { max-width: 760px; margin: 0 auto; padding: 36px 20px 60px; }
+.portal-card {
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 14px;
+  box-shadow: 0 6px 24px rgba(15, 35, 55, 0.06);
+  padding: 32px; color: #1a2e2e;
+}
+.portal-card h1 { font-size: 24px; color: #09285c; margin-bottom: 6px; }
+.portal-sub { font-size: 14.5px; color: #4b5563; line-height: 1.5; margin-bottom: 22px; }
+.portal-card .acct-field { max-width: 420px; }
+.portal-actions { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 16px; }
+.portal-alt { margin-top: 18px; padding-top: 14px; border-top: 1px solid #f0f0f0; display: flex; gap: 18px; flex-wrap: wrap; }
+.portal-error { color: #b42318; font-size: 13px; margin-top: 10px; }
+.portal-topbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.portal-topbar p { font-size: 13.5px; color: #4b5563; }
+.policy-card { border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+.policy-card-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.policy-card-head h2 { font-size: 17px; color: #09285c; }
+.policy-status { font-size: 12px; font-weight: 700; color: #14532d; background: #ecf8f1; border: 1px solid #b7e2c8; border-radius: 999px; padding: 3px 10px; }
+.policy-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; margin-bottom: 16px; }
+.policy-rows div { font-size: 13.5px; }
+.policy-rows span { display: block; font-size: 12px; color: #6b7280; }
+.policy-docs { display: flex; gap: 10px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid #f0f0f0; }
+.portal-empty { text-align: center; padding: 18px 0 6px; }
+.portal-toast {
+  position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
+  background: #09285c; color: #fff; font-size: 14px; padding: 11px 18px; border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(15, 35, 55, 0.3); z-index: 13000;
+}
+.portal-foot { text-align: center; margin-top: 18px; font-size: 12px; color: #6b7280; }
+
+@media (max-width: 600px) {
+  .policy-rows { grid-template-columns: 1fr; }
+  .portal-card { padding: 22px 18px; }
+  .acct-modal { padding: 26px 20px 20px; }
+  .site-header.has-login { padding-left: 16px; padding-right: 16px; }
+}
+
+/* Your Details applies a full-width rule to every .additional-field input; keep the code box compact. */
+.acct-verify-host .acct-code-input {
+  width: 180px;
+  height: 42px;
+  padding: 0 12px;
+  font-size: 20px;
+}
+.acct-verify-host .acct-code { width: 100%; }
