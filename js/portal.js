@@ -95,7 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
     card.querySelector('#pwForm').addEventListener('submit', async e => {
       e.preventDefault();
       const acct = getAccount(email);
-      const ok = acct && acct.hasPassword && acct.passwordHash === await sha256(pw.value);
+      // A password only works once the email has been verified with a code (first sign-in is always by code).
+      const ok = acct && acct.verified && acct.hasPassword && acct.passwordHash === await sha256(pw.value);
       if (ok) { setSession(email); showDashboard(); return; }
       // Same message whether the email is unknown, has no password, or the password is wrong.
       showPassword("That email and password don't match. Try again, or use an emailed code instead.");
@@ -104,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---------- 3. after a verified code ----------
   function afterVerified() {
-    if (!getAccount(email)) saveAccount(email, {});       // unknown email: empty account, no policies
+    saveAccount(email, { verified: true });               // unknown email: empty account; known email: now verified
     setSession(email);
     if (!getAccount(email).hasPassword) showSetPassword(); else showDashboard();
   }
